@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的脚本库</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+        .header {
+            background: linear-gradient(135deg, #4A6CF7, #6a3de8);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(74,108,247,0.3);
+        }
+        .header h1 { font-size: 24px; font-weight: 700; }
+        .header p { font-size: 14px; opacity: 0.85; margin-top: 6px; }
+
+        .script-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+        .script-card:active { transform: scale(0.98); }
+        .script-card .info .name { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+        .script-card .info .version { font-size: 13px; color: #888; }
+        .script-card .info .desc { font-size: 13px; color: #666; margin-top: 3px; }
+        .btn-copy {
+            background: #4A6CF7;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .btn-copy:active { transform: scale(0.95); }
+
+        .feedback-area {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .feedback-area h3 { font-size: 16px; margin-bottom: 12px; }
+        .feedback-area textarea {
+            width: 100%;
+            height: 80px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .feedback-area textarea:focus { outline: none; border-color: #4A6CF7; }
+        .feedback-area input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .feedback-area input:focus { outline: none; border-color: #4A6CF7; }
+        .btn-submit {
+            background: #34C759;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-submit:active { transform: scale(0.97); }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            display: none;
+            z-index: 999;
+        }
+        .toast.show { display: block; animation: fadeUp 0.3s ease; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .footer {
+            text-align: center;
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1>📦 脚本库</h1>
+        <p>点击「复制」即可获取脚本内容</p>
+    </div>
+
+    <div id="scriptList"></div>
+
+    <div class="feedback-area">
+        <h3>💬 反馈建议</h3>
+        <textarea id="fbContent" placeholder="说说你的建议或遇到的BUG..."></textarea>
+        <input type="text" id="fbContact" placeholder="你的QQ或邮箱（选填）">
+        <button class="btn-submit" onclick="submitFeedback()">📤 提交反馈</button>
+    </div>
+
+    <div class="footer">© 2026 脚本库 · 仅供学习交流</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // ========== 你的脚本列表（在这里增删改） ==========
+    const SCRIPTS = [
+        {
+            name: "自动农场V3",
+            version: "3.2",
+            desc: "支持最新地图，自动收菜",
+            content: '-- 自动农场脚本\nprint("农场启动")'
+        },
+        {
+            name: "跑酷辅助",
+            version: "1.5",
+            desc: "自动避障 + 加速",
+            content: '-- 跑酷辅助脚本\nprint("跑酷启动")'
+        }
+    ];
+
+    // ========== 渲染脚本列表 ==========
+    function renderScripts() {
+        const container = document.getElementById('scriptList');
+        container.innerHTML = SCRIPTS.map((s, i) => `
+            <div class="script-card">
+                <div class="info">
+                    <div class="name">${s.name} <span style="font-size:12px;color:#aaa;">v${s.version}</span></div>
+                    <div class="desc">${s.desc || ''}</div>
+                </div>
+                <button class="btn-copy" onclick="copyScript(${i})">📋 复制</button>
+            </div>
+        `).join('');
+    }
+
+    // ========== 复制脚本内容 ==========
+    async function copyScript(index) {
+        const content = SCRIPTS[index].content;
+        try {
+            await navigator.clipboard.writeText(content);
+            showToast('✅ 已复制到剪贴板！');
+        } catch (e) {
+            // 备用方案
+            const ta = document.createElement('textarea');
+            ta.value = content;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showToast('✅ 已复制到剪贴板！');
+        }
+    }
+
+    // ========== 提交反馈 ==========
+    function submitFeedback() {
+        const content = document.getElementById('fbContent').value.trim();
+        const contact = document.getElementById('fbContact').value.trim();
+        if (!content) {
+            showToast('⚠️ 请填写反馈内容');
+            return;
+        }
+        // 发送到你的邮箱（用 mailto 方式）
+        const subject = encodeURIComponent('脚本库反馈');
+        const body = encodeURIComponent(`反馈内容：${content}\n联系方式：${contact || '未留'}`);
+        window.open(`mailto:你的邮箱@qq.com?subject=${subject}&body=${body}`);
+        showToast('✅ 已打开邮件，发送即可！');
+        document.getElementById('fbContent').value = '';
+        document.getElementById('fbContact').value = '';
+    }
+
+    // ========== 提示条 ==========
+    function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+    renderScripts();
+</script>
+</body>
+  </html>
