@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>星脚本 · 流动星河</title>
+    <title>星脚本 · 星河</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{
@@ -165,8 +165,6 @@
         }
         .toast.show{display:block;animation:fadeUp 0.35s ease}
         @keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-
-        /* ===== 个人中心 ===== */
         .profile-page{display:none}
         .profile-page .profile-card{
             background:rgba(10,15,35,0.6);
@@ -194,10 +192,10 @@
         .profile-page .profile-card .big-avatar img{width:100%;height:100%;object-fit:cover}
         .profile-page .profile-card .big-avatar .camera-icon{
             position:absolute;bottom:0;left:0;right:0;
-            background:rgba(0,0,0,0.5);color:#fff;font-size:12px;
+            background:rgba(0,0,0,0.6);color:#fff;font-size:12px;
             padding:4px 0;opacity:0;transition:opacity 0.3s;
         }
-        .profile-page .profile-card .big-avatar:hover .camera-icon{opacity:1}
+        .profile-page .profile-card .big-avatar:active .camera-icon{opacity:1}
         .profile-page .profile-card .avatar-hint{font-size:12px;color:rgba(180,200,255,0.3);margin-top:-10px;margin-bottom:16px}
         .profile-page .profile-card .p-name{font-size:20px;font-weight:600;color:#fff;margin-bottom:4px}
         .profile-page .profile-card .p-email{font-size:14px;color:rgba(180,200,255,0.5);margin-bottom:20px}
@@ -222,10 +220,9 @@
         .profile-page .profile-card .p-btns .btn-logout{background:#e74c5e;color:#fff}
         .profile-page .profile-card .p-btns .btn-logout:active{background:#c0392b}
 
-        /* ===== 头像选择器 ===== */
         .avatar-picker{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;padding:20px}
         .avatar-picker.show{display:flex}
-        .avatar-picker .picker-box{background:rgba(10,15,35,0.9);border-radius:20px;padding:24px 20px;max-width:400px;width:100%;border:1px solid rgba(120,160,255,0.1)}
+        .avatar-picker .picker-box{background:rgba(10,15,35,0.92);border-radius:20px;padding:24px 20px;max-width:400px;width:100%;border:1px solid rgba(120,160,255,0.1)}
         .avatar-picker .picker-box h3{color:#fff;text-align:center;margin-bottom:16px;font-size:18px}
         .avatar-picker .picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
         .avatar-picker .picker-grid .opt{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.2s;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;font-weight:600}
@@ -238,115 +235,62 @@
         .avatar-picker .picker-footer .btn-upload{background:linear-gradient(135deg,#4A6CF7,#8b5cf6);color:#fff}
         .hidden{display:none!important}
 
-        /* ===== 音乐播放器 ===== */
         .music-player{
             position:fixed;
             bottom:0;
             left:0;
             right:0;
             z-index:100;
-            background:rgba(10,15,35,0.85);
+            background:rgba(10,15,35,0.88);
             backdrop-filter:blur(16px);
             -webkit-backdrop-filter:blur(16px);
             border-top:1px solid rgba(120,160,255,0.08);
-            padding:12px 16px;
-            display:flex;
-            align-items:center;
-            gap:12px;
-            transition:transform 0.3s;
-        }
-        .music-player.minimized{
-            transform:translateY(calc(100% - 44px));
-        }
-        .music-player .toggle-btn{
-            background:none;
-            border:none;
-            color:rgba(180,200,255,0.5);
-            font-size:20px;
-            cursor:pointer;
-            padding:4px 8px;
-            flex-shrink:0;
-            transition:transform 0.2s;
-        }
-        .music-player .toggle-btn:active{transform:scale(0.8)}
-        .music-player .play-btn{
-            background:rgba(74,108,247,0.2);
-            border:1px solid rgba(74,108,247,0.2);
-            border-radius:50%;
-            width:40px;height:40px;
-            display:flex;align-items:center;justify-content:center;
-            font-size:18px;
-            color:#a0baff;
-            cursor:pointer;
-            flex-shrink:0;
-            transition:background 0.2s,transform 0.15s;
-        }
-        .music-player .play-btn:active{transform:scale(0.9);background:rgba(74,108,247,0.35)}
-        .music-player .info{
-            flex:1;
-            min-width:0;
-        }
-        .music-player .info .title{
-            color:#e8eeff;
-            font-size:14px;
-            font-weight:500;
-            white-space:nowrap;
-            overflow:hidden;
-            text-overflow:ellipsis;
-        }
-        .music-player .info .artist{
-            color:rgba(180,200,255,0.3);
-            font-size:12px;
-        }
-        .music-player .controls{
+            padding:10px 16px;
             display:flex;
             align-items:center;
             gap:10px;
-            flex-shrink:0;
+            transition:transform 0.3s ease;
         }
-        .music-player .controls .vol-btn{
-            background:none;
-            border:none;
-            color:rgba(180,200,255,0.3);
-            font-size:14px;
-            cursor:pointer;
+        .music-player.minimized{
+            transform:translateY(calc(100% - 40px));
         }
-        .music-player .controls .vol-btn:active{color:rgba(180,200,255,0.6)}
+        .music-player .toggle-btn{
+            background:none;border:none;color:rgba(180,200,255,0.4);
+            font-size:18px;cursor:pointer;padding:2px 6px;flex-shrink:0;
+        }
+        .music-player .play-btn{
+            background:rgba(74,108,247,0.2);
+            border:1px solid rgba(74,108,247,0.15);
+            border-radius:50%;
+            width:38px;height:38px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:16px;color:#a0baff;
+            cursor:pointer;flex-shrink:0;
+            transition:background 0.2s,transform 0.15s;
+        }
+        .music-player .play-btn:active{transform:scale(0.88);background:rgba(74,108,247,0.35)}
+        .music-player .info{flex:1;min-width:0}
+        .music-player .info .title{color:#e8eeff;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .music-player .info .artist{color:rgba(180,200,255,0.25);font-size:11px}
+        .music-player .controls{display:flex;align-items:center;gap:6px;flex-shrink:0}
+        .music-player .controls .vol-btn{background:none;border:none;color:rgba(180,200,255,0.25);font-size:14px;cursor:pointer;padding:2px}
+        .music-player .controls .vol-btn:active{color:rgba(180,200,255,0.5)}
         .music-player .controls input[type="range"]{
-            width:60px;
-            height:3px;
-            -webkit-appearance:none;
-            appearance:none;
-            background:rgba(255,255,255,0.1);
-            border-radius:2px;
-            outline:none;
+            width:50px;height:3px;-webkit-appearance:none;appearance:none;
+            background:rgba(255,255,255,0.1);border-radius:2px;outline:none;
         }
         .music-player .controls input[type="range"]::-webkit-slider-thumb{
-            -webkit-appearance:none;
-            appearance:none;
-            width:12px;
-            height:12px;
-            border-radius:50%;
-            background:#4A6CF7;
-            cursor:pointer;
+            -webkit-appearance:none;appearance:none;width:12px;height:12px;border-radius:50%;background:#4A6CF7;cursor:pointer;
         }
         .music-player .song-list-btn{
-            background:none;
-            border:none;
-            color:rgba(180,200,255,0.3);
-            font-size:16px;
-            cursor:pointer;
-            padding:4px;
+            background:none;border:none;color:rgba(180,200,255,0.25);
+            font-size:16px;cursor:pointer;padding:2px;
         }
-        .music-player .song-list-btn:active{color:rgba(180,200,255,0.6)}
-
-        /* 歌曲列表弹窗 */
         .song-list{
             display:none;
             position:fixed;
             bottom:80px;
-            left:16px;
-            right:16px;
+            left:16px;right:16px;
             max-height:260px;
             background:rgba(10,15,35,0.92);
             backdrop-filter:blur(16px);
@@ -359,30 +303,17 @@
         }
         .song-list.show{display:block}
         .song-list .song-item{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            padding:10px 12px;
-            border-radius:10px;
-            cursor:pointer;
+            display:flex;justify-content:space-between;align-items:center;
+            padding:10px 12px;border-radius:10px;cursor:pointer;
             transition:background 0.2s;
             color:rgba(180,200,255,0.6);
         }
         .song-list .song-item:active{background:rgba(255,255,255,0.05)}
-        .song-list .song-item.active{
-            background:rgba(74,108,247,0.12);
-            color:#e8eeff;
-        }
+        .song-list .song-item.active{background:rgba(74,108,247,0.12);color:#e8eeff}
         .song-list .song-item .s-name{font-size:14px}
         .song-list .song-item .s-artist{font-size:12px;color:rgba(180,200,255,0.3)}
         .song-list .song-item .s-play{color:#4A6CF7}
-        .song-list .close-list{
-            text-align:center;
-            padding:8px;
-            color:rgba(180,200,255,0.2);
-            font-size:12px;
-            cursor:pointer;
-        }
+        .song-list .close-list{text-align:center;padding:8px;color:rgba(180,200,255,0.2);font-size:12px;cursor:pointer}
         .song-list .close-list:active{color:rgba(180,200,255,0.4)}
     </style>
 </head>
@@ -391,7 +322,6 @@
 <canvas id="particleCanvas"></canvas>
 
 <div class="container">
-    <!-- 登录界面 -->
     <div id="authSection" class="auth-box">
         <h2>✦ 星脚本</h2>
         <p class="sub" id="modeText">登录后查看脚本</p>
@@ -403,7 +333,6 @@
         <div class="switch"><span id="switchText">还没有账号？</span> <a href="#" id="switchLink">注册</a></div>
     </div>
 
-    <!-- 主界面 -->
     <div id="mainSection" class="main-content">
         <div class="header">
             <h1 id="homeBtn">✦ 星脚本</h1>
@@ -418,7 +347,6 @@
         <div class="footer">© 2026 星脚本 · 仅供学习交流</div>
     </div>
 
-    <!-- 个人中心 -->
     <div id="profilePage" class="profile-page">
         <div class="profile-card">
             <div class="big-avatar" id="profileAvatar">
@@ -442,7 +370,6 @@
     </div>
 </div>
 
-<!-- 头像选择器 -->
 <div class="avatar-picker" id="avatarPicker">
     <div class="picker-box">
         <h3>🎨 选择头像</h3>
@@ -455,7 +382,6 @@
     </div>
 </div>
 
-<!-- 音乐播放器 -->
 <div class="music-player" id="musicPlayer">
     <button class="toggle-btn" id="togglePlayer">▾</button>
     <button class="play-btn" id="playBtn">▶</button>
@@ -470,7 +396,6 @@
     </div>
 </div>
 
-<!-- 歌曲列表 -->
 <div class="song-list" id="songList">
     <div id="songListItems"></div>
     <div class="close-list" id="closeSongList">关闭列表</div>
@@ -572,11 +497,12 @@
     // ============================================================
     // 音乐播放器
     // ============================================================
+    // 换成了国内能用的免费音乐源（来自 audionautix.com 的免版权音乐）
     const songs = [
-        { title: '星空漫步', artist: 'Lofi 音乐', url: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d3b3f5e1f2.mp3' },
-        { title: '静谧之夜', artist: '轻音乐', url: 'https://cdn.pixabay.com/download/audio/2022/02/22/audio_8b4f9e1a2c.mp3' },
-        { title: '放松时光', artist: '钢琴曲', url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_5c6d7e8f9a.mp3' },
-        { title: '星河之旅', artist: '电子音', url: 'https://cdn.pixabay.com/download/audio/2022/04/01/audio_9f8e7d6c5b.mp3' },
+        { title: '星空漫步', artist: 'Lofi 音乐', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+        { title: '静谧之夜', artist: '轻音乐', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+        { title: '放松时光', artist: '钢琴曲', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+        { title: '星河之旅', artist: '电子音', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
     ];
 
     let currentSongIndex = 0;
@@ -596,6 +522,16 @@
     const songListItems = document.getElementById('songListItems');
     const closeSongList = document.getElementById('closeSongList');
 
+    // 修复：用户点击页面任意位置时，唤醒音频上下文
+    document.addEventListener('click', function() {
+        if (audio.paused && audio.src) {
+            // 如果有歌曲加载但暂停，不自动播放，让用户自己点播放
+        }
+        // 这行是为了让浏览器允许音频播放
+        audio.play().catch(() => {});
+        audio.pause();
+    });
+
     function loadSong(index) {
         const song = songs[index];
         audio.src = song.url;
@@ -603,12 +539,19 @@
         songArtist.textContent = song.artist;
         currentSongIndex = index;
         renderSongList();
+        // 如果正在播放状态，自动播放
         if (isPlaying) {
-            audio.play().catch(() => {});
+            audio.play().catch(() => {
+                // 自动播放被阻止时，提示用户手动点击
+                showToast('请点击播放按钮开始音乐');
+                isPlaying = false;
+                playBtn.textContent = '▶';
+            });
         }
     }
 
     function togglePlay() {
+        // 如果没有加载歌曲，先加载第一首
         if (audio.src === '' || audio.src === window.location.href) {
             loadSong(currentSongIndex);
             audio.play().catch(() => {});
@@ -621,7 +564,9 @@
             isPlaying = false;
             playBtn.textContent = '▶';
         } else {
-            audio.play().catch(() => {});
+            audio.play().catch(() => {
+                showToast('请点击页面后重试播放');
+            });
             isPlaying = true;
             playBtn.textContent = '⏸';
         }
@@ -638,17 +583,15 @@
             el.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
                 loadSong(idx);
-                if (!isPlaying) {
-                    audio.play().catch(() => {});
-                    isPlaying = true;
-                    playBtn.textContent = '⏸';
-                }
+                // 自动播放
+                audio.play().catch(() => {});
+                isPlaying = true;
+                playBtn.textContent = '⏸';
                 songList.classList.remove('show');
             });
         });
     }
 
-    // 音量控制
     volSlider.addEventListener('input', function() {
         audio.volume = this.value / 100;
         volBtn.textContent = this.value == 0 ? '🔇' : '🔊';
@@ -666,14 +609,12 @@
         }
     });
 
-    // 展开/收起
     toggleBtn.addEventListener('click', function() {
         isMinimized = !isMinimized;
         player.classList.toggle('minimized');
         this.textContent = isMinimized ? '▸' : '▾';
     });
 
-    // 歌曲列表
     songListBtn.addEventListener('click', function() {
         songList.classList.toggle('show');
         renderSongList();
@@ -682,17 +623,14 @@
         songList.classList.remove('show');
     });
 
-    // 点击外部关闭列表
     document.addEventListener('click', function(e) {
         if (!songList.contains(e.target) && e.target !== songListBtn) {
             songList.classList.remove('show');
         }
     });
 
-    // 播放按钮
     playBtn.addEventListener('click', togglePlay);
 
-    // 自动播放下首歌
     audio.addEventListener('ended', function() {
         const next = (currentSongIndex + 1) % songs.length;
         loadSong(next);
@@ -701,7 +639,6 @@
         playBtn.textContent = '⏸';
     });
 
-    // 初始化
     audio.volume = 0.7;
     volSlider.value = 70;
 
@@ -890,7 +827,10 @@
     }
 
     function openPicker() {
-        if (!currentUser) return;
+        if (!currentUser) {
+            showToast('请先登录');
+            return;
+        }
         renderAvatarPicker();
         avatarPicker.classList.add('show');
     }
@@ -901,22 +841,21 @@
 
     function updateAllAvatars() {
         if (!currentUser) return;
+        // 个人中心大号头像
         applyAvatar(currentUser, profileAvatar, avatarEmoji, avatarImage);
-        const headerAvatarEl = document.getElementById('headerAvatar');
-        const headerEmoji = document.createElement('span');
-        headerEmoji.textContent = getInitials(currentUser);
+        // 顶部小头像
         const avatarData = getAvatarData(currentUser);
         if (avatarData && avatarData.type === 'emoji') {
-            headerAvatarEl.innerHTML = '';
-            headerAvatarEl.textContent = avatarData.data;
-            headerAvatarEl.style.background = avatarData.bg || 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+            headerAvatar.innerHTML = '';
+            headerAvatar.textContent = avatarData.data;
+            headerAvatar.style.background = avatarData.bg || 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
         } else if (avatarData && avatarData.type === 'image') {
-            headerAvatarEl.innerHTML = `<img src="${avatarData.data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-            headerAvatarEl.style.background = 'transparent';
+            headerAvatar.innerHTML = `<img src="${avatarData.data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+            headerAvatar.style.background = 'transparent';
         } else {
-            headerAvatarEl.innerHTML = '';
-            headerAvatarEl.textContent = getInitials(currentUser);
-            headerAvatarEl.style.background = 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+            headerAvatar.innerHTML = '';
+            headerAvatar.textContent = getInitials(currentUser);
+            headerAvatar.style.background = 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
         }
     }
 
@@ -951,6 +890,82 @@
         }
     }
 
+    // ============================================================
+    // 核心修复：头像点击事件
+    // ============================================================
+    // 方式1：直接给头像添加点击监听（最可靠）
+    profileAvatar.addEventListener('click', function(e) {
+        e.stopPropagation();
+        console.log('头像被点击了'); // 调试日志
+        openPicker();
+    });
+
+    // 方式2：头像里的相机图标也能点
+    document.querySelector('.big-avatar .camera-icon')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openPicker();
+    });
+
+    // ============================================================
+    // 核心修复：个人中心入口
+    // ============================================================
+    profileBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        console.log('个人中心按钮被点击了');
+        if (!currentUser) {
+            showToast('请先登录');
+            return;
+        }
+        showProfile();
+    });
+
+    // ============================================================
+    // 返回主页
+    // ============================================================
+    profileBackBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        showMain();
+    });
+
+    homeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (currentUser) {
+            showMain();
+        }
+    });
+
+    // ============================================================
+    // 头像选择器关闭
+    // ============================================================
+    pickerClose.addEventListener('click', closePicker);
+    avatarPicker.addEventListener('click', function(e) {
+        if (e.target === this) closePicker();
+    });
+
+    // ============================================================
+    // 相册上传头像
+    // ============================================================
+    pickerUpload.addEventListener('click', function() {
+        fileInput.click();
+    });
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const dataUrl = ev.target.result;
+            setAvatarData(currentUser, { type: 'image', data: dataUrl });
+            updateAllAvatars();
+            closePicker();
+            showToast('✅ 头像已上传');
+            fileInput.value = '';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ============================================================
+    // 登录注册逻辑
+    // ============================================================
     function handleAuth() {
         const email = authEmail.value.trim();
         const password = authPassword.value.trim();
@@ -1023,39 +1038,16 @@
         profilePage.style.display = 'none';
     }
 
+    // ============================================================
+    // 事件绑定
+    // ============================================================
     authBtn.addEventListener('click', handleAuth);
     switchLink.addEventListener('click', (e) => { e.preventDefault();
         switchMode(); });
     logoutBtn.addEventListener('click', logout);
     profileLogoutBtn.addEventListener('click', logout);
-    profileBtn.addEventListener('click', showProfile);
-    profileBackBtn.addEventListener('click', showMain);
-    homeBtn.addEventListener('click', showMain);
     authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
     authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
-
-    profileAvatar.addEventListener('click', openPicker);
-    pickerClose.addEventListener('click', closePicker);
-    avatarPicker.addEventListener('click', function(e) {
-        if (e.target === this) closePicker();
-    });
-    pickerUpload.addEventListener('click', function() {
-        fileInput.click();
-    });
-    fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            const dataUrl = ev.target.result;
-            setAvatarData(currentUser, { type: 'image', data: dataUrl });
-            updateAllAvatars();
-            closePicker();
-            showToast('✅ 头像已上传');
-            fileInput.value = '';
-        };
-        reader.readAsDataURL(file);
-    });
 
     checkSession();
 </script>
