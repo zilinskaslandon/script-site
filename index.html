@@ -14,6 +14,7 @@
             align-items:center;
             background:#060b18;
             padding:20px;
+            padding-bottom:100px;
             position:relative;
             overflow-x:hidden;
         }
@@ -83,25 +84,36 @@
             -webkit-backdrop-filter:blur(14px);
             border:1px solid rgba(120,160,255,0.08);
             color:#fff;
-            padding:18px 22px;
+            padding:14px 18px;
             border-radius:16px;
             margin-bottom:20px;
             display:flex;
             justify-content:space-between;
             align-items:center;
         }
-        .header h1{font-size:20px;font-weight:600;letter-spacing:0.5px;background:linear-gradient(135deg,#a0baff,#7b9cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .header .logout{
+        .header h1{font-size:18px;font-weight:600;letter-spacing:0.5px;background:linear-gradient(135deg,#a0baff,#7b9cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+        .header .right-area{display:flex;align-items:center;gap:12px}
+        .header .user-btn{
+            display:flex;align-items:center;gap:6px;
             background:rgba(255,255,255,0.06);
             border:1px solid rgba(255,255,255,0.06);
-            color:rgba(255,255,255,0.7);
-            padding:6px 16px;
+            color:rgba(255,255,255,0.8);
+            padding:4px 14px 4px 10px;
             border-radius:20px;
             font-size:13px;
             cursor:pointer;
             transition:background 0.2s;
         }
-        .header .logout:active{background:rgba(255,255,255,0.12)}
+        .header .user-btn:active{background:rgba(255,255,255,0.12)}
+        .header .user-btn .avatar{
+            width:24px;height:24px;border-radius:50%;
+            background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
+            display:flex;align-items:center;justify-content:center;
+            font-size:12px;color:#fff;font-weight:600;
+            overflow:hidden;
+            flex-shrink:0;
+        }
+        .header .user-btn .avatar img{width:100%;height:100%;object-fit:cover}
         .script-card{
             background:rgba(255,255,255,0.04);
             backdrop-filter:blur(6px);
@@ -136,7 +148,7 @@
         .footer{text-align:center;color:rgba(180,200,255,0.15);font-size:12px;margin-top:28px;letter-spacing:0.5px}
         .toast{
             position:fixed;
-            bottom:30px;
+            bottom:100px;
             left:50%;
             transform:translateX(-50%);
             background:rgba(10,15,35,0.8);
@@ -153,6 +165,225 @@
         }
         .toast.show{display:block;animation:fadeUp 0.35s ease}
         @keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+        /* ===== 个人中心 ===== */
+        .profile-page{display:none}
+        .profile-page .profile-card{
+            background:rgba(10,15,35,0.6);
+            backdrop-filter:blur(16px);
+            -webkit-backdrop-filter:blur(16px);
+            border-radius:20px;
+            padding:30px 25px;
+            box-shadow:0 8px 40px rgba(0,0,0,0.6);
+            border:1px solid rgba(120,160,255,0.12);
+            text-align:center;
+        }
+        .profile-page .profile-card .big-avatar{
+            width:80px;height:80px;border-radius:50%;
+            background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
+            display:flex;align-items:center;justify-content:center;
+            font-size:36px;color:#fff;font-weight:600;
+            margin:0 auto 16px;
+            box-shadow:0 4px 24px rgba(74,108,247,0.3);
+            cursor:pointer;
+            overflow:hidden;
+            transition:transform 0.2s,box-shadow 0.2s;
+            position:relative;
+        }
+        .profile-page .profile-card .big-avatar:active{transform:scale(0.95)}
+        .profile-page .profile-card .big-avatar img{width:100%;height:100%;object-fit:cover}
+        .profile-page .profile-card .big-avatar .camera-icon{
+            position:absolute;bottom:0;left:0;right:0;
+            background:rgba(0,0,0,0.5);color:#fff;font-size:12px;
+            padding:4px 0;opacity:0;transition:opacity 0.3s;
+        }
+        .profile-page .profile-card .big-avatar:hover .camera-icon{opacity:1}
+        .profile-page .profile-card .avatar-hint{font-size:12px;color:rgba(180,200,255,0.3);margin-top:-10px;margin-bottom:16px}
+        .profile-page .profile-card .p-name{font-size:20px;font-weight:600;color:#fff;margin-bottom:4px}
+        .profile-page .profile-card .p-email{font-size:14px;color:rgba(180,200,255,0.5);margin-bottom:20px}
+        .profile-page .profile-card .p-info{
+            text-align:left;background:rgba(255,255,255,0.04);
+            border-radius:12px;padding:16px;margin-bottom:16px;
+        }
+        .profile-page .profile-card .p-info .row{
+            display:flex;justify-content:space-between;padding:8px 0;
+            border-bottom:1px solid rgba(255,255,255,0.04);font-size:14px;
+        }
+        .profile-page .profile-card .p-info .row:last-child{border-bottom:none}
+        .profile-page .profile-card .p-info .label{color:rgba(180,200,255,0.4)}
+        .profile-page .profile-card .p-info .value{color:rgba(255,255,255,0.8)}
+        .profile-page .profile-card .p-btns{display:flex;gap:12px;justify-content:center}
+        .profile-page .profile-card .p-btns button{
+            padding:10px 28px;border:none;border-radius:12px;
+            font-size:14px;font-weight:500;cursor:pointer;transition:transform 0.12s;
+        }
+        .profile-page .profile-card .p-btns button:active{transform:scale(0.96)}
+        .profile-page .profile-card .p-btns .btn-back{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
+        .profile-page .profile-card .p-btns .btn-logout{background:#e74c5e;color:#fff}
+        .profile-page .profile-card .p-btns .btn-logout:active{background:#c0392b}
+
+        /* ===== 头像选择器 ===== */
+        .avatar-picker{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;padding:20px}
+        .avatar-picker.show{display:flex}
+        .avatar-picker .picker-box{background:rgba(10,15,35,0.9);border-radius:20px;padding:24px 20px;max-width:400px;width:100%;border:1px solid rgba(120,160,255,0.1)}
+        .avatar-picker .picker-box h3{color:#fff;text-align:center;margin-bottom:16px;font-size:18px}
+        .avatar-picker .picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+        .avatar-picker .picker-grid .opt{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.2s;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;font-weight:600}
+        .avatar-picker .picker-grid .opt:active{transform:scale(0.9)}
+        .avatar-picker .picker-grid .opt.active{border-color:#4A6CF7;box-shadow:0 0 20px rgba(74,108,247,0.3)}
+        .avatar-picker .picker-footer{display:flex;gap:12px}
+        .avatar-picker .picker-footer button{flex:1;padding:10px;border:none;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;transition:transform 0.12s}
+        .avatar-picker .picker-footer button:active{transform:scale(0.96)}
+        .avatar-picker .picker-footer .btn-close{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)}
+        .avatar-picker .picker-footer .btn-upload{background:linear-gradient(135deg,#4A6CF7,#8b5cf6);color:#fff}
+        .hidden{display:none!important}
+
+        /* ===== 音乐播放器 ===== */
+        .music-player{
+            position:fixed;
+            bottom:0;
+            left:0;
+            right:0;
+            z-index:100;
+            background:rgba(10,15,35,0.85);
+            backdrop-filter:blur(16px);
+            -webkit-backdrop-filter:blur(16px);
+            border-top:1px solid rgba(120,160,255,0.08);
+            padding:12px 16px;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            transition:transform 0.3s;
+        }
+        .music-player.minimized{
+            transform:translateY(calc(100% - 44px));
+        }
+        .music-player .toggle-btn{
+            background:none;
+            border:none;
+            color:rgba(180,200,255,0.5);
+            font-size:20px;
+            cursor:pointer;
+            padding:4px 8px;
+            flex-shrink:0;
+            transition:transform 0.2s;
+        }
+        .music-player .toggle-btn:active{transform:scale(0.8)}
+        .music-player .play-btn{
+            background:rgba(74,108,247,0.2);
+            border:1px solid rgba(74,108,247,0.2);
+            border-radius:50%;
+            width:40px;height:40px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:18px;
+            color:#a0baff;
+            cursor:pointer;
+            flex-shrink:0;
+            transition:background 0.2s,transform 0.15s;
+        }
+        .music-player .play-btn:active{transform:scale(0.9);background:rgba(74,108,247,0.35)}
+        .music-player .info{
+            flex:1;
+            min-width:0;
+        }
+        .music-player .info .title{
+            color:#e8eeff;
+            font-size:14px;
+            font-weight:500;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .music-player .info .artist{
+            color:rgba(180,200,255,0.3);
+            font-size:12px;
+        }
+        .music-player .controls{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            flex-shrink:0;
+        }
+        .music-player .controls .vol-btn{
+            background:none;
+            border:none;
+            color:rgba(180,200,255,0.3);
+            font-size:14px;
+            cursor:pointer;
+        }
+        .music-player .controls .vol-btn:active{color:rgba(180,200,255,0.6)}
+        .music-player .controls input[type="range"]{
+            width:60px;
+            height:3px;
+            -webkit-appearance:none;
+            appearance:none;
+            background:rgba(255,255,255,0.1);
+            border-radius:2px;
+            outline:none;
+        }
+        .music-player .controls input[type="range"]::-webkit-slider-thumb{
+            -webkit-appearance:none;
+            appearance:none;
+            width:12px;
+            height:12px;
+            border-radius:50%;
+            background:#4A6CF7;
+            cursor:pointer;
+        }
+        .music-player .song-list-btn{
+            background:none;
+            border:none;
+            color:rgba(180,200,255,0.3);
+            font-size:16px;
+            cursor:pointer;
+            padding:4px;
+        }
+        .music-player .song-list-btn:active{color:rgba(180,200,255,0.6)}
+
+        /* 歌曲列表弹窗 */
+        .song-list{
+            display:none;
+            position:fixed;
+            bottom:80px;
+            left:16px;
+            right:16px;
+            max-height:260px;
+            background:rgba(10,15,35,0.92);
+            backdrop-filter:blur(16px);
+            -webkit-backdrop-filter:blur(16px);
+            border-radius:16px;
+            padding:16px;
+            border:1px solid rgba(120,160,255,0.08);
+            z-index:101;
+            overflow-y:auto;
+        }
+        .song-list.show{display:block}
+        .song-list .song-item{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:10px 12px;
+            border-radius:10px;
+            cursor:pointer;
+            transition:background 0.2s;
+            color:rgba(180,200,255,0.6);
+        }
+        .song-list .song-item:active{background:rgba(255,255,255,0.05)}
+        .song-list .song-item.active{
+            background:rgba(74,108,247,0.12);
+            color:#e8eeff;
+        }
+        .song-list .song-item .s-name{font-size:14px}
+        .song-list .song-item .s-artist{font-size:12px;color:rgba(180,200,255,0.3)}
+        .song-list .song-item .s-play{color:#4A6CF7}
+        .song-list .close-list{
+            text-align:center;
+            padding:8px;
+            color:rgba(180,200,255,0.2);
+            font-size:12px;
+            cursor:pointer;
+        }
+        .song-list .close-list:active{color:rgba(180,200,255,0.4)}
     </style>
 </head>
 <body>
@@ -160,6 +391,7 @@
 <canvas id="particleCanvas"></canvas>
 
 <div class="container">
+    <!-- 登录界面 -->
     <div id="authSection" class="auth-box">
         <h2>✦ 星脚本</h2>
         <p class="sub" id="modeText">登录后查看脚本</p>
@@ -170,11 +402,78 @@
         <button class="btn-primary" id="authBtn">登录</button>
         <div class="switch"><span id="switchText">还没有账号？</span> <a href="#" id="switchLink">注册</a></div>
     </div>
+
+    <!-- 主界面 -->
     <div id="mainSection" class="main-content">
-        <div class="header"><h1>✦ 星脚本</h1><button class="logout" id="logoutBtn">退出</button></div>
+        <div class="header">
+            <h1 id="homeBtn">✦ 星脚本</h1>
+            <div class="right-area">
+                <button class="user-btn" id="profileBtn">
+                    <span class="avatar" id="headerAvatar">✦</span>
+                    <span id="userNameDisplay">我</span>
+                </button>
+            </div>
+        </div>
         <div id="scriptList"></div>
         <div class="footer">© 2026 星脚本 · 仅供学习交流</div>
     </div>
+
+    <!-- 个人中心 -->
+    <div id="profilePage" class="profile-page">
+        <div class="profile-card">
+            <div class="big-avatar" id="profileAvatar">
+                <span id="avatarEmoji">✦</span>
+                <img id="avatarImage" style="display:none" alt="头像">
+                <div class="camera-icon">📷 换头像</div>
+            </div>
+            <div class="avatar-hint">点击头像更换</div>
+            <div class="p-name" id="profileName">用户</div>
+            <div class="p-email" id="profileEmail">email@example.com</div>
+            <div class="p-info">
+                <div class="row"><span class="label">账号状态</span><span class="value" style="color:#69db7c">● 已登录</span></div>
+                <div class="row"><span class="label">注册时间</span><span class="value" id="profileRegTime">今天</span></div>
+                <div class="row"><span class="label">用户ID</span><span class="value" id="profileUid">--</span></div>
+            </div>
+            <div class="p-btns">
+                <button class="btn-back" id="profileBackBtn">← 返回</button>
+                <button class="btn-logout" id="profileLogoutBtn">退出登录</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 头像选择器 -->
+<div class="avatar-picker" id="avatarPicker">
+    <div class="picker-box">
+        <h3>🎨 选择头像</h3>
+        <div class="picker-grid" id="avatarGrid"></div>
+        <div class="picker-footer">
+            <button class="btn-upload" id="pickerUpload">📷 相册</button>
+            <button class="btn-close" id="pickerClose">取消</button>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+</div>
+
+<!-- 音乐播放器 -->
+<div class="music-player" id="musicPlayer">
+    <button class="toggle-btn" id="togglePlayer">▾</button>
+    <button class="play-btn" id="playBtn">▶</button>
+    <div class="info">
+        <div class="title" id="songTitle">选择一首歌</div>
+        <div class="artist" id="songArtist">点击右侧列表选歌</div>
+    </div>
+    <div class="controls">
+        <button class="vol-btn" id="volBtn">🔊</button>
+        <input type="range" id="volSlider" min="0" max="100" value="70">
+        <button class="song-list-btn" id="songListBtn">📋</button>
+    </div>
+</div>
+
+<!-- 歌曲列表 -->
+<div class="song-list" id="songList">
+    <div id="songListItems"></div>
+    <div class="close-list" id="closeSongList">关闭列表</div>
 </div>
 
 <div id="toast" class="toast"></div>
@@ -189,7 +488,7 @@
     let particles = [];
     const PARTICLE_COUNT = 60;
     const MAX_DIST = 150;
-    const FLOW_SPEED = 0.2;  // 流动速度
+    const FLOW_SPEED = 0.2;
 
     function resize() {
         w = canvas.width = window.innerWidth;
@@ -203,21 +502,17 @@
             this.x = Math.random() * w;
             this.y = Math.random() * h;
             this.r = Math.random() * 2 + 1.2;
-            // 每个粒子的流动方向略微不同
             this.dx = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
             this.dy = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
-            // 基础位置偏移，用于制造波浪感
             this.phaseX = Math.random() * 100;
             this.phaseY = Math.random() * 100;
             this.speed = 0.2 + Math.random() * 0.3;
         }
         update(time) {
-            // 波浪式流动：sin 制造起伏，让粒子像在星河流淌
             const waveX = Math.sin(time * 0.0004 + this.phaseX) * 0.15;
             const waveY = Math.cos(time * 0.0005 + this.phaseY) * 0.15;
             this.x += this.dx + waveX * this.speed;
             this.y += this.dy + waveY * this.speed;
-            // 边界回绕（无缝流动）
             if (this.x < -20) this.x = w + 20;
             if (this.x > w + 20) this.x = -20;
             if (this.y < -20) this.y = h + 20;
@@ -231,13 +526,11 @@
         }
     }
 
-    // 初始化粒子
     for (let i = 0; i < PARTICLE_COUNT; i++) {
         particles.push(new Particle());
     }
 
     function drawLines(time) {
-        // 连接线：距离越近越亮
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 const dx = particles[i].x - particles[j].x;
@@ -245,8 +538,6 @@
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 if (dist < MAX_DIST) {
                     const alpha = (1 - dist / MAX_DIST) * 0.3;
-                    // 根据时间微微改变颜色
-                    const hueShift = Math.sin(time * 0.0002 + i * 0.1) * 10;
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
@@ -260,20 +551,16 @@
 
     function animate(time) {
         ctx.clearRect(0, 0, w, h);
-        // 背景微光晕
         const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w*0.7);
         grad.addColorStop(0, 'rgba(30, 60, 120, 0.08)');
         grad.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, w, h);
 
-        // 更新粒子位置
         for (const p of particles) {
             p.update(time);
         }
-        // 画连接线（先画线，再画点，让点在线上面）
         drawLines(time);
-        // 画粒子
         for (const p of particles) {
             p.draw();
         }
@@ -283,10 +570,147 @@
     animate(0);
 
     // ============================================================
-    // 登录注册逻辑（本地存储 + 验证）
+    // 音乐播放器
+    // ============================================================
+    const songs = [
+        { title: '星空漫步', artist: 'Lofi 音乐', url: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d3b3f5e1f2.mp3' },
+        { title: '静谧之夜', artist: '轻音乐', url: 'https://cdn.pixabay.com/download/audio/2022/02/22/audio_8b4f9e1a2c.mp3' },
+        { title: '放松时光', artist: '钢琴曲', url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_5c6d7e8f9a.mp3' },
+        { title: '星河之旅', artist: '电子音', url: 'https://cdn.pixabay.com/download/audio/2022/04/01/audio_9f8e7d6c5b.mp3' },
+    ];
+
+    let currentSongIndex = 0;
+    let isPlaying = false;
+    let isMinimized = false;
+    let audio = new Audio();
+
+    const player = document.getElementById('musicPlayer');
+    const playBtn = document.getElementById('playBtn');
+    const songTitle = document.getElementById('songTitle');
+    const songArtist = document.getElementById('songArtist');
+    const volSlider = document.getElementById('volSlider');
+    const volBtn = document.getElementById('volBtn');
+    const toggleBtn = document.getElementById('togglePlayer');
+    const songListBtn = document.getElementById('songListBtn');
+    const songList = document.getElementById('songList');
+    const songListItems = document.getElementById('songListItems');
+    const closeSongList = document.getElementById('closeSongList');
+
+    function loadSong(index) {
+        const song = songs[index];
+        audio.src = song.url;
+        songTitle.textContent = song.title;
+        songArtist.textContent = song.artist;
+        currentSongIndex = index;
+        renderSongList();
+        if (isPlaying) {
+            audio.play().catch(() => {});
+        }
+    }
+
+    function togglePlay() {
+        if (audio.src === '' || audio.src === window.location.href) {
+            loadSong(currentSongIndex);
+            audio.play().catch(() => {});
+            isPlaying = true;
+            playBtn.textContent = '⏸';
+            return;
+        }
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+            playBtn.textContent = '▶';
+        } else {
+            audio.play().catch(() => {});
+            isPlaying = true;
+            playBtn.textContent = '⏸';
+        }
+    }
+
+    function renderSongList() {
+        songListItems.innerHTML = songs.map((s, i) =>
+            `<div class="song-item ${i === currentSongIndex ? 'active' : ''}" data-index="${i}">
+                <div><div class="s-name">${s.title}</div><div class="s-artist">${s.artist}</div></div>
+                <div class="s-play">${i === currentSongIndex && isPlaying ? '▶' : ''}</div>
+            </div>`
+        ).join('');
+        songListItems.querySelectorAll('.song-item').forEach(el => {
+            el.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                loadSong(idx);
+                if (!isPlaying) {
+                    audio.play().catch(() => {});
+                    isPlaying = true;
+                    playBtn.textContent = '⏸';
+                }
+                songList.classList.remove('show');
+            });
+        });
+    }
+
+    // 音量控制
+    volSlider.addEventListener('input', function() {
+        audio.volume = this.value / 100;
+        volBtn.textContent = this.value == 0 ? '🔇' : '🔊';
+    });
+
+    volBtn.addEventListener('click', function() {
+        if (audio.volume > 0) {
+            audio.volume = 0;
+            volSlider.value = 0;
+            volBtn.textContent = '🔇';
+        } else {
+            audio.volume = 0.7;
+            volSlider.value = 70;
+            volBtn.textContent = '🔊';
+        }
+    });
+
+    // 展开/收起
+    toggleBtn.addEventListener('click', function() {
+        isMinimized = !isMinimized;
+        player.classList.toggle('minimized');
+        this.textContent = isMinimized ? '▸' : '▾';
+    });
+
+    // 歌曲列表
+    songListBtn.addEventListener('click', function() {
+        songList.classList.toggle('show');
+        renderSongList();
+    });
+    closeSongList.addEventListener('click', function() {
+        songList.classList.remove('show');
+    });
+
+    // 点击外部关闭列表
+    document.addEventListener('click', function(e) {
+        if (!songList.contains(e.target) && e.target !== songListBtn) {
+            songList.classList.remove('show');
+        }
+    });
+
+    // 播放按钮
+    playBtn.addEventListener('click', togglePlay);
+
+    // 自动播放下首歌
+    audio.addEventListener('ended', function() {
+        const next = (currentSongIndex + 1) % songs.length;
+        loadSong(next);
+        audio.play().catch(() => {});
+        isPlaying = true;
+        playBtn.textContent = '⏸';
+    });
+
+    // 初始化
+    audio.volume = 0.7;
+    volSlider.value = 70;
+
+    // ============================================================
+    // 登录注册逻辑
     // ============================================================
     const authSection = document.getElementById('authSection');
     const mainSection = document.getElementById('mainSection');
+    const profilePage = document.getElementById('profilePage');
     const authBtn = document.getElementById('authBtn');
     const authEmail = document.getElementById('authEmail');
     const authPassword = document.getElementById('authPassword');
@@ -296,9 +720,40 @@
     const switchText = document.getElementById('switchText');
     const modeText = document.getElementById('modeText');
     const logoutBtn = document.getElementById('logoutBtn');
+    const profileBtn = document.getElementById('profileBtn');
+    const profileBackBtn = document.getElementById('profileBackBtn');
+    const profileLogoutBtn = document.getElementById('profileLogoutBtn');
+    const homeBtn = document.getElementById('homeBtn');
     const scriptList = document.getElementById('scriptList');
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const headerAvatar = document.getElementById('headerAvatar');
+    const profileName = document.getElementById('profileName');
+    const profileEmail = document.getElementById('profileEmail');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const avatarEmoji = document.getElementById('avatarEmoji');
+    const avatarImage = document.getElementById('avatarImage');
+    const profileRegTime = document.getElementById('profileRegTime');
+    const profileUid = document.getElementById('profileUid');
 
-    let isLogin = true;
+    const avatarPicker = document.getElementById('avatarPicker');
+    const avatarGrid = document.getElementById('avatarGrid');
+    const pickerClose = document.getElementById('pickerClose');
+    const pickerUpload = document.getElementById('pickerUpload');
+    const fileInput = document.getElementById('fileInput');
+
+    let isLoginMode = true;
+    let currentUser = null;
+
+    const DEFAULT_AVATARS = [
+        { emoji: '🌟', bg: 'linear-gradient(135deg,#f093fb,#f5576c)' },
+        { emoji: '🚀', bg: 'linear-gradient(135deg,#4facfe,#00f2fe)' },
+        { emoji: '🎯', bg: 'linear-gradient(135deg,#43e97b,#38f9d7)' },
+        { emoji: '💎', bg: 'linear-gradient(135deg,#fa709a,#fee140)' },
+        { emoji: '🔥', bg: 'linear-gradient(135deg,#f093fb,#4facfe)' },
+        { emoji: '⭐', bg: 'linear-gradient(135deg,#f6d365,#fda085)' },
+        { emoji: '🌊', bg: 'linear-gradient(135deg,#a18cd1,#fbc2eb)' },
+        { emoji: '🌙', bg: 'linear-gradient(135deg,#89f7fe,#66a6ff)' },
+    ];
 
     const SCRIPTS = [
         { name: "北极星加载器", version: "1.0", desc: "稳定的北极星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' },
@@ -369,6 +824,133 @@
         return password && password.length >= 6;
     }
 
+    function getInitials(email) {
+        if (!email) return '✦';
+        const name = email.split('@')[0];
+        if (name.length <= 2) return name.toUpperCase();
+        return name.substring(0, 2).toUpperCase();
+    }
+
+    function getAvatarData(email) {
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (users[email] && users[email]._avatar) {
+            return users[email]._avatar;
+        }
+        return null;
+    }
+
+    function setAvatarData(email, avatarData) {
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (users[email]) {
+            if (typeof users[email] === 'string') {
+                users[email] = { password: users[email], _avatar: avatarData, _time: users[email + '._time'] || new Date().toISOString() };
+            } else {
+                users[email]._avatar = avatarData;
+            }
+        }
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function applyAvatar(email, avatarElement, emojiElement, imgElement) {
+        const avatarData = getAvatarData(email);
+        if (avatarData) {
+            if (avatarData.type === 'image') {
+                if (emojiElement) emojiElement.style.display = 'none';
+                if (imgElement) { imgElement.style.display = 'block';
+                    imgElement.src = avatarData.data; }
+                avatarElement.style.background = 'transparent';
+            } else if (avatarData.type === 'emoji') {
+                if (emojiElement) { emojiElement.style.display = 'block';
+                    emojiElement.textContent = avatarData.data; }
+                if (imgElement) imgElement.style.display = 'none';
+                avatarElement.style.background = avatarData.bg || 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+            }
+        } else {
+            if (emojiElement) { emojiElement.style.display = 'block';
+                emojiElement.textContent = getInitials(email); }
+            if (imgElement) imgElement.style.display = 'none';
+            avatarElement.style.background = 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+        }
+    }
+
+    function renderAvatarPicker() {
+        avatarGrid.innerHTML = DEFAULT_AVATARS.map((a, i) =>
+            `<div class="opt" data-index="${i}" style="background:${a.bg}">${a.emoji}</div>`
+        ).join('');
+        avatarGrid.querySelectorAll('.opt').forEach(el => {
+            el.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                const avatar = DEFAULT_AVATARS[idx];
+                setAvatarData(currentUser, { type: 'emoji', data: avatar.emoji, bg: avatar.bg });
+                updateAllAvatars();
+                closePicker();
+                showToast('✅ 头像已更换');
+            });
+        });
+    }
+
+    function openPicker() {
+        if (!currentUser) return;
+        renderAvatarPicker();
+        avatarPicker.classList.add('show');
+    }
+
+    function closePicker() {
+        avatarPicker.classList.remove('show');
+    }
+
+    function updateAllAvatars() {
+        if (!currentUser) return;
+        applyAvatar(currentUser, profileAvatar, avatarEmoji, avatarImage);
+        const headerAvatarEl = document.getElementById('headerAvatar');
+        const headerEmoji = document.createElement('span');
+        headerEmoji.textContent = getInitials(currentUser);
+        const avatarData = getAvatarData(currentUser);
+        if (avatarData && avatarData.type === 'emoji') {
+            headerAvatarEl.innerHTML = '';
+            headerAvatarEl.textContent = avatarData.data;
+            headerAvatarEl.style.background = avatarData.bg || 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+        } else if (avatarData && avatarData.type === 'image') {
+            headerAvatarEl.innerHTML = `<img src="${avatarData.data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+            headerAvatarEl.style.background = 'transparent';
+        } else {
+            headerAvatarEl.innerHTML = '';
+            headerAvatarEl.textContent = getInitials(currentUser);
+            headerAvatarEl.style.background = 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+        }
+    }
+
+    function showMain() {
+        authSection.style.display = 'none';
+        mainSection.style.display = 'block';
+        profilePage.style.display = 'none';
+        renderScripts();
+        if (currentUser) {
+            const displayName = currentUser.split('@')[0];
+            userNameDisplay.textContent = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
+            updateAllAvatars();
+        }
+    }
+
+    function showProfile() {
+        mainSection.style.display = 'none';
+        profilePage.style.display = 'block';
+        if (currentUser) {
+            const displayName = currentUser.split('@')[0];
+            profileName.textContent = displayName;
+            profileEmail.textContent = currentUser;
+            applyAvatar(currentUser, profileAvatar, avatarEmoji, avatarImage);
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = users[currentUser];
+            if (userData && userData._time) {
+                profileRegTime.textContent = new Date(userData._time).toLocaleString();
+            } else {
+                profileRegTime.textContent = '今天';
+            }
+            profileUid.textContent = 'U' + String(Math.random().toString(36).substring(2, 8)).toUpperCase();
+        }
+    }
+
     function handleAuth() {
         const email = authEmail.value.trim();
         const password = authPassword.value.trim();
@@ -385,16 +967,25 @@
         let users = {};
         try { users = JSON.parse(localStorage.getItem('users') || '{}'); } catch (e) { users = {}; }
 
-        if (isLogin) {
-            if (users[email] === undefined) { showError('❌ 账号不存在，请先注册'); return; }
-            if (users[email] !== password) { showError('❌ 密码错误，请重试'); return; }
-            authSection.style.display = 'none';
-            mainSection.style.display = 'block';
-            renderScripts();
+        if (isLoginMode) {
+            if (users[email] === undefined || (typeof users[email] === 'object' && !users[email].password)) {
+                showError('❌ 账号不存在，请先注册');
+                return;
+            }
+            const storedPw = typeof users[email] === 'string' ? users[email] : users[email].password;
+            if (storedPw !== password) {
+                showError('❌ 密码错误，请重试');
+                return;
+            }
+            currentUser = email;
+            showMain();
             showToast('✅ 登录成功！');
         } else {
-            if (users[email] !== undefined) { showError('❌ 该邮箱已注册，请直接登录'); return; }
-            users[email] = password;
+            if (users[email] !== undefined) {
+                showError('❌ 该邮箱已注册，请直接登录');
+                return;
+            }
+            users[email] = { password: password, _time: new Date().toISOString(), _avatar: null };
             localStorage.setItem('users', JSON.stringify(users));
             showSuccess('✅ 注册成功！即将切换到登录...');
             setTimeout(() => {
@@ -407,11 +998,11 @@
     }
 
     function switchMode() {
-        isLogin = !isLogin;
-        authBtn.textContent = isLogin ? '登录' : '注册';
-        switchText.textContent = isLogin ? '还没有账号？' : '已有账号？';
-        switchLink.textContent = isLogin ? '注册' : '登录';
-        modeText.textContent = isLogin ? '登录后查看脚本' : '注册后登录查看脚本';
+        isLoginMode = !isLoginMode;
+        authBtn.textContent = isLoginMode ? '登录' : '注册';
+        switchText.textContent = isLoginMode ? '还没有账号？' : '已有账号？';
+        switchLink.textContent = isLoginMode ? '注册' : '登录';
+        modeText.textContent = isLoginMode ? '登录后查看脚本' : '注册后登录查看脚本';
         authError.style.display = 'none';
         authSuccess.style.display = 'none';
         authEmail.value = '';
@@ -419,22 +1010,52 @@
     }
 
     function logout() {
+        currentUser = null;
         authSection.style.display = 'block';
         mainSection.style.display = 'none';
+        profilePage.style.display = 'none';
         showToast('已退出');
     }
 
     function checkSession() {
         authSection.style.display = 'block';
         mainSection.style.display = 'none';
+        profilePage.style.display = 'none';
     }
 
     authBtn.addEventListener('click', handleAuth);
     switchLink.addEventListener('click', (e) => { e.preventDefault();
         switchMode(); });
     logoutBtn.addEventListener('click', logout);
+    profileLogoutBtn.addEventListener('click', logout);
+    profileBtn.addEventListener('click', showProfile);
+    profileBackBtn.addEventListener('click', showMain);
+    homeBtn.addEventListener('click', showMain);
     authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
     authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
+
+    profileAvatar.addEventListener('click', openPicker);
+    pickerClose.addEventListener('click', closePicker);
+    avatarPicker.addEventListener('click', function(e) {
+        if (e.target === this) closePicker();
+    });
+    pickerUpload.addEventListener('click', function() {
+        fileInput.click();
+    });
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const dataUrl = ev.target.result;
+            setAvatarData(currentUser, { type: 'image', data: dataUrl });
+            updateAllAvatars();
+            closePicker();
+            showToast('✅ 头像已上传');
+            fileInput.value = '';
+        };
+        reader.readAsDataURL(file);
+    });
 
     checkSession();
 </script>
