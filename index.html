@@ -1,519 +1,96 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>星脚本 · 脚本库</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f2f5;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            max-width: 600px;
-            width: 100%;
-        }
-        .auth-box {
-            background: white;
-            border-radius: 16px;
-            padding: 30px 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        .auth-box h2 { text-align: center; font-size: 22px; margin-bottom: 6px; }
-        .auth-box .sub { text-align: center; color: #888; font-size: 14px; margin-bottom: 20px; }
-        .auth-box input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 15px;
-            margin-bottom: 12px;
-            background: #f9f9f9;
-        }
-        .auth-box input:focus { outline: none; border-color: #4A6CF7; background: white; }
-        .auth-box .btn-primary {
-            width: 100%;
-            padding: 12px;
-            background: #4A6CF7;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .auth-box .btn-primary:active { transform: scale(0.97); }
-        .auth-box .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .auth-box .switch {
-            text-align: center;
-            margin-top: 14px;
-            font-size: 14px;
-            color: #888;
-        }
-        .auth-box .switch a { color: #4A6CF7; text-decoration: none; font-weight: 600; }
-        .auth-box .error {
-            color: #e74c3c;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 10px;
-            display: none;
-        }
-        .main-content { display: none; }
-        .header {
-            background: linear-gradient(135deg, #4A6CF7, #6a3de8);
-            color: white;
-            padding: 20px 20px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 { font-size: 20px; font-weight: 700; }
-        .header .logout {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-        }
-        .header .logout:active { transform: scale(0.95); }
-        .script-card {
-            background: white;
-            border-radius: 12px;
-            padding: 16px 18px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .script-card .info .name { font-size: 16px; font-weight: 600; color: #1a1a1a; }
-        .script-card .info .version { font-size: 13px; color: #888; }
-        .script-card .info .desc { font-size: 13px; color: #666; margin-top: 3px; }
-        .btn-copy {
-            background: #4A6CF7;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            flex-shrink: 0;
-            margin-left: 12px;
-        }
-        .btn-copy:active { transform: scale(0.95); }
-        .feedback-area {
-            background: white;
-            border-radius: 12px;
-            padding: 18px;
-            margin-top: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .feedback-area h3 { font-size: 16px; margin-bottom: 12px; }
-        .feedback-area textarea {
-            width: 100%;
-            height: 80px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 14px;
-            resize: vertical;
-            font-family: inherit;
-        }
-        .feedback-area textarea:focus { outline: none; border-color: #4A6CF7; }
-        .feedback-area input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-top: 8px;
-            font-size: 14px;
-        }
-        .feedback-area input:focus { outline: none; border-color: #4A6CF7; }
-        .btn-submit {
-            background: #34C759;
-            color: white;
-            border: none;
-            padding: 10px 0;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 600;
-            margin-top: 10px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .btn-submit:active { transform: scale(0.97); }
-        .footer { text-align: center; color: #aaa; font-size: 12px; margin-top: 30px; }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 12px 28px;
-            border-radius: 30px;
-            font-size: 14px;
-            display: none;
-            z-index: 999;
-            white-space: nowrap;
-        }
-        .toast.show { display: block; animation: fadeUp 0.3s ease; }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal-box {
-            background: white;
-            border-radius: 16px;
-            padding: 30px 25px;
-            max-width: 340px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .modal-box .icon { font-size: 48px; margin-bottom: 10px; }
-        .modal-box h3 { font-size: 18px; margin-bottom: 8px; color: #1a1a1a; }
-        .modal-box p {
-            font-size: 14px;
-            color: #666;
-            word-break: break-all;
-            background: #f5f5f5;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 12px 0 16px;
-            text-align: left;
-            font-family: monospace;
-            font-size: 12px;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-        .modal-box .btn-done {
-            background: #4A6CF7;
-            color: white;
-            border: none;
-            padding: 10px 30px;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .modal-box .btn-done:active { transform: scale(0.95); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>星脚本</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;padding:20px;min-height:100vh;display:flex;justify-content:center;align-items:center}
+.container{max-width:600px;width:100%}
+.auth-box{background:#fff;border-radius:16px;padding:30px 25px;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+.auth-box h2{text-align:center;font-size:22px;margin-bottom:6px}
+.auth-box .sub{text-align:center;color:#888;font-size:14px;margin-bottom:20px}
+.auth-box input{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:10px;font-size:15px;margin-bottom:12px;background:#f9f9f9}
+.auth-box input:focus{outline:0;border-color:#4A6CF7;background:#fff}
+.auth-box .btn-primary{width:100%;padding:12px;background:#4A6CF7;color:#fff;border:0;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer}
+.auth-box .btn-primary:active{transform:scale(0.97)}
+.auth-box .switch{text-align:center;margin-top:14px;font-size:14px;color:#888}
+.auth-box .switch a{color:#4A6CF7;text-decoration:none;font-weight:600}
+.auth-box .error{color:#e74c3c;font-size:13px;text-align:center;margin-bottom:10px;display:none}
+.auth-box .success{color:#27ae60;font-size:13px;text-align:center;margin-bottom:10px;display:none}
+.main-content{display:none}
+.header{background:linear-gradient(135deg,#4A6CF7,#6a3de8);color:#fff;padding:20px;border-radius:16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:20px;font-weight:700}
+.header .logout{background:rgba(255,255,255,0.2);border:0;color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;cursor:pointer}
+.script-card{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center}
+.script-card .info .name{font-size:16px;font-weight:600;color:#1a1a1a}
+.script-card .info .version{font-size:13px;color:#888}
+.script-card .info .desc{font-size:13px;color:#666;margin-top:3px}
+.btn-copy{background:#4A6CF7;color:#fff;border:0;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;margin-left:12px}
+.btn-copy:active{transform:scale(0.95)}
+.footer{text-align:center;color:#aaa;font-size:12px;margin-top:30px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:12px 28px;border-radius:30px;font-size:14px;display:none;z-index:999;white-space:nowrap}
+.toast.show{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+</style>
 </head>
 <body>
-
 <div class="container">
-
-    <!-- ========== 登录/注册界面 ========== -->
-    <div id="authSection" class="auth-box">
-        <h2>📦 星脚本</h2>
-        <p class="sub">登录后查看脚本</p>
-        <div id="authError" class="error"></div>
-        <input type="email" id="authEmail" placeholder="邮箱地址">
-        <input type="password" id="authPassword" placeholder="密码（至少6位）">
-        <button class="btn-primary" id="authBtn">登录</button>
-        <div class="switch">
-            <span id="switchText">还没有账号？</span>
-            <a href="#" id="switchLink">注册</a>
-        </div>
-    </div>
-
-    <!-- ========== 主界面（登录后） ========== -->
-    <div id="mainSection" class="main-content">
-        <div class="header">
-            <h1>📦 星脚本</h1>
-            <button class="logout" id="logoutBtn">退出</button>
-        </div>
-
-        <div id="scriptList"></div>
-
-        <div class="feedback-area">
-            <h3>💬 反馈建议</h3>
-            <textarea id="fbContent" placeholder="说说你的建议或遇到的BUG..."></textarea>
-            <input type="text" id="fbContact" placeholder="你的QQ或邮箱（选填）">
-            <button class="btn-submit" onclick="submitFeedback()">📤 提交反馈</button>
-        </div>
-
-        <div class="footer">© 2026 星脚本 · 仅供学习交流</div>
-    </div>
-
+<div id="authSection" class="auth-box">
+<h2>📦 星脚本</h2>
+<p class="sub" id="modeText">登录后查看脚本</p>
+<div id="authError" class="error"></div>
+<div id="authSuccess" class="success"></div>
+<input type="email" id="authEmail" placeholder="邮箱地址">
+<input type="password" id="authPassword" placeholder="密码（至少6位）">
+<button class="btn-primary" id="authBtn">登录</button>
+<div class="switch"><span id="switchText">还没有账号？</span> <a href="#" id="switchLink">注册</a></div>
 </div>
-
-<!-- ========== 弹窗 ========== -->
-<div class="modal-overlay" id="modal">
-    <div class="modal-box">
-        <div class="icon">✅</div>
-        <h3>已复制到剪贴板</h3>
-        <p id="modalContent">加载代码</p>
-        <button class="btn-done" onclick="closeModal()">我知道了</button>
-    </div>
+<div id="mainSection" class="main-content">
+<div class="header"><h1>📦 星脚本</h1><button class="logout" id="logoutBtn">退出</button></div>
+<div id="scriptList"></div>
+<div class="footer">© 2026 星脚本 · 仅供学习交流</div>
 </div>
-
+</div>
 <div id="toast" class="toast"></div>
-
-<!-- ========== Supabase SDK ========== -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-    // ============================================================
-    // 你的 Supabase 配置（已填入正确的 anon key）
-    // ============================================================
-    const SUPABASE_URL = 'https://hnzrehfqspxujscrbmob.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuenJlaGZxc3B4dWpzY3JibW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2MDgxMzEsImV4cCI6MjEwMTE4NDEzMX0.cpw1ZmewN9DC2ObFs9FCSEc1mhYyAnseVpdWAV20OSM';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // ============================================================
-    // DOM 元素
-    // ============================================================
-    const authSection = document.getElementById('authSection');
-    const mainSection = document.getElementById('mainSection');
-    const authBtn = document.getElementById('authBtn');
-    const authEmail = document.getElementById('authEmail');
-    const authPassword = document.getElementById('authPassword');
-    const authError = document.getElementById('authError');
-    const switchLink = document.getElementById('switchLink');
-    const switchText = document.getElementById('switchText');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const scriptList = document.getElementById('scriptList');
-
-    let isLogin = true;
-
-    // ============================================================
-    // 脚本数据
-    // ============================================================
-    const SCRIPTS = [
-        {
-            name: "北极星加载器",
-            version: "1.0",
-            desc: "稳定的北极星脚本加载器",
-            loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'
-        },
-        {
-            name: "星脚本",
-            version: "1.0",
-            desc: "星脚本加载器",
-            loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'
-        }
-    ];
-
-    // ============================================================
-    // 渲染脚本
-    // ============================================================
-    function renderScripts() {
-        scriptList.innerHTML = SCRIPTS.map((s, i) => `
-            <div class="script-card">
-                <div class="info">
-                    <div class="name">${s.name} <span style="font-size:12px;color:#aaa;">v${s.version}</span></div>
-                    <div class="desc">${s.desc || ''}</div>
-                </div>
-                <button class="btn-copy" onclick="copyScript(${i})">📋 复制</button>
-            </div>
-        `).join('');
-    }
-
-    // ============================================================
-    // 复制
-    // ============================================================
-    async function copyScript(index) {
-        const loader = SCRIPTS[index].loader;
-        try {
-            await navigator.clipboard.writeText(loader);
-            showModal(loader);
-        } catch (e) {
-            const ta = document.createElement('textarea');
-            ta.value = loader;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
-            showModal(loader);
-        }
-    }
-
-    function showModal(content) {
-        document.getElementById('modalContent').textContent = content;
-        document.getElementById('modal').classList.add('show');
-    }
-
-    function closeModal() {
-        document.getElementById('modal').classList.remove('show');
-    }
-
-    document.getElementById('modal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-
-    // ============================================================
-    // 反馈
-    // ============================================================
-    async function submitFeedback() {
-        const content = document.getElementById('fbContent').value.trim();
-        const contact = document.getElementById('fbContact').value.trim();
-        if (!content) {
-            showToast('⚠️ 请填写反馈内容');
-            return;
-        }
-
-        const { data: { user } } = await supabase.auth.getUser();
-        const userId = user ? user.id : null;
-        const userEmail = user ? user.email : null;
-
-        try {
-            const { error } = await supabase
-                .from('feedback')
-                .insert([{
-                    content: content,
-                    contact: contact || null,
-                    user_id: userId,
-                    user_email: userEmail,
-                    created_at: new Date().toISOString()
-                }]);
-
-            if (error) throw error;
-
-            showToast('✅ 反馈已收到，感谢！');
-            document.getElementById('fbContent').value = '';
-            document.getElementById('fbContact').value = '';
-        } catch (err) {
-            console.error(err);
-            showToast('⚠️ 提交失败，请稍后重试');
-        }
-    }
-
-    function showToast(msg) {
-        const el = document.getElementById('toast');
-        el.textContent = msg;
-        el.classList.add('show');
-        clearTimeout(el._timer);
-        el._timer = setTimeout(() => el.classList.remove('show'), 2500);
-    }
-
-    // ============================================================
-    // 认证
-    // ============================================================
-    function showError(msg) {
-        authError.textContent = msg;
-        authError.style.display = 'block';
-        setTimeout(() => authError.style.display = 'none', 4000);
-    }
-
-    async function handleAuth() {
-        const email = authEmail.value.trim();
-        const password = authPassword.value.trim();
-
-        if (!email || !password) {
-            showError('请填写邮箱和密码');
-            return;
-        }
-        if (password.length < 6) {
-            showError('密码至少6位');
-            return;
-        }
-
-        authBtn.textContent = isLogin ? '登录中...' : '注册中...';
-        authBtn.disabled = true;
-
-        let result;
-        if (isLogin) {
-            result = await supabase.auth.signInWithPassword({ email, password });
-        } else {
-            result = await supabase.auth.signUp({ email, password });
-        }
-
-        authBtn.textContent = isLogin ? '登录' : '注册';
-        authBtn.disabled = false;
-
-        if (result.error) {
-            showError(result.error.message);
-            return;
-        }
-
-        if (!isLogin) {
-            showToast('✅ 注册成功！请登录');
-            switchMode();
-            return;
-        }
-
-        showMain();
-    }
-
-    function switchMode() {
-        isLogin = !isLogin;
-        authBtn.textContent = isLogin ? '登录' : '注册';
-        switchText.textContent = isLogin ? '还没有账号？' : '已有账号？';
-        switchLink.textContent = isLogin ? '注册' : '登录';
-        authError.style.display = 'none';
-        authEmail.value = '';
-        authPassword.value = '';
-    }
-
-    function showMain() {
-        authSection.style.display = 'none';
-        mainSection.style.display = 'block';
-        renderScripts();
-    }
-
-    function showAuth() {
-        authSection.style.display = 'block';
-        mainSection.style.display = 'none';
-    }
-
-    // ============================================================
-    // 检查登录状态
-    // ============================================================
-    async function checkSession() {
-        const { data } = await supabase.auth.getSession();
-        if (data.session) {
-            showMain();
-        } else {
-            showAuth();
-        }
-    }
-
-    async function logout() {
-        await supabase.auth.signOut();
-        showAuth();
-        showToast('已退出');
-    }
-
-    // ============================================================
-    // 事件绑定
-    // ============================================================
-    authBtn.addEventListener('click', handleAuth);
-    switchLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchMode();
-    });
-    logoutBtn.addEventListener('click', logout);
-
-    authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
-    authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
-
-    // ============================================================
-    // 启动
-    // ============================================================
-    checkSession();
+// ============================================================
+// 本地存储版 - 不用 Supabase，注册登录直接能用
+// ============================================================
+const authSection=document.getElementById('authSection');
+const mainSection=document.getElementById('mainSection');
+const authBtn=document.getElementById('authBtn');
+const authEmail=document.getElementById('authEmail');
+const authPassword=document.getElementById('authPassword');
+const authError=document.getElementById('authError');
+const authSuccess=document.getElementById('authSuccess');
+const switchLink=document.getElementById('switchLink');
+const switchText=document.getElementById('switchText');
+const modeText=document.getElementById('modeText');
+const logoutBtn=document.getElementById('logoutBtn');
+const scriptList=document.getElementById('scriptList');
+let isLogin=true;
+const SCRIPTS=[
+{name:"北极星加载器",version:"1.0",desc:"稳定的北极星脚本加载器",loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'},
+{name:"星脚本",version:"1.0",desc:"星脚本加载器",loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'}
+];
+function renderScripts(){scriptList.innerHTML=SCRIPTS.map((s,i)=>'<div class="script-card"><div class="info"><div class="name">'+s.name+' <span style="font-size:12px;color:#aaa;">v'+s.version+'</span></div><div class="desc">'+(s.desc||'')+'</div></div><button class="btn-copy" onclick="copyScript('+i+')">📋 复制</button></div>').join('');}
+async function copyScript(index){const loader=SCRIPTS[index].loader;try{await navigator.clipboard.writeText(loader);showToast('✅ 已复制！');}catch(e){const ta=document.createElement('textarea');ta.value=loader;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('✅ 已复制！');}}
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(()=>el.classList.remove('show'),2500);}
+function showError(msg){authError.textContent=msg;authError.style.display='block';authSuccess.style.display='none';setTimeout(()=>authError.style.display='none',4000);}
+function showSuccess(msg){authSuccess.textContent=msg;authSuccess.style.display='block';authError.style.display='none';setTimeout(()=>authSuccess.style.display='none',3000);}
+function handleAuth(){const email=authEmail.value.trim();const password=authPassword.value.trim();if(!email||!password){showError('请填写邮箱和密码');return;}if(password.length<6){showError('密码至少6位');return;}
+if(isLogin){const users=JSON.parse(localStorage.getItem('users')||'{}');if(users[email]&&users[email]===password){authSection.style.display='none';mainSection.style.display='block';renderScripts();showToast('✅ 登录成功！');}else{showError('邮箱或密码错误');}}else{const users=JSON.parse(localStorage.getItem('users')||'{}');if(users[email]){showError('该邮箱已注册');return;}users[email]=password;localStorage.setItem('users',JSON.stringify(users));showSuccess('✅ 注册成功！请登录');setTimeout(()=>{switchMode();},1500);}}
+function switchMode(){isLogin=!isLogin;authBtn.textContent=isLogin?'登录':'注册';switchText.textContent=isLogin?'还没有账号？':'已有账号？';switchLink.textContent=isLogin?'注册':'登录';modeText.textContent=isLogin?'登录后查看脚本':'注册后登录查看脚本';authError.style.display='none';authSuccess.style.display='none';authEmail.value='';authPassword.value='';}
+function logout(){authSection.style.display='block';mainSection.style.display='none';showToast('已退出');}
+function checkSession(){authSection.style.display='block';mainSection.style.display='none';}
+authBtn.addEventListener('click',handleAuth);
+switchLink.addEventListener('click',(e)=>{e.preventDefault();switchMode();});
+logoutBtn.addEventListener('click',logout);
+authEmail.addEventListener('keydown',(e)=>{if(e.key==='Enter')authBtn.click();});
+authPassword.addEventListener('keydown',(e)=>{if(e.key==='Enter')authBtn.click();});
+checkSession();
 </script>
 </body>
-    </html>
+</html>
