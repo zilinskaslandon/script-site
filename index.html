@@ -277,10 +277,10 @@
 
 <script>
     // ============================================================
-    // 你的 Supabase 配置（已正确填入）
+    // 你的 Supabase 配置（已填入正确的 anon key）
     // ============================================================
     const SUPABASE_URL = 'https://hnzrehfqspxujscrbmob.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_2jmbJy2lSPNRmBj-4gwSPg_1gKNSJ63';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuenJlaGZxc3B4dWpzY3JibW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2MDgxMzEsImV4cCI6MjEwMTE4NDEzMX0.cpw1ZmewN9DC2ObFs9FCSEc1mhYyAnseVpdWAV20OSM';
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ============================================================
@@ -365,7 +365,7 @@
     });
 
     // ============================================================
-    // 反馈（存到 Supabase）
+    // 反馈
     // ============================================================
     async function submitFeedback() {
         const content = document.getElementById('fbContent').value.trim();
@@ -516,4 +516,4 @@
     checkSession();
 </script>
 </body>
-                </html>
+    </html>
