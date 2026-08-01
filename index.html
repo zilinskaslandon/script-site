@@ -2,8 +2,8 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的脚本库</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>脚本库</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -35,6 +35,266 @@
             border-radius: 12px;
             padding: 16px 18px;
             margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+        .script-card:active { transform: scale(0.98); }
+        .script-card .info .name { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+        .script-card .info .version { font-size: 13px; color: #888; }
+        .script-card .info .desc { font-size: 13px; color: #666; margin-top: 3px; }
+        .btn-copy {
+            background: #4A6CF7;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .btn-copy:active { transform: scale(0.95); }
+
+        .feedback-area {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .feedback-area h3 { font-size: 16px; margin-bottom: 12px; }
+        .feedback-area textarea {
+            width: 100%;
+            height: 80px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .feedback-area textarea:focus { outline: none; border-color: #4A6CF7; }
+        .feedback-area input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .feedback-area input:focus { outline: none; border-color: #4A6CF7; }
+        .btn-submit {
+            background: #34C759;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-submit:active { transform: scale(0.97); }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            display: none;
+            z-index: 999;
+            white-space: nowrap;
+        }
+        .toast.show { display: block; animation: fadeUp 0.3s ease; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .footer {
+            text-align: center;
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 25px;
+            max-width: 340px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-box .icon { font-size: 48px; margin-bottom: 10px; }
+        .modal-box h3 { font-size: 18px; margin-bottom: 8px; color: #1a1a1a; }
+        .modal-box p {
+            font-size: 14px;
+            color: #666;
+            word-break: break-all;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 12px 0 16px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .modal-box .btn-done {
+            background: #4A6CF7;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .modal-box .btn-done:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1>📦 脚本库</h1>
+        <p>点击「复制」获取加载代码</p>
+    </div>
+
+    <div id="scriptList"></div>
+
+    <div class="feedback-area">
+        <h3>💬 反馈建议</h3>
+        <textarea id="fbContent" placeholder="说说你的建议或遇到的BUG..."></textarea>
+        <input type="text" id="fbContact" placeholder="你的QQ或邮箱（选填）">
+        <button class="btn-submit" onclick="submitFeedback()">📤 提交反馈</button>
+    </div>
+
+    <div class="footer">© 2026 脚本库 · 仅供学习交流</div>
+</div>
+
+<!-- 复制成功弹窗 -->
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <div class="icon">✅</div>
+        <h3>已复制到剪贴板</h3>
+        <p id="modalContent">加载代码</p>
+        <button class="btn-done" onclick="closeModal()">我知道了</button>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // ========== 你的脚本列表（在这里增删改） ==========
+    const SCRIPTS = [
+        {
+            name: "北极星加载器",
+            version: "1.0",
+            desc: "稳定的北极星脚本加载器",
+            loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'
+        },
+        {
+            name: "示例脚本2",
+            version: "1.0",
+            desc: "这是第二个示例脚本",
+            loader: 'loadstring(game:HttpGet("https://你的链接/脚本2.lua"))()'
+        }
+    ];
+
+    // ========== 渲染脚本列表 ==========
+    function renderScripts() {
+        const container = document.getElementById('scriptList');
+        container.innerHTML = SCRIPTS.map((s, i) => `
+            <div class="script-card">
+                <div class="info">
+                    <div class="name">${s.name} <span style="font-size:12px;color:#aaa;">v${s.version}</span></div>
+                    <div class="desc">${s.desc || ''}</div>
+                </div>
+                <button class="btn-copy" onclick="copyScript(${i})">📋 复制</button>
+            </div>
+        `).join('');
+    }
+
+    // ========== 复制加载代码 ==========
+    async function copyScript(index) {
+        const loader = SCRIPTS[index].loader;
+        try {
+            await navigator.clipboard.writeText(loader);
+            showModal(loader);
+        } catch (e) {
+            const ta = document.createElement('textarea');
+            ta.value = loader;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showModal(loader);
+        }
+    }
+
+    function showModal(content) {
+        document.getElementById('modalContent').textContent = content;
+        document.getElementById('modal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('show');
+    }
+
+    // ========== 提交反馈（已填入你的邮箱） ==========
+    function submitFeedback() {
+        const content = document.getElementById('fbContent').value.trim();
+        const contact = document.getElementById('fbContact').value.trim();
+        if (!content) {
+            showToast('⚠️ 请填写反馈内容');
+            return;
+        }
+        const subject = encodeURIComponent('脚本库反馈');
+        const body = encodeURIComponent(`反馈内容：${content}\n联系方式：${contact || '未留'}`);
+        window.open(`mailto:2332507600@qq.com?subject=${subject}&body=${body}`);
+        showToast('✅ 已打开邮件，发送即可！');
+        document.getElementById('fbContent').value = '';
+        document.getElementById('fbContact').value = '';
+    }
+
+    function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+    document.getElementById('modal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    renderScripts();
+</script>
+</body>
+</html>            margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             display: flex;
             justify-content: space-between;
