@@ -19,24 +19,14 @@
             max-width: 600px;
             width: 100%;
         }
-        /* 登录/注册盒子 */
         .auth-box {
             background: white;
             border-radius: 16px;
             padding: 30px 25px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
-        .auth-box h2 {
-            text-align: center;
-            font-size: 22px;
-            margin-bottom: 6px;
-        }
-        .auth-box .sub {
-            text-align: center;
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
+        .auth-box h2 { text-align: center; font-size: 22px; margin-bottom: 6px; }
+        .auth-box .sub { text-align: center; color: #888; font-size: 14px; margin-bottom: 20px; }
         .auth-box input {
             width: 100%;
             padding: 12px 14px;
@@ -46,11 +36,7 @@
             margin-bottom: 12px;
             background: #f9f9f9;
         }
-        .auth-box input:focus {
-            outline: none;
-            border-color: #4A6CF7;
-            background: white;
-        }
+        .auth-box input:focus { outline: none; border-color: #4A6CF7; background: white; }
         .auth-box .btn-primary {
             width: 100%;
             padding: 12px;
@@ -63,17 +49,14 @@
             cursor: pointer;
         }
         .auth-box .btn-primary:active { transform: scale(0.97); }
+        .auth-box .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
         .auth-box .switch {
             text-align: center;
             margin-top: 14px;
             font-size: 14px;
             color: #888;
         }
-        .auth-box .switch a {
-            color: #4A6CF7;
-            text-decoration: none;
-            font-weight: 600;
-        }
+        .auth-box .switch a { color: #4A6CF7; text-decoration: none; font-weight: 600; }
         .auth-box .error {
             color: #e74c3c;
             font-size: 13px;
@@ -81,10 +64,7 @@
             margin-bottom: 10px;
             display: none;
         }
-        /* 主界面（登录后显示） */
-        .main-content {
-            display: none;
-        }
+        .main-content { display: none; }
         .header {
             background: linear-gradient(135deg, #4A6CF7, #6a3de8);
             color: white;
@@ -173,12 +153,7 @@
             width: 100%;
         }
         .btn-submit:active { transform: scale(0.97); }
-        .footer {
-            text-align: center;
-            color: #aaa;
-            font-size: 12px;
-            margin-top: 30px;
-        }
+        .footer { text-align: center; color: #aaa; font-size: 12px; margin-top: 30px; }
         .toast {
             position: fixed;
             bottom: 30px;
@@ -302,7 +277,7 @@
 
 <script>
     // ============================================================
-    // 你的 Supabase 配置（已填入）
+    // 你的 Supabase 配置（已正确填入）
     // ============================================================
     const SUPABASE_URL = 'https://hnzrehfqspxujscrbmob.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_2jmbJy2lSPNRmBj-4gwSPg_1gKNSJ63';
@@ -322,10 +297,10 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const scriptList = document.getElementById('scriptList');
 
-    let isLogin = true; // true=登录模式, false=注册模式
+    let isLogin = true;
 
     // ============================================================
-    // 脚本数据（只有名称、版本、描述、加载链接）
+    // 脚本数据
     // ============================================================
     const SCRIPTS = [
         {
@@ -343,7 +318,7 @@
     ];
 
     // ============================================================
-    // 渲染脚本列表
+    // 渲染脚本
     // ============================================================
     function renderScripts() {
         scriptList.innerHTML = SCRIPTS.map((s, i) => `
@@ -358,7 +333,7 @@
     }
 
     // ============================================================
-    // 复制脚本
+    // 复制
     // ============================================================
     async function copyScript(index) {
         const loader = SCRIPTS[index].loader;
@@ -390,21 +365,40 @@
     });
 
     // ============================================================
-    // 反馈功能（登录后才能提交）
+    // 反馈（存到 Supabase）
     // ============================================================
-    function submitFeedback() {
+    async function submitFeedback() {
         const content = document.getElementById('fbContent').value.trim();
         const contact = document.getElementById('fbContact').value.trim();
         if (!content) {
             showToast('⚠️ 请填写反馈内容');
             return;
         }
-        const subject = encodeURIComponent('星脚本反馈');
-        const body = encodeURIComponent(`反馈内容：${content}\n联系方式：${contact || '未留'}`);
-        window.open(`mailto:2332507600@qq.com?subject=${subject}&body=${body}`);
-        showToast('✅ 已打开邮件，发送即可！');
-        document.getElementById('fbContent').value = '';
-        document.getElementById('fbContact').value = '';
+
+        const { data: { user } } = await supabase.auth.getUser();
+        const userId = user ? user.id : null;
+        const userEmail = user ? user.email : null;
+
+        try {
+            const { error } = await supabase
+                .from('feedback')
+                .insert([{
+                    content: content,
+                    contact: contact || null,
+                    user_id: userId,
+                    user_email: userEmail,
+                    created_at: new Date().toISOString()
+                }]);
+
+            if (error) throw error;
+
+            showToast('✅ 反馈已收到，感谢！');
+            document.getElementById('fbContent').value = '';
+            document.getElementById('fbContact').value = '';
+        } catch (err) {
+            console.error(err);
+            showToast('⚠️ 提交失败，请稍后重试');
+        }
     }
 
     function showToast(msg) {
@@ -416,7 +410,7 @@
     }
 
     // ============================================================
-    // Supabase 登录/注册
+    // 认证
     // ============================================================
     function showError(msg) {
         authError.textContent = msg;
@@ -455,14 +449,12 @@
             return;
         }
 
-        // 登录或注册成功
         if (!isLogin) {
             showToast('✅ 注册成功！请登录');
             switchMode();
             return;
         }
 
-        // 登录成功
         showMain();
     }
 
@@ -499,9 +491,6 @@
         }
     }
 
-    // ============================================================
-    // 退出登录
-    // ============================================================
     async function logout() {
         await supabase.auth.signOut();
         showAuth();
@@ -518,7 +507,6 @@
     });
     logoutBtn.addEventListener('click', logout);
 
-    // 回车键提交
     authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
     authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
 
@@ -528,4 +516,4 @@
     checkSession();
 </script>
 </body>
-            </html>
+                </html>
