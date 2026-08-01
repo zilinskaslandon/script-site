@@ -42,8 +42,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <p class="sub" id="modeText">登录后查看脚本</p>
 <div id="authError" class="error"></div>
 <div id="authSuccess" class="success"></div>
-<input type="email" id="authEmail" placeholder="邮箱地址">
-<input type="password" id="authPassword" placeholder="密码（至少6位）">
+<input type="email" id="authEmail" placeholder="请输入正确的邮箱（如 123@qq.com）" autocomplete="email">
+<input type="password" id="authPassword" placeholder="密码（至少6位）" autocomplete="current-password">
 <button class="btn-primary" id="authBtn">登录</button>
 <div class="switch"><span id="switchText">还没有账号？</span> <a href="#" id="switchLink">注册</a></div>
 </div>
@@ -56,7 +56,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div id="toast" class="toast"></div>
 <script>
 // ============================================================
-// 本地存储版 - 不用 Supabase，注册登录直接能用
+// 带完整验证的本地存储版（严格邮箱验证）
 // ============================================================
 const authSection=document.getElementById('authSection');
 const mainSection=document.getElementById('mainSection');
@@ -71,25 +71,198 @@ const modeText=document.getElementById('modeText');
 const logoutBtn=document.getElementById('logoutBtn');
 const scriptList=document.getElementById('scriptList');
 let isLogin=true;
+
+// ============================================================
+// 脚本数据
+// ============================================================
 const SCRIPTS=[
 {name:"北极星加载器",version:"1.0",desc:"稳定的北极星脚本加载器",loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'},
 {name:"星脚本",version:"1.0",desc:"星脚本加载器",loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'}
 ];
-function renderScripts(){scriptList.innerHTML=SCRIPTS.map((s,i)=>'<div class="script-card"><div class="info"><div class="name">'+s.name+' <span style="font-size:12px;color:#aaa;">v'+s.version+'</span></div><div class="desc">'+(s.desc||'')+'</div></div><button class="btn-copy" onclick="copyScript('+i+')">📋 复制</button></div>').join('');}
-async function copyScript(index){const loader=SCRIPTS[index].loader;try{await navigator.clipboard.writeText(loader);showToast('✅ 已复制！');}catch(e){const ta=document.createElement('textarea');ta.value=loader;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showToast('✅ 已复制！');}}
-function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(()=>el.classList.remove('show'),2500);}
-function showError(msg){authError.textContent=msg;authError.style.display='block';authSuccess.style.display='none';setTimeout(()=>authError.style.display='none',4000);}
-function showSuccess(msg){authSuccess.textContent=msg;authSuccess.style.display='block';authError.style.display='none';setTimeout(()=>authSuccess.style.display='none',3000);}
-function handleAuth(){const email=authEmail.value.trim();const password=authPassword.value.trim();if(!email||!password){showError('请填写邮箱和密码');return;}if(password.length<6){showError('密码至少6位');return;}
-if(isLogin){const users=JSON.parse(localStorage.getItem('users')||'{}');if(users[email]&&users[email]===password){authSection.style.display='none';mainSection.style.display='block';renderScripts();showToast('✅ 登录成功！');}else{showError('邮箱或密码错误');}}else{const users=JSON.parse(localStorage.getItem('users')||'{}');if(users[email]){showError('该邮箱已注册');return;}users[email]=password;localStorage.setItem('users',JSON.stringify(users));showSuccess('✅ 注册成功！请登录');setTimeout(()=>{switchMode();},1500);}}
-function switchMode(){isLogin=!isLogin;authBtn.textContent=isLogin?'登录':'注册';switchText.textContent=isLogin?'还没有账号？':'已有账号？';switchLink.textContent=isLogin?'注册':'登录';modeText.textContent=isLogin?'登录后查看脚本':'注册后登录查看脚本';authError.style.display='none';authSuccess.style.display='none';authEmail.value='';authPassword.value='';}
-function logout(){authSection.style.display='block';mainSection.style.display='none';showToast('已退出');}
-function checkSession(){authSection.style.display='block';mainSection.style.display='none';}
-authBtn.addEventListener('click',handleAuth);
-switchLink.addEventListener('click',(e)=>{e.preventDefault();switchMode();});
-logoutBtn.addEventListener('click',logout);
-authEmail.addEventListener('keydown',(e)=>{if(e.key==='Enter')authBtn.click();});
-authPassword.addEventListener('keydown',(e)=>{if(e.key==='Enter')authBtn.click();});
+
+// ============================================================
+// 渲染脚本
+// ============================================================
+function renderScripts(){
+    scriptList.innerHTML=SCRIPTS.map((s,i)=>
+        '<div class="script-card">'+
+            '<div class="info">'+
+                '<div class="name">'+s.name+' <span style="font-size:12px;color:#aaa;">v'+s.version+'</span></div>'+
+                '<div class="desc">'+(s.desc||'')+'</div>'+
+            '</div>'+
+            '<button class="btn-copy" onclick="copyScript('+i+')">📋 复制</button>'+
+        '</div>'
+    ).join('');
+}
+
+// ============================================================
+// 复制
+// ============================================================
+async function copyScript(index){
+    const loader=SCRIPTS[index].loader;
+    try{
+        await navigator.clipboard.writeText(loader);
+        showToast('✅ 已复制！');
+    }catch(e){
+        const ta=document.createElement('textarea');
+        ta.value=loader;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast('✅ 已复制！');
+    }
+}
+
+// ============================================================
+// 提示
+// ============================================================
+function showToast(msg){
+    const el=document.getElementById('toast');
+    el.textContent=msg;
+    el.classList.add('show');
+    clearTimeout(el._timer);
+    el._timer=setTimeout(()=>el.classList.remove('show'),2500);
+}
+function showError(msg){
+    authError.textContent=msg;
+    authError.style.display='block';
+    authSuccess.style.display='none';
+    clearTimeout(authError._timer);
+    authError._timer=setTimeout(()=>authError.style.display='none',4000);
+}
+function showSuccess(msg){
+    authSuccess.textContent=msg;
+    authSuccess.style.display='block';
+    authError.style.display='none';
+    clearTimeout(authSuccess._timer);
+    authSuccess._timer=setTimeout(()=>authSuccess.style.display='none',3000);
+}
+
+// ============================================================
+// 严格的邮箱验证
+// ============================================================
+function isValidEmail(email){
+    if(!email) return false;
+    // 必须包含 @ 和 .
+    if(!email.includes('@') || !email.includes('.')) return false;
+    // @ 必须在 . 前面
+    if(email.indexOf('@') > email.indexOf('.')) return false;
+    // @ 后面必须有字符（不能是 @. 或 @.com 这种）
+    const atIndex = email.indexOf('@');
+    if(atIndex === 0) return false; // @ 不能在开头
+    if(atIndex === email.length - 1) return false; // @ 不能在结尾
+    // . 后面必须有字符
+    const dotIndex = email.lastIndexOf('.');
+    if(dotIndex === email.length - 1) return false; // . 不能在结尾
+    // 不能包含空格
+    if(email.includes(' ')) return false;
+    return true;
+}
+
+function isValidPassword(password){
+    return password && password.length >= 6;
+}
+
+// ============================================================
+// 注册/登录逻辑
+// ============================================================
+function handleAuth(){
+    const email=authEmail.value.trim();
+    const password=authPassword.value.trim();
+
+    // ---- 验证邮箱 ----
+    if(!isValidEmail(email)){
+        showError('❌ 请输入正确的邮箱（如 123@qq.com）');
+        return;
+    }
+
+    // ---- 验证密码 ----
+    if(!isValidPassword(password)){
+        showError('❌ 密码至少 6 位');
+        return;
+    }
+
+    let users = {};
+    try{
+        users = JSON.parse(localStorage.getItem('users') || '{}');
+    }catch(e){
+        users = {};
+    }
+
+    if(isLogin){
+        // ========== 登录模式 ==========
+        if(users[email] === undefined){
+            showError('❌ 账号不存在，请先注册');
+            return;
+        }
+        if(users[email] !== password){
+            showError('❌ 密码错误，请重试');
+            return;
+        }
+        authSection.style.display='none';
+        mainSection.style.display='block';
+        renderScripts();
+        showToast('✅ 登录成功！');
+    }else{
+        // ========== 注册模式 ==========
+        if(users[email] !== undefined){
+            showError('❌ 该邮箱已注册，请直接登录');
+            return;
+        }
+        users[email] = password;
+        localStorage.setItem('users', JSON.stringify(users));
+        showSuccess('✅ 注册成功！即将切换到登录...');
+        setTimeout(()=>{
+            switchMode();
+            authEmail.value = email;
+            authPassword.value = '';
+            showToast('✅ 请登录');
+        }, 1500);
+    }
+}
+
+// ============================================================
+// 切换登录/注册模式
+// ============================================================
+function switchMode(){
+    isLogin = !isLogin;
+    authBtn.textContent = isLogin ? '登录' : '注册';
+    switchText.textContent = isLogin ? '还没有账号？' : '已有账号？';
+    switchLink.textContent = isLogin ? '注册' : '登录';
+    modeText.textContent = isLogin ? '登录后查看脚本' : '注册后登录查看脚本';
+    authError.style.display='none';
+    authSuccess.style.display='none';
+    authEmail.value='';
+    authPassword.value='';
+}
+
+// ============================================================
+// 退出登录
+// ============================================================
+function logout(){
+    authSection.style.display='block';
+    mainSection.style.display='none';
+    showToast('已退出');
+}
+
+function checkSession(){
+    authSection.style.display='block';
+    mainSection.style.display='none';
+}
+
+// ============================================================
+// 事件绑定
+// ============================================================
+authBtn.addEventListener('click', handleAuth);
+switchLink.addEventListener('click', (e)=>{
+    e.preventDefault();
+    switchMode();
+});
+logoutBtn.addEventListener('click', logout);
+authEmail.addEventListener('keydown', (e)=>{ if(e.key==='Enter') authBtn.click(); });
+authPassword.addEventListener('keydown', (e)=>{ if(e.key==='Enter') authBtn.click(); });
+
 checkSession();
 </script>
 </body>
