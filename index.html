@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>脚本库</title>
+    <title>星脚本 · 脚本库</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -13,22 +13,99 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
         .container {
             max-width: 600px;
             width: 100%;
         }
+        /* 登录/注册盒子 */
+        .auth-box {
+            background: white;
+            border-radius: 16px;
+            padding: 30px 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .auth-box h2 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+        .auth-box .sub {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .auth-box input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            background: #f9f9f9;
+        }
+        .auth-box input:focus {
+            outline: none;
+            border-color: #4A6CF7;
+            background: white;
+        }
+        .auth-box .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: #4A6CF7;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .auth-box .btn-primary:active { transform: scale(0.97); }
+        .auth-box .switch {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 14px;
+            color: #888;
+        }
+        .auth-box .switch a {
+            color: #4A6CF7;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-box .error {
+            color: #e74c3c;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 10px;
+            display: none;
+        }
+        /* 主界面（登录后显示） */
+        .main-content {
+            display: none;
+        }
         .header {
             background: linear-gradient(135deg, #4A6CF7, #6a3de8);
             color: white;
-            padding: 30px 20px;
+            padding: 20px 20px;
             border-radius: 16px;
             margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(74,108,247,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .header h1 { font-size: 24px; font-weight: 700; }
-        .header p { font-size: 14px; opacity: 0.85; margin-top: 6px; }
+        .header h1 { font-size: 20px; font-weight: 700; }
+        .header .logout {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .header .logout:active { transform: scale(0.95); }
         .script-card {
             background: white;
             border-radius: 12px;
@@ -102,6 +179,25 @@
             font-size: 12px;
             margin-top: 30px;
         }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            display: none;
+            z-index: 999;
+            white-space: nowrap;
+        }
+        .toast.show { display: block; animation: fadeUp 0.3s ease; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
         .modal-overlay {
             display: none;
             position: fixed;
@@ -148,42 +244,48 @@
             cursor: pointer;
         }
         .modal-box .btn-done:active { transform: scale(0.95); }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 12px 28px;
-            border-radius: 30px;
-            font-size: 14px;
-            display: none;
-            z-index: 999;
-            white-space: nowrap;
-        }
-        .toast.show { display: block; animation: fadeUp 0.3s ease; }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <div class="header">
-        <h1>📦 脚本库</h1>
-        <p>点击「复制」获取加载代码</p>
+
+    <!-- ========== 登录/注册界面 ========== -->
+    <div id="authSection" class="auth-box">
+        <h2>📦 星脚本</h2>
+        <p class="sub">登录后查看脚本</p>
+        <div id="authError" class="error"></div>
+        <input type="email" id="authEmail" placeholder="邮箱地址">
+        <input type="password" id="authPassword" placeholder="密码（至少6位）">
+        <button class="btn-primary" id="authBtn">登录</button>
+        <div class="switch">
+            <span id="switchText">还没有账号？</span>
+            <a href="#" id="switchLink">注册</a>
+        </div>
     </div>
-    <div id="scriptList"></div>
-    <div class="feedback-area">
-        <h3>💬 反馈建议</h3>
-        <textarea id="fbContent" placeholder="说说你的建议或遇到的BUG..."></textarea>
-        <input type="text" id="fbContact" placeholder="你的QQ或邮箱（选填）">
-        <button class="btn-submit" onclick="submitFeedback()">📤 提交反馈</button>
+
+    <!-- ========== 主界面（登录后） ========== -->
+    <div id="mainSection" class="main-content">
+        <div class="header">
+            <h1>📦 星脚本</h1>
+            <button class="logout" id="logoutBtn">退出</button>
+        </div>
+
+        <div id="scriptList"></div>
+
+        <div class="feedback-area">
+            <h3>💬 反馈建议</h3>
+            <textarea id="fbContent" placeholder="说说你的建议或遇到的BUG..."></textarea>
+            <input type="text" id="fbContact" placeholder="你的QQ或邮箱（选填）">
+            <button class="btn-submit" onclick="submitFeedback()">📤 提交反馈</button>
+        </div>
+
+        <div class="footer">© 2026 星脚本 · 仅供学习交流</div>
     </div>
-    <div class="footer">© 2026 脚本库 · 仅供学习交流</div>
+
 </div>
+
+<!-- ========== 弹窗 ========== -->
 <div class="modal-overlay" id="modal">
     <div class="modal-box">
         <div class="icon">✅</div>
@@ -192,8 +294,39 @@
         <button class="btn-done" onclick="closeModal()">我知道了</button>
     </div>
 </div>
+
 <div id="toast" class="toast"></div>
+
+<!-- ========== Supabase SDK ========== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+    // ============================================================
+    // 你的 Supabase 配置（已填入）
+    // ============================================================
+    const SUPABASE_URL = 'https://hnzrehfqspxujscrbmob.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_2jmbJy2lSPNRmBj-4gwSPg_1gKNSJ63';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ============================================================
+    // DOM 元素
+    // ============================================================
+    const authSection = document.getElementById('authSection');
+    const mainSection = document.getElementById('mainSection');
+    const authBtn = document.getElementById('authBtn');
+    const authEmail = document.getElementById('authEmail');
+    const authPassword = document.getElementById('authPassword');
+    const authError = document.getElementById('authError');
+    const switchLink = document.getElementById('switchLink');
+    const switchText = document.getElementById('switchText');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const scriptList = document.getElementById('scriptList');
+
+    let isLogin = true; // true=登录模式, false=注册模式
+
+    // ============================================================
+    // 脚本数据（只有名称、版本、描述、加载链接）
+    // ============================================================
     const SCRIPTS = [
         {
             name: "北极星加载器",
@@ -202,15 +335,18 @@
             loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'
         },
         {
-            name: "示例脚本2",
+            name: "星脚本",
             version: "1.0",
-            desc: "这是第二个示例脚本",
-            loader: 'loadstring(game:HttpGet("https://你的链接/脚本2.lua"))()'
+            desc: "星脚本加载器",
+            loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'
         }
     ];
+
+    // ============================================================
+    // 渲染脚本列表
+    // ============================================================
     function renderScripts() {
-        const container = document.getElementById('scriptList');
-        container.innerHTML = SCRIPTS.map((s, i) => `
+        scriptList.innerHTML = SCRIPTS.map((s, i) => `
             <div class="script-card">
                 <div class="info">
                     <div class="name">${s.name} <span style="font-size:12px;color:#aaa;">v${s.version}</span></div>
@@ -220,6 +356,10 @@
             </div>
         `).join('');
     }
+
+    // ============================================================
+    // 复制脚本
+    // ============================================================
     async function copyScript(index) {
         const loader = SCRIPTS[index].loader;
         try {
@@ -235,13 +375,23 @@
             showModal(loader);
         }
     }
+
     function showModal(content) {
         document.getElementById('modalContent').textContent = content;
         document.getElementById('modal').classList.add('show');
     }
+
     function closeModal() {
         document.getElementById('modal').classList.remove('show');
     }
+
+    document.getElementById('modal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // ============================================================
+    // 反馈功能（登录后才能提交）
+    // ============================================================
     function submitFeedback() {
         const content = document.getElementById('fbContent').value.trim();
         const contact = document.getElementById('fbContact').value.trim();
@@ -249,13 +399,14 @@
             showToast('⚠️ 请填写反馈内容');
             return;
         }
-        const subject = encodeURIComponent('脚本库反馈');
+        const subject = encodeURIComponent('星脚本反馈');
         const body = encodeURIComponent(`反馈内容：${content}\n联系方式：${contact || '未留'}`);
         window.open(`mailto:2332507600@qq.com?subject=${subject}&body=${body}`);
         showToast('✅ 已打开邮件，发送即可！');
         document.getElementById('fbContent').value = '';
         document.getElementById('fbContact').value = '';
     }
+
     function showToast(msg) {
         const el = document.getElementById('toast');
         el.textContent = msg;
@@ -263,10 +414,118 @@
         clearTimeout(el._timer);
         el._timer = setTimeout(() => el.classList.remove('show'), 2500);
     }
-    document.getElementById('modal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
+
+    // ============================================================
+    // Supabase 登录/注册
+    // ============================================================
+    function showError(msg) {
+        authError.textContent = msg;
+        authError.style.display = 'block';
+        setTimeout(() => authError.style.display = 'none', 4000);
+    }
+
+    async function handleAuth() {
+        const email = authEmail.value.trim();
+        const password = authPassword.value.trim();
+
+        if (!email || !password) {
+            showError('请填写邮箱和密码');
+            return;
+        }
+        if (password.length < 6) {
+            showError('密码至少6位');
+            return;
+        }
+
+        authBtn.textContent = isLogin ? '登录中...' : '注册中...';
+        authBtn.disabled = true;
+
+        let result;
+        if (isLogin) {
+            result = await supabase.auth.signInWithPassword({ email, password });
+        } else {
+            result = await supabase.auth.signUp({ email, password });
+        }
+
+        authBtn.textContent = isLogin ? '登录' : '注册';
+        authBtn.disabled = false;
+
+        if (result.error) {
+            showError(result.error.message);
+            return;
+        }
+
+        // 登录或注册成功
+        if (!isLogin) {
+            showToast('✅ 注册成功！请登录');
+            switchMode();
+            return;
+        }
+
+        // 登录成功
+        showMain();
+    }
+
+    function switchMode() {
+        isLogin = !isLogin;
+        authBtn.textContent = isLogin ? '登录' : '注册';
+        switchText.textContent = isLogin ? '还没有账号？' : '已有账号？';
+        switchLink.textContent = isLogin ? '注册' : '登录';
+        authError.style.display = 'none';
+        authEmail.value = '';
+        authPassword.value = '';
+    }
+
+    function showMain() {
+        authSection.style.display = 'none';
+        mainSection.style.display = 'block';
+        renderScripts();
+    }
+
+    function showAuth() {
+        authSection.style.display = 'block';
+        mainSection.style.display = 'none';
+    }
+
+    // ============================================================
+    // 检查登录状态
+    // ============================================================
+    async function checkSession() {
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+            showMain();
+        } else {
+            showAuth();
+        }
+    }
+
+    // ============================================================
+    // 退出登录
+    // ============================================================
+    async function logout() {
+        await supabase.auth.signOut();
+        showAuth();
+        showToast('已退出');
+    }
+
+    // ============================================================
+    // 事件绑定
+    // ============================================================
+    authBtn.addEventListener('click', handleAuth);
+    switchLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchMode();
     });
-    renderScripts();
+    logoutBtn.addEventListener('click', logout);
+
+    // 回车键提交
+    authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
+    authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
+
+    // ============================================================
+    // 启动
+    // ============================================================
+    checkSession();
 </script>
 </body>
-</html>
+            </html>
