@@ -1,269 +1,442 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>星脚本</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;padding:20px;min-height:100vh;display:flex;justify-content:center;align-items:center}
-.container{max-width:600px;width:100%}
-.auth-box{background:#fff;border-radius:16px;padding:30px 25px;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
-.auth-box h2{text-align:center;font-size:22px;margin-bottom:6px}
-.auth-box .sub{text-align:center;color:#888;font-size:14px;margin-bottom:20px}
-.auth-box input{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:10px;font-size:15px;margin-bottom:12px;background:#f9f9f9}
-.auth-box input:focus{outline:0;border-color:#4A6CF7;background:#fff}
-.auth-box .btn-primary{width:100%;padding:12px;background:#4A6CF7;color:#fff;border:0;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer}
-.auth-box .btn-primary:active{transform:scale(0.97)}
-.auth-box .switch{text-align:center;margin-top:14px;font-size:14px;color:#888}
-.auth-box .switch a{color:#4A6CF7;text-decoration:none;font-weight:600}
-.auth-box .error{color:#e74c3c;font-size:13px;text-align:center;margin-bottom:10px;display:none}
-.auth-box .success{color:#27ae60;font-size:13px;text-align:center;margin-bottom:10px;display:none}
-.main-content{display:none}
-.header{background:linear-gradient(135deg,#4A6CF7,#6a3de8);color:#fff;padding:20px;border-radius:16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
-.header h1{font-size:20px;font-weight:700}
-.header .logout{background:rgba(255,255,255,0.2);border:0;color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;cursor:pointer}
-.script-card{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center}
-.script-card .info .name{font-size:16px;font-weight:600;color:#1a1a1a}
-.script-card .info .version{font-size:13px;color:#888}
-.script-card .info .desc{font-size:13px;color:#666;margin-top:3px}
-.btn-copy{background:#4A6CF7;color:#fff;border:0;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;margin-left:12px}
-.btn-copy:active{transform:scale(0.95)}
-.footer{text-align:center;color:#aaa;font-size:12px;margin-top:30px}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:12px 28px;border-radius:30px;font-size:14px;display:none;z-index:999;white-space:nowrap}
-.toast.show{display:block;animation:fadeUp .3s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>星脚本 · 流动星河</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:#060b18;
+            padding:20px;
+            position:relative;
+            overflow-x:hidden;
+        }
+        #particleCanvas{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index:0;
+            pointer-events:none;
+        }
+        .container{
+            max-width:600px;
+            width:100%;
+            position:relative;
+            z-index:1;
+        }
+        .auth-box{
+            background:rgba(10,15,35,0.6);
+            backdrop-filter:blur(16px);
+            -webkit-backdrop-filter:blur(16px);
+            border-radius:20px;
+            padding:30px 25px;
+            box-shadow:0 8px 40px rgba(0,0,0,0.6);
+            border:1px solid rgba(120,160,255,0.12);
+        }
+        .auth-box h2{text-align:center;font-size:24px;margin-bottom:4px;color:#fff;font-weight:600;letter-spacing:1px}
+        .auth-box .sub{text-align:center;color:rgba(180,200,255,0.5);font-size:14px;margin-bottom:22px;letter-spacing:0.5px}
+        .auth-box input{
+            width:100%;
+            padding:13px 16px;
+            border:1px solid rgba(120,160,255,0.15);
+            border-radius:12px;
+            font-size:15px;
+            margin-bottom:12px;
+            background:rgba(255,255,255,0.04);
+            color:#e8eeff;
+            outline:none;
+            transition:border-color 0.3s,background 0.3s;
+        }
+        .auth-box input::placeholder{color:rgba(180,200,255,0.25)}
+        .auth-box input:focus{border-color:#5b7cfa;background:rgba(255,255,255,0.07)}
+        .auth-box .btn-primary{
+            width:100%;
+            padding:13px;
+            background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
+            color:#fff;
+            border:none;
+            border-radius:12px;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:transform 0.12s,box-shadow 0.2s;
+            box-shadow:0 4px 20px rgba(74,108,247,0.25);
+        }
+        .auth-box .btn-primary:active{transform:scale(0.96);box-shadow:0 2px 12px rgba(74,108,247,0.15)}
+        .auth-box .switch{text-align:center;margin-top:16px;font-size:14px;color:rgba(180,200,255,0.4)}
+        .auth-box .switch a{color:#7b9cff;text-decoration:none;font-weight:500;transition:color 0.2s}
+        .auth-box .switch a:active{color:#4A6CF7}
+        .auth-box .error{color:#ff6b8a;font-size:13px;text-align:center;margin-bottom:10px;display:none}
+        .auth-box .success{color:#69db7c;font-size:13px;text-align:center;margin-bottom:10px;display:none}
+        .main-content{display:none}
+        .header{
+            background:rgba(10,15,35,0.5);
+            backdrop-filter:blur(14px);
+            -webkit-backdrop-filter:blur(14px);
+            border:1px solid rgba(120,160,255,0.08);
+            color:#fff;
+            padding:18px 22px;
+            border-radius:16px;
+            margin-bottom:20px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .header h1{font-size:20px;font-weight:600;letter-spacing:0.5px;background:linear-gradient(135deg,#a0baff,#7b9cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header .logout{
+            background:rgba(255,255,255,0.06);
+            border:1px solid rgba(255,255,255,0.06);
+            color:rgba(255,255,255,0.7);
+            padding:6px 16px;
+            border-radius:20px;
+            font-size:13px;
+            cursor:pointer;
+            transition:background 0.2s;
+        }
+        .header .logout:active{background:rgba(255,255,255,0.12)}
+        .script-card{
+            background:rgba(255,255,255,0.04);
+            backdrop-filter:blur(6px);
+            -webkit-backdrop-filter:blur(6px);
+            border:1px solid rgba(120,160,255,0.06);
+            border-radius:14px;
+            padding:16px 18px;
+            margin-bottom:12px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            transition:background 0.2s,border-color 0.2s;
+        }
+        .script-card:active{background:rgba(255,255,255,0.07)}
+        .script-card .info .name{font-size:16px;font-weight:500;color:#e8eeff}
+        .script-card .info .version{font-size:12px;color:rgba(180,200,255,0.3);margin-left:6px}
+        .script-card .info .desc{font-size:13px;color:rgba(180,200,255,0.45);margin-top:3px}
+        .btn-copy{
+            background:rgba(74,108,247,0.15);
+            border:1px solid rgba(74,108,247,0.15);
+            color:#a0baff;
+            padding:6px 18px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:500;
+            cursor:pointer;
+            transition:background 0.2s,border-color 0.2s;
+            flex-shrink:0;
+            margin-left:12px;
+        }
+        .btn-copy:active{background:rgba(74,108,247,0.25)}
+        .footer{text-align:center;color:rgba(180,200,255,0.15);font-size:12px;margin-top:28px;letter-spacing:0.5px}
+        .toast{
+            position:fixed;
+            bottom:30px;
+            left:50%;
+            transform:translateX(-50%);
+            background:rgba(10,15,35,0.8);
+            backdrop-filter:blur(12px);
+            -webkit-backdrop-filter:blur(12px);
+            border:1px solid rgba(120,160,255,0.1);
+            color:#e8eeff;
+            padding:12px 28px;
+            border-radius:30px;
+            font-size:14px;
+            display:none;
+            z-index:999;
+            white-space:nowrap;
+        }
+        .toast.show{display:block;animation:fadeUp 0.35s ease}
+        @keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+    </style>
 </head>
 <body>
+
+<canvas id="particleCanvas"></canvas>
+
 <div class="container">
-<div id="authSection" class="auth-box">
-<h2>📦 星脚本</h2>
-<p class="sub" id="modeText">登录后查看脚本</p>
-<div id="authError" class="error"></div>
-<div id="authSuccess" class="success"></div>
-<input type="email" id="authEmail" placeholder="请输入正确的邮箱（如 123@qq.com）" autocomplete="email">
-<input type="password" id="authPassword" placeholder="密码（至少6位）" autocomplete="current-password">
-<button class="btn-primary" id="authBtn">登录</button>
-<div class="switch"><span id="switchText">还没有账号？</span> <a href="#" id="switchLink">注册</a></div>
+    <div id="authSection" class="auth-box">
+        <h2>✦ 星脚本</h2>
+        <p class="sub" id="modeText">登录后查看脚本</p>
+        <div id="authError" class="error"></div>
+        <div id="authSuccess" class="success"></div>
+        <input type="email" id="authEmail" placeholder="邮箱地址" autocomplete="email">
+        <input type="password" id="authPassword" placeholder="密码（至少6位）" autocomplete="current-password">
+        <button class="btn-primary" id="authBtn">登录</button>
+        <div class="switch"><span id="switchText">还没有账号？</span> <a href="#" id="switchLink">注册</a></div>
+    </div>
+    <div id="mainSection" class="main-content">
+        <div class="header"><h1>✦ 星脚本</h1><button class="logout" id="logoutBtn">退出</button></div>
+        <div id="scriptList"></div>
+        <div class="footer">© 2026 星脚本 · 仅供学习交流</div>
+    </div>
 </div>
-<div id="mainSection" class="main-content">
-<div class="header"><h1>📦 星脚本</h1><button class="logout" id="logoutBtn">退出</button></div>
-<div id="scriptList"></div>
-<div class="footer">© 2026 星脚本 · 仅供学习交流</div>
-</div>
-</div>
+
 <div id="toast" class="toast"></div>
+
 <script>
-// ============================================================
-// 带完整验证的本地存储版（严格邮箱验证）
-// ============================================================
-const authSection=document.getElementById('authSection');
-const mainSection=document.getElementById('mainSection');
-const authBtn=document.getElementById('authBtn');
-const authEmail=document.getElementById('authEmail');
-const authPassword=document.getElementById('authPassword');
-const authError=document.getElementById('authError');
-const authSuccess=document.getElementById('authSuccess');
-const switchLink=document.getElementById('switchLink');
-const switchText=document.getElementById('switchText');
-const modeText=document.getElementById('modeText');
-const logoutBtn=document.getElementById('logoutBtn');
-const scriptList=document.getElementById('scriptList');
-let isLogin=true;
+    // ============================================================
+    // 流动粒子动画
+    // ============================================================
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+    let particles = [];
+    const PARTICLE_COUNT = 60;
+    const MAX_DIST = 150;
+    const FLOW_SPEED = 0.2;  // 流动速度
 
-// ============================================================
-// 脚本数据
-// ============================================================
-const SCRIPTS=[
-{name:"北极星加载器",version:"1.0",desc:"稳定的北极星脚本加载器",loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'},
-{name:"星脚本",version:"1.0",desc:"星脚本加载器",loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()'}
-];
-
-// ============================================================
-// 渲染脚本
-// ============================================================
-function renderScripts(){
-    scriptList.innerHTML=SCRIPTS.map((s,i)=>
-        '<div class="script-card">'+
-            '<div class="info">'+
-                '<div class="name">'+s.name+' <span style="font-size:12px;color:#aaa;">v'+s.version+'</span></div>'+
-                '<div class="desc">'+(s.desc||'')+'</div>'+
-            '</div>'+
-            '<button class="btn-copy" onclick="copyScript('+i+')">📋 复制</button>'+
-        '</div>'
-    ).join('');
-}
-
-// ============================================================
-// 复制
-// ============================================================
-async function copyScript(index){
-    const loader=SCRIPTS[index].loader;
-    try{
-        await navigator.clipboard.writeText(loader);
-        showToast('✅ 已复制！');
-    }catch(e){
-        const ta=document.createElement('textarea');
-        ta.value=loader;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        ta.remove();
-        showToast('✅ 已复制！');
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
     }
-}
+    window.addEventListener('resize', resize);
+    resize();
 
-// ============================================================
-// 提示
-// ============================================================
-function showToast(msg){
-    const el=document.getElementById('toast');
-    el.textContent=msg;
-    el.classList.add('show');
-    clearTimeout(el._timer);
-    el._timer=setTimeout(()=>el.classList.remove('show'),2500);
-}
-function showError(msg){
-    authError.textContent=msg;
-    authError.style.display='block';
-    authSuccess.style.display='none';
-    clearTimeout(authError._timer);
-    authError._timer=setTimeout(()=>authError.style.display='none',4000);
-}
-function showSuccess(msg){
-    authSuccess.textContent=msg;
-    authSuccess.style.display='block';
-    authError.style.display='none';
-    clearTimeout(authSuccess._timer);
-    authSuccess._timer=setTimeout(()=>authSuccess.style.display='none',3000);
-}
-
-// ============================================================
-// 严格的邮箱验证
-// ============================================================
-function isValidEmail(email){
-    if(!email) return false;
-    // 必须包含 @ 和 .
-    if(!email.includes('@') || !email.includes('.')) return false;
-    // @ 必须在 . 前面
-    if(email.indexOf('@') > email.indexOf('.')) return false;
-    // @ 后面必须有字符（不能是 @. 或 @.com 这种）
-    const atIndex = email.indexOf('@');
-    if(atIndex === 0) return false; // @ 不能在开头
-    if(atIndex === email.length - 1) return false; // @ 不能在结尾
-    // . 后面必须有字符
-    const dotIndex = email.lastIndexOf('.');
-    if(dotIndex === email.length - 1) return false; // . 不能在结尾
-    // 不能包含空格
-    if(email.includes(' ')) return false;
-    return true;
-}
-
-function isValidPassword(password){
-    return password && password.length >= 6;
-}
-
-// ============================================================
-// 注册/登录逻辑
-// ============================================================
-function handleAuth(){
-    const email=authEmail.value.trim();
-    const password=authPassword.value.trim();
-
-    // ---- 验证邮箱 ----
-    if(!isValidEmail(email)){
-        showError('❌ 请输入正确的邮箱（如 123@qq.com）');
-        return;
+    class Particle {
+        constructor() {
+            this.x = Math.random() * w;
+            this.y = Math.random() * h;
+            this.r = Math.random() * 2 + 1.2;
+            // 每个粒子的流动方向略微不同
+            this.dx = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
+            this.dy = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
+            // 基础位置偏移，用于制造波浪感
+            this.phaseX = Math.random() * 100;
+            this.phaseY = Math.random() * 100;
+            this.speed = 0.2 + Math.random() * 0.3;
+        }
+        update(time) {
+            // 波浪式流动：sin 制造起伏，让粒子像在星河流淌
+            const waveX = Math.sin(time * 0.0004 + this.phaseX) * 0.15;
+            const waveY = Math.cos(time * 0.0005 + this.phaseY) * 0.15;
+            this.x += this.dx + waveX * this.speed;
+            this.y += this.dy + waveY * this.speed;
+            // 边界回绕（无缝流动）
+            if (this.x < -20) this.x = w + 20;
+            if (this.x > w + 20) this.x = -20;
+            if (this.y < -20) this.y = h + 20;
+            if (this.y > h + 20) this.y = -20;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(160, 200, 255, 0.5)';
+            ctx.fill();
+        }
     }
 
-    // ---- 验证密码 ----
-    if(!isValidPassword(password)){
-        showError('❌ 密码至少 6 位');
-        return;
+    // 初始化粒子
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(new Particle());
     }
 
-    let users = {};
-    try{
-        users = JSON.parse(localStorage.getItem('users') || '{}');
-    }catch(e){
-        users = {};
+    function drawLines(time) {
+        // 连接线：距离越近越亮
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < MAX_DIST) {
+                    const alpha = (1 - dist / MAX_DIST) * 0.3;
+                    // 根据时间微微改变颜色
+                    const hueShift = Math.sin(time * 0.0002 + i * 0.1) * 10;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(120, 160, 255, ${alpha})`;
+                    ctx.lineWidth = 0.6;
+                    ctx.stroke();
+                }
+            }
+        }
     }
 
-    if(isLogin){
-        // ========== 登录模式 ==========
-        if(users[email] === undefined){
-            showError('❌ 账号不存在，请先注册');
+    function animate(time) {
+        ctx.clearRect(0, 0, w, h);
+        // 背景微光晕
+        const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w*0.7);
+        grad.addColorStop(0, 'rgba(30, 60, 120, 0.08)');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // 更新粒子位置
+        for (const p of particles) {
+            p.update(time);
+        }
+        // 画连接线（先画线，再画点，让点在线上面）
+        drawLines(time);
+        // 画粒子
+        for (const p of particles) {
+            p.draw();
+        }
+        requestAnimationFrame(animate);
+    }
+
+    animate(0);
+
+    // ============================================================
+    // 登录注册逻辑（本地存储 + 验证）
+    // ============================================================
+    const authSection = document.getElementById('authSection');
+    const mainSection = document.getElementById('mainSection');
+    const authBtn = document.getElementById('authBtn');
+    const authEmail = document.getElementById('authEmail');
+    const authPassword = document.getElementById('authPassword');
+    const authError = document.getElementById('authError');
+    const authSuccess = document.getElementById('authSuccess');
+    const switchLink = document.getElementById('switchLink');
+    const switchText = document.getElementById('switchText');
+    const modeText = document.getElementById('modeText');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const scriptList = document.getElementById('scriptList');
+
+    let isLogin = true;
+
+    const SCRIPTS = [
+        { name: "北极星加载器", version: "1.0", desc: "稳定的北极星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' },
+        { name: "星脚本", version: "1.0", desc: "星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' }
+    ];
+
+    function renderScripts() {
+        scriptList.innerHTML = SCRIPTS.map((s, i) =>
+            '<div class="script-card">' +
+            '<div class="info"><div class="name">' + s.name + ' <span class="version">v' + s.version + '</span></div>' +
+            '<div class="desc">' + (s.desc || '') + '</div></div>' +
+            '<button class="btn-copy" onclick="copyScript(' + i + ')">复制</button>' +
+            '</div>'
+        ).join('');
+    }
+
+    async function copyScript(index) {
+        const loader = SCRIPTS[index].loader;
+        try {
+            await navigator.clipboard.writeText(loader);
+            showToast('✅ 已复制！');
+        } catch (e) {
+            const ta = document.createElement('textarea');
+            ta.value = loader;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showToast('✅ 已复制！');
+        }
+    }
+
+    function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+    function showError(msg) {
+        authError.textContent = msg;
+        authError.style.display = 'block';
+        authSuccess.style.display = 'none';
+        clearTimeout(authError._timer);
+        authError._timer = setTimeout(() => authError.style.display = 'none', 4000);
+    }
+
+    function showSuccess(msg) {
+        authSuccess.textContent = msg;
+        authSuccess.style.display = 'block';
+        authError.style.display = 'none';
+        clearTimeout(authSuccess._timer);
+        authSuccess._timer = setTimeout(() => authSuccess.style.display = 'none', 3000);
+    }
+
+    function isValidEmail(email) {
+        if (!email) return false;
+        if (!email.includes('@') || !email.includes('.')) return false;
+        if (email.indexOf('@') > email.lastIndexOf('.')) return false;
+        if (email.indexOf('@') === 0 || email.indexOf('@') === email.length - 1) return false;
+        if (email.lastIndexOf('.') === email.length - 1) return false;
+        if (email.includes(' ')) return false;
+        return true;
+    }
+
+    function isValidPassword(password) {
+        return password && password.length >= 6;
+    }
+
+    function handleAuth() {
+        const email = authEmail.value.trim();
+        const password = authPassword.value.trim();
+
+        if (!isValidEmail(email)) {
+            showError('❌ 请输入正确的邮箱（如 123@qq.com）');
             return;
         }
-        if(users[email] !== password){
-            showError('❌ 密码错误，请重试');
+        if (!isValidPassword(password)) {
+            showError('❌ 密码至少 6 位');
             return;
         }
-        authSection.style.display='none';
-        mainSection.style.display='block';
-        renderScripts();
-        showToast('✅ 登录成功！');
-    }else{
-        // ========== 注册模式 ==========
-        if(users[email] !== undefined){
-            showError('❌ 该邮箱已注册，请直接登录');
-            return;
+
+        let users = {};
+        try { users = JSON.parse(localStorage.getItem('users') || '{}'); } catch (e) { users = {}; }
+
+        if (isLogin) {
+            if (users[email] === undefined) { showError('❌ 账号不存在，请先注册'); return; }
+            if (users[email] !== password) { showError('❌ 密码错误，请重试'); return; }
+            authSection.style.display = 'none';
+            mainSection.style.display = 'block';
+            renderScripts();
+            showToast('✅ 登录成功！');
+        } else {
+            if (users[email] !== undefined) { showError('❌ 该邮箱已注册，请直接登录'); return; }
+            users[email] = password;
+            localStorage.setItem('users', JSON.stringify(users));
+            showSuccess('✅ 注册成功！即将切换到登录...');
+            setTimeout(() => {
+                switchMode();
+                authEmail.value = email;
+                authPassword.value = '';
+                showToast('✅ 请登录');
+            }, 1500);
         }
-        users[email] = password;
-        localStorage.setItem('users', JSON.stringify(users));
-        showSuccess('✅ 注册成功！即将切换到登录...');
-        setTimeout(()=>{
-            switchMode();
-            authEmail.value = email;
-            authPassword.value = '';
-            showToast('✅ 请登录');
-        }, 1500);
     }
-}
 
-// ============================================================
-// 切换登录/注册模式
-// ============================================================
-function switchMode(){
-    isLogin = !isLogin;
-    authBtn.textContent = isLogin ? '登录' : '注册';
-    switchText.textContent = isLogin ? '还没有账号？' : '已有账号？';
-    switchLink.textContent = isLogin ? '注册' : '登录';
-    modeText.textContent = isLogin ? '登录后查看脚本' : '注册后登录查看脚本';
-    authError.style.display='none';
-    authSuccess.style.display='none';
-    authEmail.value='';
-    authPassword.value='';
-}
+    function switchMode() {
+        isLogin = !isLogin;
+        authBtn.textContent = isLogin ? '登录' : '注册';
+        switchText.textContent = isLogin ? '还没有账号？' : '已有账号？';
+        switchLink.textContent = isLogin ? '注册' : '登录';
+        modeText.textContent = isLogin ? '登录后查看脚本' : '注册后登录查看脚本';
+        authError.style.display = 'none';
+        authSuccess.style.display = 'none';
+        authEmail.value = '';
+        authPassword.value = '';
+    }
 
-// ============================================================
-// 退出登录
-// ============================================================
-function logout(){
-    authSection.style.display='block';
-    mainSection.style.display='none';
-    showToast('已退出');
-}
+    function logout() {
+        authSection.style.display = 'block';
+        mainSection.style.display = 'none';
+        showToast('已退出');
+    }
 
-function checkSession(){
-    authSection.style.display='block';
-    mainSection.style.display='none';
-}
+    function checkSession() {
+        authSection.style.display = 'block';
+        mainSection.style.display = 'none';
+    }
 
-// ============================================================
-// 事件绑定
-// ============================================================
-authBtn.addEventListener('click', handleAuth);
-switchLink.addEventListener('click', (e)=>{
-    e.preventDefault();
-    switchMode();
-});
-logoutBtn.addEventListener('click', logout);
-authEmail.addEventListener('keydown', (e)=>{ if(e.key==='Enter') authBtn.click(); });
-authPassword.addEventListener('keydown', (e)=>{ if(e.key==='Enter') authBtn.click(); });
+    authBtn.addEventListener('click', handleAuth);
+    switchLink.addEventListener('click', (e) => { e.preventDefault();
+        switchMode(); });
+    logoutBtn.addEventListener('click', logout);
+    authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
+    authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
 
-checkSession();
+    checkSession();
 </script>
 </body>
 </html>
