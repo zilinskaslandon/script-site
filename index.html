@@ -1,327 +1,423 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>星脚本 · 流动星河</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{
-            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-            min-height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            background:#060b18;
-            padding:20px;
-            position:relative;
-            overflow-x:hidden;
-        }
-        #particleCanvas{
-            position:fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            z-index:0;
-            pointer-events:none;
-        }
-        .container{
-            max-width:600px;
-            width:100%;
-            position:relative;
-            z-index:1;
-        }
-        .auth-box{
-            background:rgba(10,15,35,0.6);
-            backdrop-filter:blur(16px);
-            -webkit-backdrop-filter:blur(16px);
-            border-radius:20px;
-            padding:30px 25px;
-            box-shadow:0 8px 40px rgba(0,0,0,0.6);
-            border:1px solid rgba(120,160,255,0.12);
-        }
-        .auth-box h2{text-align:center;font-size:24px;margin-bottom:4px;color:#fff;font-weight:600;letter-spacing:1px}
-        .auth-box .sub{text-align:center;color:rgba(180,200,255,0.5);font-size:14px;margin-bottom:22px;letter-spacing:0.5px}
-        .auth-box input{
-            width:100%;
-            padding:13px 16px;
-            border:1px solid rgba(120,160,255,0.15);
-            border-radius:12px;
-            font-size:15px;
-            margin-bottom:12px;
-            background:rgba(255,255,255,0.04);
-            color:#e8eeff;
-            outline:none;
-            transition:border-color 0.3s,background 0.3s;
-        }
-        .auth-box input::placeholder{color:rgba(180,200,255,0.25)}
-        .auth-box input:focus{border-color:#5b7cfa;background:rgba(255,255,255,0.07)}
-        .auth-box .btn-primary{
-            width:100%;
-            padding:13px;
-            background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
-            color:#fff;
-            border:none;
-            border-radius:12px;
-            font-size:16px;
-            font-weight:600;
-            cursor:pointer;
-            transition:transform 0.12s,box-shadow 0.2s;
-            box-shadow:0 4px 20px rgba(74,108,247,0.25);
-        }
-        .auth-box .btn-primary:active{transform:scale(0.96);box-shadow:0 2px 12px rgba(74,108,247,0.15)}
-        .auth-box .switch{text-align:center;margin-top:16px;font-size:14px;color:rgba(180,200,255,0.4)}
-        .auth-box .switch a{color:#7b9cff;text-decoration:none;font-weight:500;transition:color 0.2s}
-        .auth-box .switch a:active{color:#4A6CF7}
-        .auth-box .error{color:#ff6b8a;font-size:13px;text-align:center;margin-bottom:10px;display:none}
-        .auth-box .success{color:#69db7c;font-size:13px;text-align:center;margin-bottom:10px;display:none}
-        .main-content{display:none}
-        .header{
-            background:rgba(10,15,35,0.5);
-            backdrop-filter:blur(14px);
-            -webkit-backdrop-filter:blur(14px);
-            border:1px solid rgba(120,160,255,0.08);
-            color:#fff;
-            padding:14px 18px;
-            border-radius:16px;
-            margin-bottom:20px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        }
-        .header h1{font-size:18px;font-weight:600;letter-spacing:0.5px;background:linear-gradient(135deg,#a0baff,#7b9cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
-        .header .right-area{display:flex;align-items:center;gap:10px}
-        .header .user-btn{
-            display:flex;align-items:center;gap:6px;
-            background:rgba(255,255,255,0.06);
-            border:1px solid rgba(255,255,255,0.06);
-            color:rgba(255,255,255,0.8);
-            padding:4px 14px 4px 10px;
-            border-radius:20px;
-            font-size:13px;
-            cursor:pointer;
-            transition:background 0.2s;
-        }
-        .header .user-btn:active{background:rgba(255,255,255,0.12)}
-        .header .user-btn .avatar{
-            width:24px;height:24px;border-radius:50%;
-            background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
-            display:flex;align-items:center;justify-content:center;
-            font-size:12px;color:#fff;font-weight:600;
-            overflow:hidden;
-            flex-shrink:0;
-        }
-        .header .user-btn .avatar img{width:100%;height:100%;object-fit:cover}
-        .music-btn{
-            width:36px;height:36px;border-radius:50%;
-            background:rgba(255,255,255,0.06);
-            border:1px solid rgba(255,255,255,0.08);
-            color:rgba(255,255,255,0.5);
-            font-size:16px;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            transition:background 0.2s,color 0.2s;
-            flex-shrink:0;
-        }
-        .music-btn:active{background:rgba(255,255,255,0.12);color:#fff}
-        .music-btn.playing{color:#4A6CF7;border-color:rgba(74,108,247,0.3)}
-
-        .music-popup{
-            display:none;
-            position:fixed;
-            top:80px;
-            right:16px;
-            width:260px;
-            background:rgba(10,15,35,0.92);
-            backdrop-filter:blur(20px);
-            -webkit-backdrop-filter:blur(20px);
-            border-radius:16px;
-            padding:20px;
-            border:1px solid rgba(120,160,255,0.08);
-            box-shadow:0 20px 60px rgba(0,0,0,0.6);
-            z-index:200;
-        }
-        .music-popup.show{display:block}
-        .music-popup .popup-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:14px;
-        }
-        .music-popup .popup-header .title{color:rgba(255,255,255,0.5);font-size:13px}
-        .music-popup .popup-header .close-btn{
-            background:none;border:none;color:rgba(255,255,255,0.3);
-            font-size:18px;cursor:pointer;padding:0 4px;
-        }
-        .music-popup .popup-header .close-btn:active{color:rgba(255,255,255,0.6)}
-        .music-popup .song-info{text-align:center;margin-bottom:14px}
-        .music-popup .song-info .s-title{color:#fff;font-size:15px;font-weight:500}
-        .music-popup .song-info .s-artist{color:rgba(180,200,255,0.3);font-size:12px;margin-top:2px}
-        .music-popup .controls{
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            gap:20px;
-            margin-bottom:14px;
-        }
-        .music-popup .controls .ctrl-btn{
-            background:rgba(255,255,255,0.06);
-            border:none;
-            border-radius:50%;
-            width:40px;height:40px;
-            display:flex;align-items:center;justify-content:center;
-            font-size:16px;color:rgba(255,255,255,0.6);
-            cursor:pointer;
-            transition:background 0.2s;
-        }
-        .music-popup .controls .ctrl-btn:active{background:rgba(255,255,255,0.12)}
-        .music-popup .controls .ctrl-btn.play-btn{background:rgba(74,108,247,0.2);color:#4A6CF7;font-size:18px}
-        .music-popup .controls .ctrl-btn.play-btn:active{background:rgba(74,108,247,0.35)}
-        .music-popup .volume-row{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            margin-bottom:14px;
-        }
-        .music-popup .volume-row .v-icon{color:rgba(255,255,255,0.25);font-size:14px}
-        .music-popup .volume-row input[type="range"]{
-            flex:1;height:3px;-webkit-appearance:none;appearance:none;
-            background:rgba(255,255,255,0.1);border-radius:2px;outline:none;
-        }
-        .music-popup .volume-row input[type="range"]::-webkit-slider-thumb{
-            -webkit-appearance:none;appearance:none;width:12px;height:12px;
-            border-radius:50%;background:#4A6CF7;cursor:pointer;
-        }
-        .script-card{
-            background:rgba(255,255,255,0.04);
-            backdrop-filter:blur(6px);
-            -webkit-backdrop-filter:blur(6px);
-            border:1px solid rgba(120,160,255,0.06);
-            border-radius:14px;
-            padding:16px 18px;
-            margin-bottom:12px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            transition:background 0.2s,border-color 0.2s;
-        }
-        .script-card:active{background:rgba(255,255,255,0.07)}
-        .script-card .info .name{font-size:16px;font-weight:500;color:#e8eeff}
-        .script-card .info .version{font-size:12px;color:rgba(180,200,255,0.3);margin-left:6px}
-        .script-card .info .desc{font-size:13px;color:rgba(180,200,255,0.45);margin-top:3px}
-        .btn-copy{
-            background:rgba(74,108,247,0.15);
-            border:1px solid rgba(74,108,247,0.15);
-            color:#a0baff;
-            padding:6px 18px;
-            border-radius:20px;
-            font-size:13px;
-            font-weight:500;
-            cursor:pointer;
-            transition:background 0.2s,border-color 0.2s;
-            flex-shrink:0;
-            margin-left:12px;
-        }
-        .btn-copy:active{background:rgba(74,108,247,0.25)}
-        .footer{text-align:center;color:rgba(180,200,255,0.15);font-size:12px;margin-top:28px;letter-spacing:0.5px}
-        .toast{
-            position:fixed;
-            bottom:30px;
-            left:50%;
-            transform:translateX(-50%);
-            background:rgba(10,15,35,0.8);
-            backdrop-filter:blur(12px);
-            -webkit-backdrop-filter:blur(12px);
-            border:1px solid rgba(120,160,255,0.1);
-            color:#e8eeff;
-            padding:12px 28px;
-            border-radius:30px;
-            font-size:14px;
-            display:none;
-            z-index:999;
-            white-space:nowrap;
-        }
-        .toast.show{display:block;animation:fadeUp 0.35s ease}
-        @keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        .profile-page{display:none}
-        .profile-page .profile-card{
-            background:rgba(10,15,35,0.6);
-            backdrop-filter:blur(16px);
-            -webkit-backdrop-filter:blur(16px);
-            border-radius:20px;
-            padding:30px 25px;
-            box-shadow:0 8px 40px rgba(0,0,0,0.6);
-            border:1px solid rgba(120,160,255,0.12);
-            text-align:center;
-        }
-        .profile-page .profile-card .big-avatar{
-            width:80px;height:80px;border-radius:50%;
-            background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
-            display:flex;align-items:center;justify-content:center;
-            font-size:36px;color:#fff;font-weight:600;
-            margin:0 auto 16px;
-            box-shadow:0 4px 24px rgba(74,108,247,0.3);
-            cursor:pointer;
-            overflow:hidden;
-            transition:transform 0.2s,box-shadow 0.2s;
-            position:relative;
-        }
-        .profile-page .profile-card .big-avatar:active{transform:scale(0.95)}
-        .profile-page .profile-card .big-avatar img{width:100%;height:100%;object-fit:cover}
-        .profile-page .profile-card .big-avatar .camera-icon{
-            position:absolute;bottom:0;left:0;right:0;
-            background:rgba(0,0,0,0.6);color:#fff;font-size:12px;
-            padding:4px 0;opacity:0;transition:opacity 0.3s;
-        }
-        .profile-page .profile-card .big-avatar:active .camera-icon{opacity:1}
-        .profile-page .profile-card .avatar-hint{font-size:12px;color:rgba(180,200,255,0.3);margin-top:-10px;margin-bottom:16px}
-        .profile-page .profile-card .p-name{font-size:20px;font-weight:600;color:#fff;margin-bottom:4px}
-        .profile-page .profile-card .p-email{font-size:14px;color:rgba(180,200,255,0.5);margin-bottom:20px}
-        .profile-page .profile-card .p-info{
-            text-align:left;background:rgba(255,255,255,0.04);
-            border-radius:12px;padding:16px;margin-bottom:16px;
-        }
-        .profile-page .profile-card .p-info .row{
-            display:flex;justify-content:space-between;padding:8px 0;
-            border-bottom:1px solid rgba(255,255,255,0.04);font-size:14px;
-        }
-        .profile-page .profile-card .p-info .row:last-child{border-bottom:none}
-        .profile-page .profile-card .p-info .label{color:rgba(180,200,255,0.4)}
-        .profile-page .profile-card .p-info .value{color:rgba(255,255,255,0.8)}
-        .profile-page .profile-card .p-btns{display:flex;gap:12px;justify-content:center}
-        .profile-page .profile-card .p-btns button{
-            padding:10px 28px;border:none;border-radius:12px;
-            font-size:14px;font-weight:500;cursor:pointer;transition:transform 0.12s;
-        }
-        .profile-page .profile-card .p-btns button:active{transform:scale(0.96)}
-        .profile-page .profile-card .p-btns .btn-back{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
-        .profile-page .profile-card .p-btns .btn-logout{background:#e74c5e;color:#fff}
-        .profile-page .profile-card .p-btns .btn-logout:active{background:#c0392b}
-
-        .avatar-picker{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;padding:20px}
-        .avatar-picker.show{display:flex}
-        .avatar-picker .picker-box{background:rgba(10,15,35,0.92);border-radius:20px;padding:24px 20px;max-width:400px;width:100%;border:1px solid rgba(120,160,255,0.1)}
-        .avatar-picker .picker-box h3{color:#fff;text-align:center;margin-bottom:16px;font-size:18px}
-        .avatar-picker .picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-        .avatar-picker .picker-grid .opt{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s,border-color 0.2s;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;font-weight:600}
-        .avatar-picker .picker-grid .opt:active{transform:scale(0.9)}
-        .avatar-picker .picker-grid .opt.active{border-color:#4A6CF7;box-shadow:0 0 20px rgba(74,108,247,0.3)}
-        .avatar-picker .picker-footer{display:flex;gap:12px}
-        .avatar-picker .picker-footer button{flex:1;padding:10px;border:none;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;transition:transform 0.12s}
-        .avatar-picker .picker-footer button:active{transform:scale(0.96)}
-        .avatar-picker .picker-footer .btn-close{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)}
-        .avatar-picker .picker-footer .btn-upload{background:linear-gradient(135deg,#4A6CF7,#8b5cf6);color:#fff}
-        .hidden{display:none!important}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>星脚本 · 星河</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#060b18;
+    padding:20px;
+    position:relative;
+    overflow-x:hidden;
+    transition:background 0.3s,color 0.3s;
+}
+body.light-mode{
+    background:#eef0f5;
+}
+body.light-mode .auth-box,
+body.light-mode .profile-card{
+    background:rgba(255,255,255,0.7);
+    border-color:rgba(0,0,0,0.06);
+}
+body.light-mode .auth-box h2,
+body.light-mode .profile-card .p-name,
+body.light-mode .header h1{
+    color:#1a1a2e;
+}
+body.light-mode .auth-box .sub,
+body.light-mode .profile-card .p-email,
+body.light-mode .profile-card .p-info .label{
+    color:rgba(0,0,0,0.4);
+}
+body.light-mode .auth-box input{
+    background:rgba(255,255,255,0.5);
+    color:#1a1a2e;
+    border-color:rgba(0,0,0,0.1);
+}
+body.light-mode .auth-box input::placeholder{color:rgba(0,0,0,0.3)}
+body.light-mode .script-card{
+    background:rgba(255,255,255,0.5);
+    border-color:rgba(0,0,0,0.06);
+}
+body.light-mode .script-card .info .name{color:#1a1a2e}
+body.light-mode .script-card .info .desc{color:rgba(0,0,0,0.4)}
+body.light-mode .header{
+    background:rgba(255,255,255,0.5);
+    border-color:rgba(0,0,0,0.06);
+}
+body.light-mode .header h1{
+    background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+body.light-mode .header .user-btn{
+    background:rgba(0,0,0,0.04);
+    border-color:rgba(0,0,0,0.06);
+    color:rgba(0,0,0,0.6);
+}
+body.light-mode .footer{color:rgba(0,0,0,0.2)}
+body.light-mode .music-btn{
+    background:rgba(0,0,0,0.04);
+    border-color:rgba(0,0,0,0.06);
+    color:rgba(0,0,0,0.4);
+}
+body.light-mode .music-btn.playing{color:#4A6CF7}
+#particleCanvas{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+}
+.container{
+    max-width:600px;
+    width:100%;
+    position:relative;
+    z-index:1;
+}
+.auth-box{
+    background:rgba(10,15,35,0.6);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-radius:20px;
+    padding:30px 25px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+    border:1px solid rgba(120,160,255,0.12);
+    transition:background 0.3s,border-color 0.3s;
+}
+.auth-box h2{text-align:center;font-size:24px;margin-bottom:4px;color:#fff;font-weight:600;letter-spacing:1px}
+.auth-box .sub{text-align:center;color:rgba(180,200,255,0.5);font-size:14px;margin-bottom:22px;letter-spacing:0.5px}
+.auth-box input{
+    width:100%;
+    padding:13px 16px;
+    border:1px solid rgba(120,160,255,0.15);
+    border-radius:12px;
+    font-size:15px;
+    margin-bottom:12px;
+    background:rgba(255,255,255,0.04);
+    color:#e8eeff;
+    outline:none;
+    transition:border-color 0.3s,background 0.3s;
+}
+.auth-box input::placeholder{color:rgba(180,200,255,0.25)}
+.auth-box input:focus{border-color:#5b7cfa;background:rgba(255,255,255,0.07)}
+.auth-box .btn-primary{
+    width:100%;
+    padding:13px;
+    background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 0.12s,box-shadow 0.2s;
+    box-shadow:0 4px 20px rgba(74,108,247,0.25);
+}
+.auth-box .btn-primary:active{transform:scale(0.96);box-shadow:0 2px 12px rgba(74,108,247,0.15)}
+.auth-box .switch{text-align:center;margin-top:16px;font-size:14px;color:rgba(180,200,255,0.4)}
+.auth-box .switch a{color:#7b9cff;text-decoration:none;font-weight:500;transition:color 0.2s}
+.auth-box .switch a:active{color:#4A6CF7}
+.auth-box .error{color:#ff6b8a;font-size:13px;text-align:center;margin-bottom:10px;display:none}
+.auth-box .success{color:#69db7c;font-size:13px;text-align:center;margin-bottom:10px;display:none}
+.main-content{display:none}
+.header{
+    background:rgba(10,15,35,0.5);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(120,160,255,0.08);
+    color:#fff;
+    padding:12px 18px;
+    border-radius:16px;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    transition:background 0.3s,border-color 0.3s;
+}
+.header h1{font-size:18px;font-weight:600;letter-spacing:0.5px;background:linear-gradient(135deg,#a0baff,#7b9cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.header .right-area{display:flex;align-items:center;gap:8px}
+.header .user-btn{
+    display:flex;align-items:center;gap:6px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.06);
+    color:rgba(255,255,255,0.8);
+    padding:4px 14px 4px 10px;
+    border-radius:20px;
+    font-size:13px;
+    cursor:pointer;
+    transition:background 0.2s;
+}
+.header .user-btn:active{background:rgba(255,255,255,0.12)}
+.header .user-btn .avatar{
+    width:24px;height:24px;border-radius:50%;
+    background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:#fff;font-weight:600;
+    overflow:hidden;
+    flex-shrink:0;
+}
+.header .user-btn .avatar img{width:100%;height:100%;object-fit:cover}
+.music-btn{
+    width:34px;height:34px;border-radius:50%;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.08);
+    color:rgba(255,255,255,0.4);
+    font-size:15px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.2s,color 0.2s;
+    flex-shrink:0;
+}
+.music-btn:active{background:rgba(255,255,255,0.12);color:#fff}
+.music-btn.playing{color:#4A6CF7;border-color:rgba(74,108,247,0.3)}
+.music-popup{
+    display:none;
+    position:fixed;
+    top:80px;
+    right:16px;
+    width:260px;
+    background:rgba(10,15,35,0.94);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-radius:16px;
+    padding:20px;
+    border:1px solid rgba(120,160,255,0.08);
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+    z-index:200;
+}
+.music-popup.show{display:block}
+.music-popup .popup-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+}
+.music-popup .popup-header .title{color:rgba(255,255,255,0.5);font-size:13px}
+.music-popup .popup-header .close-btn{
+    background:none;border:none;color:rgba(255,255,255,0.3);
+    font-size:18px;cursor:pointer;padding:0 4px;
+}
+.music-popup .popup-header .close-btn:active{color:rgba(255,255,255,0.6)}
+.music-popup .song-info{text-align:center;margin-bottom:14px}
+.music-popup .song-info .s-title{color:#fff;font-size:15px;font-weight:500}
+.music-popup .song-info .s-artist{color:rgba(180,200,255,0.3);font-size:12px;margin-top:2px}
+.music-popup .controls{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    margin-bottom:14px;
+}
+.music-popup .controls .ctrl-btn{
+    background:rgba(255,255,255,0.06);
+    border:none;
+    border-radius:50%;
+    width:40px;height:40px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;color:rgba(255,255,255,0.6);
+    cursor:pointer;
+    transition:background 0.2s;
+}
+.music-popup .controls .ctrl-btn:active{background:rgba(255,255,255,0.12)}
+.music-popup .controls .ctrl-btn.play-btn{background:rgba(74,108,247,0.2);color:#4A6CF7;font-size:18px}
+.music-popup .controls .ctrl-btn.play-btn:active{background:rgba(74,108,247,0.35)}
+.music-popup .volume-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+}
+.music-popup .volume-row .v-icon{color:rgba(255,255,255,0.25);font-size:14px}
+.music-popup .volume-row input[type="range"]{
+    flex:1;height:3px;-webkit-appearance:none;appearance:none;
+    background:rgba(255,255,255,0.1);border-radius:2px;outline:none;
+}
+.music-popup .volume-row input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:12px;height:12px;
+    border-radius:50%;background:#4A6CF7;cursor:pointer;
+}
+.script-card{
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    border:1px solid rgba(120,160,255,0.06);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    transition:background 0.2s,border-color 0.2s;
+}
+.script-card:active{background:rgba(255,255,255,0.07)}
+.script-card .info .name{font-size:16px;font-weight:500;color:#e8eeff}
+.script-card .info .version{font-size:12px;color:rgba(180,200,255,0.3);margin-left:6px}
+.script-card .info .desc{font-size:13px;color:rgba(180,200,255,0.45);margin-top:3px}
+.btn-copy{
+    background:rgba(74,108,247,0.15);
+    border:1px solid rgba(74,108,247,0.15);
+    color:#a0baff;
+    padding:6px 18px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+    transition:background 0.2s,border-color 0.2s;
+    flex-shrink:0;
+    margin-left:12px;
+}
+.btn-copy:active{background:rgba(74,108,247,0.25)}
+.btn-copy.copied{background:rgba(69,199,119,0.2);border-color:rgba(69,199,119,0.2);color:#69db7c}
+.footer{text-align:center;color:rgba(180,200,255,0.12);font-size:12px;margin-top:28px;letter-spacing:0.5px}
+.toast{
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(10,15,35,0.85);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(120,160,255,0.08);
+    color:#e8eeff;
+    padding:12px 28px;
+    border-radius:30px;
+    font-size:14px;
+    display:none;
+    z-index:999;
+    white-space:nowrap;
+}
+.toast.show{display:block;animation:fadeUp 0.35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.profile-page{display:none}
+.profile-page .profile-card{
+    background:rgba(10,15,35,0.6);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-radius:20px;
+    padding:30px 25px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+    border:1px solid rgba(120,160,255,0.12);
+    text-align:center;
+    transition:background 0.3s,border-color 0.3s;
+}
+.profile-page .profile-card .big-avatar{
+    width:80px;height:80px;border-radius:50%;
+    background:linear-gradient(135deg,#4A6CF7,#8b5cf6);
+    display:flex;align-items:center;justify-content:center;
+    font-size:36px;color:#fff;font-weight:600;
+    margin:0 auto 16px;
+    box-shadow:0 4px 24px rgba(74,108,247,0.3);
+    cursor:pointer;
+    overflow:hidden;
+    transition:transform 0.2s,box-shadow 0.2s;
+    position:relative;
+}
+.profile-page .profile-card .big-avatar:active{transform:scale(0.95)}
+.profile-page .profile-card .big-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-page .profile-card .big-avatar .camera-icon{
+    position:absolute;bottom:0;left:0;right:0;
+    background:rgba(0,0,0,0.6);color:#fff;font-size:12px;
+    padding:4px 0;opacity:0;transition:opacity 0.3s;
+}
+.profile-page .profile-card .big-avatar:active .camera-icon{opacity:1}
+.profile-page .profile-card .avatar-hint{font-size:12px;color:rgba(180,200,255,0.3);margin-top:-10px;margin-bottom:16px}
+.profile-page .profile-card .p-name{font-size:20px;font-weight:600;color:#fff;margin-bottom:4px}
+.profile-page .profile-card .p-email{font-size:14px;color:rgba(180,200,255,0.5);margin-bottom:20px}
+.profile-page .profile-card .p-info{
+    text-align:left;background:rgba(255,255,255,0.04);
+    border-radius:12px;padding:16px;margin-bottom:16px;
+}
+.profile-page .profile-card .p-info .row{
+    display:flex;justify-content:space-between;padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,0.04);font-size:14px;
+}
+.profile-page .profile-card .p-info .row:last-child{border-bottom:none}
+.profile-page .profile-card .p-info .label{color:rgba(180,200,255,0.4)}
+.profile-page .profile-card .p-info .value{color:rgba(255,255,255,0.8)}
+.profile-page .profile-card .p-btns{display:flex;gap:12px;justify-content:center}
+.profile-page .profile-card .p-btns button{
+    padding:10px 28px;border:none;border-radius:12px;
+    font-size:14px;font-weight:500;cursor:pointer;transition:transform 0.12s;
+}
+.profile-page .profile-card .p-btns button:active{transform:scale(0.96)}
+.profile-page .profile-card .p-btns .btn-back{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
+.profile-page .profile-card .p-btns .btn-logout{background:#e74c5e;color:#fff}
+.profile-page .profile-card .p-btns .btn-logout:active{background:#c0392b}
+.avatar-picker{
+    display:none;
+    position:fixed;
+    top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(8px);
+    z-index:1000;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+.avatar-picker.show{display:flex}
+.avatar-picker .picker-box{
+    background:rgba(10,15,35,0.92);
+    border-radius:20px;
+    padding:24px 20px;
+    max-width:400px;
+    width:100%;
+    border:1px solid rgba(120,160,255,0.1);
+}
+.avatar-picker .picker-box h3{color:#fff;text-align:center;margin-bottom:16px;font-size:18px}
+.avatar-picker .picker-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-bottom:16px;
+}
+.avatar-picker .picker-grid .opt{
+    aspect-ratio:1;
+    border-radius:50%;
+    border:2px solid transparent;
+    cursor:pointer;
+    transition:transform 0.15s,border-color 0.2s;
+    display:flex;align-items:center;justify-content:center;
+    font-size:24px;color:#fff;font-weight:600;
+}
+.avatar-picker .picker-grid .opt:active{transform:scale(0.9)}
+.avatar-picker .picker-grid .opt.active{border-color:#4A6CF7;box-shadow:0 0 20px rgba(74,108,247,0.3)}
+.avatar-picker .picker-footer{display:flex;gap:12px}
+.avatar-picker .picker-footer button{
+    flex:1;padding:10px;border:none;border-radius:12px;
+    font-size:14px;font-weight:500;cursor:pointer;transition:transform 0.12s;
+}
+.avatar-picker .picker-footer button:active{transform:scale(0.96)}
+.avatar-picker .picker-footer .btn-close{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)}
+.avatar-picker .picker-footer .btn-upload{background:linear-gradient(135deg,#4A6CF7,#8b5cf6);color:#fff}
+.hidden{display:none!important}
+</style>
 </head>
 <body>
 
 <canvas id="particleCanvas"></canvas>
 
 <div class="container">
+    <!-- ===== 顶部状态栏（高级功能） ===== -->
+    <div id="statusBar" style="display:flex;justify-content:space-between;align-items:center;padding:6px 12px;margin-bottom:12px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.04);font-size:12px;color:rgba(180,200,255,0.4);flex-wrap:wrap;gap:6px;">
+        <span id="greetingText">🌅 早上好</span>
+        <span id="statusText">🟢 在线</span>
+        <span id="visitCount">👁️ 0次</span>
+        <button id="themeToggle" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);color:rgba(180,200,255,0.4);border-radius:14px;padding:2px 12px;font-size:12px;cursor:pointer;">🌓 切换</button>
+    </div>
+
+    <!-- ===== 登录界面 ===== -->
     <div id="authSection" class="auth-box">
         <h2>✦ 星脚本</h2>
         <p class="sub" id="modeText">登录后查看脚本</p>
@@ -333,6 +429,7 @@
         <div class="switch"><span id="switchText">还没有账号？</span> <a href="#" id="switchLink">注册</a></div>
     </div>
 
+    <!-- ===== 主界面 ===== -->
     <div id="mainSection" class="main-content">
         <div class="header">
             <h1 id="homeBtn">✦ 星脚本</h1>
@@ -348,6 +445,7 @@
         <div class="footer">© 2026 星脚本 · 仅供学习交流</div>
     </div>
 
+    <!-- ===== 个人中心 ===== -->
     <div id="profilePage" class="profile-page">
         <div class="profile-card">
             <div class="big-avatar" id="profileAvatar">
@@ -371,7 +469,7 @@
     </div>
 </div>
 
-<!-- 音乐弹窗 -->
+<!-- ===== 音乐弹窗 ===== -->
 <div class="music-popup" id="musicPopup">
     <div class="popup-header">
         <span class="title">🎵 音乐</span>
@@ -392,6 +490,7 @@
     </div>
 </div>
 
+<!-- ===== 头像选择器 ===== -->
 <div class="avatar-picker" id="avatarPicker">
     <div class="picker-box">
         <h3>🎨 选择头像</h3>
@@ -404,635 +503,680 @@
     </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast"></div><script>
+// ============================================================
+// 流动粒子动画
+// ============================================================
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let w, h;
+let particles = [];
+const PARTICLE_COUNT = 60;
+const MAX_DIST = 150;
+const FLOW_SPEED = 0.2;
 
-<script>
-    // ============================================================
-    // 流动粒子动画
-    // ============================================================
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    let w, h;
-    let particles = [];
-    const PARTICLE_COUNT = 60;
-    const MAX_DIST = 150;
-    const FLOW_SPEED = 0.2;
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
 
-    function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
+class Particle {
+    constructor() {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.r = Math.random() * 2 + 1.2;
+        this.dx = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
+        this.dy = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
+        this.phaseX = Math.random() * 100;
+        this.phaseY = Math.random() * 100;
+        this.speed = 0.2 + Math.random() * 0.3;
     }
-    window.addEventListener('resize', resize);
-    resize();
-
-    class Particle {
-        constructor() {
-            this.x = Math.random() * w;
-            this.y = Math.random() * h;
-            this.r = Math.random() * 2 + 1.2;
-            this.dx = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
-            this.dy = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
-            this.phaseX = Math.random() * 100;
-            this.phaseY = Math.random() * 100;
-            this.speed = 0.2 + Math.random() * 0.3;
-        }
-        update(time) {
-            const waveX = Math.sin(time * 0.0004 + this.phaseX) * 0.15;
-            const waveY = Math.cos(time * 0.0005 + this.phaseY) * 0.15;
-            this.x += this.dx + waveX * this.speed;
-            this.y += this.dy + waveY * this.speed;
-            if (this.x < -20) this.x = w + 20;
-            if (this.x > w + 20) this.x = -20;
-            if (this.y < -20) this.y = h + 20;
-            if (this.y > h + 20) this.y = -20;
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(160, 200, 255, 0.5)';
-            ctx.fill();
-        }
+    update(time) {
+        const waveX = Math.sin(time * 0.0004 + this.phaseX) * 0.15;
+        const waveY = Math.cos(time * 0.0005 + this.phaseY) * 0.15;
+        this.x += this.dx + waveX * this.speed;
+        this.y += this.dy + waveY * this.speed;
+        if (this.x < -20) this.x = w + 20;
+        if (this.x > w + 20) this.x = -20;
+        if (this.y < -20) this.y = h + 20;
+        if (this.y > h + 20) this.y = -20;
     }
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-        particles.push(new Particle());
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(160, 200, 255, 0.5)';
+        ctx.fill();
     }
+}
 
-    function drawLines(time) {
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < MAX_DIST) {
-                    const alpha = (1 - dist / MAX_DIST) * 0.3;
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = `rgba(120, 160, 255, ${alpha})`;
-                    ctx.lineWidth = 0.6;
-                    ctx.stroke();
-                }
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push(new Particle());
+}
+
+function drawLines(time) {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MAX_DIST) {
+                const alpha = (1 - dist / MAX_DIST) * 0.3;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(120, 160, 255, ${alpha})`;
+                ctx.lineWidth = 0.6;
+                ctx.stroke();
             }
         }
     }
+}
 
-    function animate(time) {
-        ctx.clearRect(0, 0, w, h);
-        const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w*0.7);
-        grad.addColorStop(0, 'rgba(30, 60, 120, 0.08)');
-        grad.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
+function animate(time) {
+    ctx.clearRect(0, 0, w, h);
+    const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w*0.7);
+    grad.addColorStop(0, 'rgba(30, 60, 120, 0.08)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
 
-        for (const p of particles) {
-            p.update(time);
-        }
-        drawLines(time);
-        for (const p of particles) {
-            p.draw();
-        }
-        requestAnimationFrame(animate);
+    for (const p of particles) {
+        p.update(time);
     }
-
-    animate(0);
-
-    // ============================================================
-    // 固定音乐播放器 - 只播放《起风了》
-    // ============================================================
-    const musicBtn = document.getElementById('musicBtn');
-    const musicPopup = document.getElementById('musicPopup');
-    const closeMusicPopup = document.getElementById('closeMusicPopup');
-    const popupSongTitle = document.getElementById('popupSongTitle');
-    const popupSongArtist = document.getElementById('popupSongArtist');
-    const popupPlayBtn = document.getElementById('popupPlayBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const popupVolSlider = document.getElementById('popupVolSlider');
-    const popupVolIcon = document.getElementById('popupVolIcon');
-
-    // 固定音乐链接（起风了纯音乐版）
-    const SONG_URL = 'https://www.aigei.com/item/qi_feng_le_chun.html';
-    const SONG_TITLE = '起风了';
-    const SONG_ARTIST = '纯音乐';
-
-    let isPlaying = false;
-    let audio = new Audio();
-
-    // 唤醒音频上下文
-    document.addEventListener('click', function() {
-        audio.play().catch(() => {});
-        audio.pause();
-    });
-
-    function loadSong() {
-        audio.src = SONG_URL;
-        popupSongTitle.textContent = SONG_TITLE;
-        popupSongArtist.textContent = SONG_ARTIST;
-        if (isPlaying) {
-            audio.play().catch(() => {});
-        }
-        musicBtn.textContent = '🎵';
-        musicBtn.classList.add('playing');
+    drawLines(time);
+    for (const p of particles) {
+        p.draw();
     }
+    requestAnimationFrame(animate);
+}
 
-    function togglePlay() {
-        if (audio.src === '' || audio.src === window.location.href) {
-            loadSong();
-            audio.play().catch(() => {});
-            isPlaying = true;
-            popupPlayBtn.textContent = '⏸';
-            musicBtn.textContent = '🎵';
-            musicBtn.classList.add('playing');
-            return;
-        }
-        if (isPlaying) {
-            audio.pause();
-            isPlaying = false;
-            popupPlayBtn.textContent = '▶';
-            musicBtn.classList.remove('playing');
-        } else {
-            audio.play().catch(() => {});
-            isPlaying = true;
-            popupPlayBtn.textContent = '⏸';
-            musicBtn.classList.add('playing');
-        }
-    }
+animate(0);
 
-    // 打开/关闭弹窗
-    musicBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        musicPopup.classList.toggle('show');
-    });
+// ============================================================
+// 固定音乐播放器 - 起风了（可播放MP3源）
+// ============================================================
+const musicBtn = document.getElementById('musicBtn');
+const musicPopup = document.getElementById('musicPopup');
+const closeMusicPopup = document.getElementById('closeMusicPopup');
+const popupSongTitle = document.getElementById('popupSongTitle');
+const popupSongArtist = document.getElementById('popupSongArtist');
+const popupPlayBtn = document.getElementById('popupPlayBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const popupVolSlider = document.getElementById('popupVolSlider');
+const popupVolIcon = document.getElementById('popupVolIcon');
 
-    closeMusicPopup.addEventListener('click', function() {
-        musicPopup.classList.remove('show');
-    });
+const SONG_URL = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+const SONG_TITLE = '起风了（纯音乐）';
+const SONG_ARTIST = '纯音乐';
 
-    document.addEventListener('click', function(e) {
-        if (!musicPopup.contains(e.target) && e.target !== musicBtn) {
-            musicPopup.classList.remove('show');
-        }
-    });
+let isPlaying = false;
+let audio = new Audio();
 
-    // 播放控制
-    popupPlayBtn.addEventListener('click', togglePlay);
+document.addEventListener('click', function() {
+    audio.play().catch(() => {});
+    audio.pause();
+});
 
-    // 上一首/下一首（固定一首歌，点了重新播放）
-    prevBtn.addEventListener('click', function() {
-        if (audio.src === '' || audio.src === window.location.href) {
-            loadSong();
-        }
-        audio.currentTime = 0;
-        if (!isPlaying) {
-            audio.play().catch(() => {});
-            isPlaying = true;
-            popupPlayBtn.textContent = '⏸';
-            musicBtn.classList.add('playing');
-        }
-    });
-
-    nextBtn.addEventListener('click', function() {
-        if (audio.src === '' || audio.src === window.location.href) {
-            loadSong();
-        }
-        audio.currentTime = 0;
-        if (!isPlaying) {
-            audio.play().catch(() => {});
-            isPlaying = true;
-            popupPlayBtn.textContent = '⏸';
-            musicBtn.classList.add('playing');
-        }
-    });
-
-    // 音量
-    popupVolSlider.addEventListener('input', function() {
-        audio.volume = this.value / 100;
-        popupVolIcon.textContent = this.value == 0 ? '🔇' : '🔊';
-    });
-
-    popupVolIcon.addEventListener('click', function() {
-        if (audio.volume > 0) {
-            audio.volume = 0;
-            popupVolSlider.value = 0;
-            popupVolIcon.textContent = '🔇';
-        } else {
-            audio.volume = 0.7;
-            popupVolSlider.value = 70;
-            popupVolIcon.textContent = '🔊';
-        }
-    });
-
-    // 初始化
-    audio.volume = 0.7;
-    popupVolSlider.value = 70;
+function loadSong() {
+    audio.src = SONG_URL;
     popupSongTitle.textContent = SONG_TITLE;
     popupSongArtist.textContent = SONG_ARTIST;
-
-    // ============================================================
-    // 登录注册逻辑
-    // ============================================================
-    const authSection = document.getElementById('authSection');
-    const mainSection = document.getElementById('mainSection');
-    const profilePage = document.getElementById('profilePage');
-    const authBtn = document.getElementById('authBtn');
-    const authEmail = document.getElementById('authEmail');
-    const authPassword = document.getElementById('authPassword');
-    const authError = document.getElementById('authError');
-    const authSuccess = document.getElementById('authSuccess');
-    const switchLink = document.getElementById('switchLink');
-    const switchText = document.getElementById('switchText');
-    const modeText = document.getElementById('modeText');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const profileBtn = document.getElementById('profileBtn');
-    const profileBackBtn = document.getElementById('profileBackBtn');
-    const profileLogoutBtn = document.getElementById('profileLogoutBtn');
-    const homeBtn = document.getElementById('homeBtn');
-    const scriptList = document.getElementById('scriptList');
-    const userNameDisplay = document.getElementById('userNameDisplay');
-    const headerAvatar = document.getElementById('headerAvatar');
-    const profileName = document.getElementById('profileName');
-    const profileEmail = document.getElementById('profileEmail');
-    const profileAvatar = document.getElementById('profileAvatar');
-    const avatarEmoji = document.getElementById('avatarEmoji');
-    const avatarImage = document.getElementById('avatarImage');
-    const profileRegTime = document.getElementById('profileRegTime');
-    const profileUid = document.getElementById('profileUid');
-
-    const avatarPicker = document.getElementById('avatarPicker');
-    const avatarGrid = document.getElementById('avatarGrid');
-    const pickerClose = document.getElementById('pickerClose');
-    const pickerUpload = document.getElementById('pickerUpload');
-    const fileInput = document.getElementById('fileInput');
-
-    let isLoginMode = true;
-    let currentUser = null;
-
-    const DEFAULT_AVATARS = [
-        { emoji: '🌟', bg: 'linear-gradient(135deg,#f093fb,#f5576c)' },
-        { emoji: '🚀', bg: 'linear-gradient(135deg,#4facfe,#00f2fe)' },
-        { emoji: '🎯', bg: 'linear-gradient(135deg,#43e97b,#38f9d7)' },
-        { emoji: '💎', bg: 'linear-gradient(135deg,#fa709a,#fee140)' },
-        { emoji: '🔥', bg: 'linear-gradient(135deg,#f093fb,#4facfe)' },
-        { emoji: '⭐', bg: 'linear-gradient(135deg,#f6d365,#fda085)' },
-        { emoji: '🌊', bg: 'linear-gradient(135deg,#a18cd1,#fbc2eb)' },
-        { emoji: '🌙', bg: 'linear-gradient(135deg,#89f7fe,#66a6ff)' },
-    ];
-
-    const SCRIPTS = [
-        { name: "北极星加载器", version: "1.0", desc: "稳定的北极星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' },
-        { name: "星脚本", version: "1.0", desc: "星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' }
-    ];
-
-    function renderScripts() {
-        scriptList.innerHTML = SCRIPTS.map((s, i) =>
-            '<div class="script-card">' +
-            '<div class="info"><div class="name">' + s.name + ' <span class="version">v' + s.version + '</span></div>' +
-            '<div class="desc">' + (s.desc || '') + '</div></div>' +
-            '<button class="btn-copy" onclick="copyScript(' + i + ')">复制</button>' +
-            '</div>'
-        ).join('');
+    if (isPlaying) {
+        audio.play().catch(() => {});
     }
+    musicBtn.textContent = '🎵';
+    musicBtn.classList.add('playing');
+}
 
-    async function copyScript(index) {
-        const loader = SCRIPTS[index].loader;
-        try {
-            await navigator.clipboard.writeText(loader);
-            showToast('✅ 已复制！');
-        } catch (e) {
-            const ta = document.createElement('textarea');
-            ta.value = loader;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
-            showToast('✅ 已复制！');
-        }
+function togglePlay() {
+    if (audio.src === '' || audio.src === window.location.href) {
+        loadSong();
+        audio.play().catch(() => {});
+        isPlaying = true;
+        popupPlayBtn.textContent = '⏸';
+        musicBtn.textContent = '🎵';
+        musicBtn.classList.add('playing');
+        return;
     }
-
-    function showToast(msg) {
-        const el = document.getElementById('toast');
-        el.textContent = msg;
-        el.classList.add('show');
-        clearTimeout(el._timer);
-        el._timer = setTimeout(() => el.classList.remove('show'), 2500);
+    if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        popupPlayBtn.textContent = '▶';
+        musicBtn.classList.remove('playing');
+    } else {
+        audio.play().catch(() => {});
+        isPlaying = true;
+        popupPlayBtn.textContent = '⏸';
+        musicBtn.classList.add('playing');
     }
+}
 
-    function showError(msg) {
-        authError.textContent = msg;
-        authError.style.display = 'block';
-        authSuccess.style.display = 'none';
-        clearTimeout(authError._timer);
-        authError._timer = setTimeout(() => authError.style.display = 'none', 4000);
+// 音量控制
+popupVolSlider.addEventListener('input', function() {
+    audio.volume = this.value / 100;
+    popupVolIcon.textContent = this.value == 0 ? '🔇' : '🔊';
+});
+
+popupVolIcon.addEventListener('click', function() {
+    if (audio.volume > 0) {
+        audio.volume = 0;
+        popupVolSlider.value = 0;
+        popupVolIcon.textContent = '🔇';
+    } else {
+        audio.volume = 0.7;
+        popupVolSlider.value = 70;
+        popupVolIcon.textContent = '🔊';
     }
+});
 
-    function showSuccess(msg) {
-        authSuccess.textContent = msg;
-        authSuccess.style.display = 'block';
-        authError.style.display = 'none';
-        clearTimeout(authSuccess._timer);
-        authSuccess._timer = setTimeout(() => authSuccess.style.display = 'none', 3000);
+// 播放控制
+popupPlayBtn.addEventListener('click', togglePlay);
+
+prevBtn.addEventListener('click', function() {
+    audio.currentTime = 0;
+    if (!isPlaying) {
+        audio.play().catch(() => {});
+        isPlaying = true;
+        popupPlayBtn.textContent = '⏸';
+        musicBtn.classList.add('playing');
     }
+});
 
-    function isValidEmail(email) {
-        if (!email) return false;
-        if (!email.includes('@') || !email.includes('.')) return false;
-        if (email.indexOf('@') > email.lastIndexOf('.')) return false;
-        if (email.indexOf('@') === 0 || email.indexOf('@') === email.length - 1) return false;
-        if (email.lastIndexOf('.') === email.length - 1) return false;
-        if (email.includes(' ')) return false;
-        return true;
+nextBtn.addEventListener('click', function() {
+    audio.currentTime = 0;
+    if (!isPlaying) {
+        audio.play().catch(() => {});
+        isPlaying = true;
+        popupPlayBtn.textContent = '⏸';
+        musicBtn.classList.add('playing');
     }
+});
 
-    function isValidPassword(password) {
-        return password && password.length >= 6;
+// 打开/关闭弹窗
+musicBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    musicPopup.classList.toggle('show');
+});
+
+closeMusicPopup.addEventListener('click', function() {
+    musicPopup.classList.remove('show');
+});
+
+document.addEventListener('click', function(e) {
+    if (!musicPopup.contains(e.target) && e.target !== musicBtn) {
+        musicPopup.classList.remove('show');
     }
+});
 
-    function getInitials(email) {
-        if (!email) return '✦';
-        const name = email.split('@')[0];
-        if (name.length <= 2) return name.toUpperCase();
-        return name.substring(0, 2).toUpperCase();
+// 初始化
+audio.volume = 0.7;
+popupVolSlider.value = 70;
+popupSongTitle.textContent = SONG_TITLE;
+popupSongArtist.textContent = SONG_ARTIST;
+
+// ============================================================
+// 高级功能
+// ============================================================
+
+// 1. 每日欢迎语
+function updateGreeting() {
+    const hour = new Date().getHours();
+    let greet = '';
+    if (hour >= 5 && hour < 12) greet = '🌅 早上好';
+    else if (hour >= 12 && hour < 18) greet = '☀️ 下午好';
+    else if (hour >= 18 && hour < 22) greet = '🌇 晚上好';
+    else greet = '🌙 夜深了';
+    document.getElementById('greetingText').textContent = greet;
+}
+updateGreeting();
+
+// 2. 在线状态检测
+function updateStatus() {
+    const status = document.getElementById('statusText');
+    if (navigator.onLine) {
+        status.textContent = '🟢 在线';
+        status.style.color = '#69db7c';
+    } else {
+        status.textContent = '🔴 离线';
+        status.style.color = '#ff6b6b';
     }
+}
+window.addEventListener('online', updateStatus);
+window.addEventListener('offline', updateStatus);
+updateStatus();
 
-    function getAvatarData(email) {
-        const users = JSON.parse(localStorage.getItem('users') || '{}');
-        if (users[email] && users[email]._avatar) {
-            return users[email]._avatar;
-        }
-        return null;
+// 3. 访问统计
+let visitCount = parseInt(localStorage.getItem('visitCount') || '0') + 1;
+localStorage.setItem('visitCount', visitCount);
+document.getElementById('visitCount').textContent = '👁️ ' + visitCount + '次';
+
+// 4. 深色/浅色模式切换
+let darkMode = localStorage.getItem('darkMode') !== 'false';
+function applyTheme() {
+    if (darkMode) {
+        document.body.classList.remove('light-mode');
+    } else {
+        document.body.classList.add('light-mode');
     }
+}
+applyTheme();
 
-    function setAvatarData(email, avatarData) {
-        const users = JSON.parse(localStorage.getItem('users') || '{}');
-        if (users[email]) {
-            if (typeof users[email] === 'string') {
-                users[email] = { password: users[email], _avatar: avatarData, _time: users[email + '._time'] || new Date().toISOString() };
-            } else {
-                users[email]._avatar = avatarData;
-            }
-        }
-        localStorage.setItem('users', JSON.stringify(users));
+document.getElementById('themeToggle').addEventListener('click', function() {
+    darkMode = !darkMode;
+    localStorage.setItem('darkMode', darkMode);
+    applyTheme();
+});
+
+// ============================================================
+// 登录注册逻辑
+// ============================================================
+const authSection = document.getElementById('authSection');
+const mainSection = document.getElementById('mainSection');
+const profilePage = document.getElementById('profilePage');
+const authBtn = document.getElementById('authBtn');
+const authEmail = document.getElementById('authEmail');
+const authPassword = document.getElementById('authPassword');
+const authError = document.getElementById('authError');
+const authSuccess = document.getElementById('authSuccess');
+const switchLink = document.getElementById('switchLink');
+const switchText = document.getElementById('switchText');
+const modeText = document.getElementById('modeText');
+const logoutBtn = document.getElementById('logoutBtn');
+const profileBtn = document.getElementById('profileBtn');
+const profileBackBtn = document.getElementById('profileBackBtn');
+const profileLogoutBtn = document.getElementById('profileLogoutBtn');
+const homeBtn = document.getElementById('homeBtn');
+const scriptList = document.getElementById('scriptList');
+const userNameDisplay = document.getElementById('userNameDisplay');
+const headerAvatar = document.getElementById('headerAvatar');
+const profileName = document.getElementById('profileName');
+const profileEmail = document.getElementById('profileEmail');
+const profileAvatar = document.getElementById('profileAvatar');
+const avatarEmoji = document.getElementById('avatarEmoji');
+const avatarImage = document.getElementById('avatarImage');
+const profileRegTime = document.getElementById('profileRegTime');
+const profileUid = document.getElementById('profileUid');
+
+const avatarPicker = document.getElementById('avatarPicker');
+const avatarGrid = document.getElementById('avatarGrid');
+const pickerClose = document.getElementById('pickerClose');
+const pickerUpload = document.getElementById('pickerUpload');
+const fileInput = document.getElementById('fileInput');
+
+let isLoginMode = true;
+let currentUser = null;
+
+const DEFAULT_AVATARS = [
+    { emoji: '🌟', bg: 'linear-gradient(135deg,#f093fb,#f5576c)' },
+    { emoji: '🚀', bg: 'linear-gradient(135deg,#4facfe,#00f2fe)' },
+    { emoji: '🎯', bg: 'linear-gradient(135deg,#43e97b,#38f9d7)' },
+    { emoji: '💎', bg: 'linear-gradient(135deg,#fa709a,#fee140)' },
+    { emoji: '🔥', bg: 'linear-gradient(135deg,#f093fb,#4facfe)' },
+    { emoji: '⭐', bg: 'linear-gradient(135deg,#f6d365,#fda085)' },
+    { emoji: '🌊', bg: 'linear-gradient(135deg,#a18cd1,#fbc2eb)' },
+    { emoji: '🌙', bg: 'linear-gradient(135deg,#89f7fe,#66a6ff)' },
+];
+
+const SCRIPTS = [
+    { name: "北极星加载器", version: "1.0", desc: "稳定的北极星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' },
+    { name: "星脚本", version: "1.0", desc: "星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' }
+];
+
+function renderScripts() {
+    scriptList.innerHTML = SCRIPTS.map((s, i) =>
+        '<div class="script-card" id="scriptCard' + i + '">' +
+        '<div class="info"><div class="name">' + s.name + ' <span class="version">v' + s.version + '</span></div>' +
+        '<div class="desc">' + (s.desc || '') + '</div></div>' +
+        '<button class="btn-copy" id="copyBtn' + i + '" onclick="copyScript(' + i + ')">📋 复制</button>' +
+        '</div>'
+    ).join('');
+}
+
+async function copyScript(index) {
+    const loader = SCRIPTS[index].loader;
+    try {
+        await navigator.clipboard.writeText(loader);
+        showToast('✅ 已复制！');
+        // 复制成功动画
+        const btn = document.getElementById('copyBtn' + index);
+        btn.textContent = '✅ 已复制';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = '📋 复制';
+            btn.classList.remove('copied');
+        }, 2000);
+    } catch (e) {
+        const ta = document.createElement('textarea');
+        ta.value = loader;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast('✅ 已复制！');
     }
+}
 
-    function applyAvatar(email, avatarElement, emojiElement, imgElement) {
-        const avatarData = getAvatarData(email);
-        if (avatarData) {
-            if (avatarData.type === 'image') {
-                if (emojiElement) emojiElement.style.display = 'none';
-                if (imgElement) { imgElement.style.display = 'block';
-                    imgElement.src = avatarData.data; }
-                avatarElement.style.background = 'transparent';
-            } else if (avatarData.type === 'emoji') {
-                if (emojiElement) { emojiElement.style.display = 'block';
-                    emojiElement.textContent = avatarData.data; }
-                if (imgElement) imgElement.style.display = 'none';
-                avatarElement.style.background = avatarData.bg || 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
-            }
+function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function showError(msg) {
+    authError.textContent = msg;
+    authError.style.display = 'block';
+    authSuccess.style.display = 'none';
+    clearTimeout(authError._timer);
+    authError._timer = setTimeout(() => authError.style.display = 'none', 4000);
+}
+
+function showSuccess(msg) {
+    authSuccess.textContent = msg;
+    authSuccess.style.display = 'block';
+    authError.style.display = 'none';
+    clearTimeout(authSuccess._timer);
+    authSuccess._timer = setTimeout(() => authSuccess.style.display = 'none', 3000);
+}
+
+function isValidEmail(email) {
+    if (!email) return false;
+    if (!email.includes('@') || !email.includes('.')) return false;
+    if (email.indexOf('@') > email.lastIndexOf('.')) return false;
+    if (email.indexOf('@') === 0 || email.indexOf('@') === email.length - 1) return false;
+    if (email.lastIndexOf('.') === email.length - 1) return false;
+    if (email.includes(' ')) return false;
+    return true;
+}
+
+function isValidPassword(password) {
+    return password && password.length >= 6;
+}
+
+function getInitials(email) {
+    if (!email) return '✦';
+    const name = email.split('@')[0];
+    if (name.length <= 2) return name.toUpperCase();
+    return name.substring(0, 2).toUpperCase();
+}
+
+function getAvatarData(email) {
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    if (users[email] && users[email]._avatar) {
+        return users[email]._avatar;
+    }
+    return null;
+}
+
+function setAvatarData(email, avatarData) {
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    if (users[email]) {
+        if (typeof users[email] === 'string') {
+            users[email] = { password: users[email], _avatar: avatarData, _time: users[email + '._time'] || new Date().toISOString() };
         } else {
+            users[email]._avatar = avatarData;
+        }
+    }
+    localStorage.setItem('users', JSON.stringify(users));
+}
+
+function applyAvatar(email, avatarElement, emojiElement, imgElement) {
+    const avatarData = getAvatarData(email);
+    if (avatarData) {
+        if (avatarData.type === 'image') {
+            if (emojiElement) emojiElement.style.display = 'none';
+            if (imgElement) { imgElement.style.display = 'block';
+                imgElement.src = avatarData.data; }
+            avatarElement.style.background = 'transparent';
+        } else if (avatarData.type === 'emoji') {
             if (emojiElement) { emojiElement.style.display = 'block';
-                emojiElement.textContent = getInitials(email); }
+                emojiElement.textContent = avatarData.data; }
             if (imgElement) imgElement.style.display = 'none';
-            avatarElement.style.background = 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+            avatarElement.style.background = avatarData.bg || 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
         }
+    } else {
+        if (emojiElement) { emojiElement.style.display = 'block';
+            emojiElement.textContent = getInitials(email); }
+        if (imgElement) imgElement.style.display = 'none';
+        avatarElement.style.background = 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
     }
+}
 
-    function renderAvatarPicker() {
-        avatarGrid.innerHTML = DEFAULT_AVATARS.map((a, i) =>
-            `<div class="opt" data-index="${i}" style="background:${a.bg}">${a.emoji}</div>`
-        ).join('');
-        avatarGrid.querySelectorAll('.opt').forEach(el => {
-            el.addEventListener('click', function() {
-                const idx = parseInt(this.dataset.index);
-                const avatar = DEFAULT_AVATARS[idx];
-                setAvatarData(currentUser, { type: 'emoji', data: avatar.emoji, bg: avatar.bg });
-                updateAllAvatars();
-                closePicker();
-                showToast('✅ 头像已更换');
-            });
-        });
-    }
-
-    function openPicker() {
-        if (!currentUser) {
-            showToast('请先登录');
-            return;
-        }
-        renderAvatarPicker();
-        avatarPicker.classList.add('show');
-    }
-
-    function closePicker() {
-        avatarPicker.classList.remove('show');
-    }
-
-    function updateAllAvatars() {
-        if (!currentUser) return;
-        applyAvatar(currentUser, profileAvatar, avatarEmoji, avatarImage);
-        const avatarData = getAvatarData(currentUser);
-        if (avatarData && avatarData.type === 'emoji') {
-            headerAvatar.innerHTML = '';
-            headerAvatar.textContent = avatarData.data;
-            headerAvatar.style.background = avatarData.bg || 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
-        } else if (avatarData && avatarData.type === 'image') {
-            headerAvatar.innerHTML = `<img src="${avatarData.data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-            headerAvatar.style.background = 'transparent';
-        } else {
-            headerAvatar.innerHTML = '';
-            headerAvatar.textContent = getInitials(currentUser);
-            headerAvatar.style.background = 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
-        }
-    }
-
-    function showMain() {
-        authSection.style.display = 'none';
-        mainSection.style.display = 'block';
-        profilePage.style.display = 'none';
-        renderScripts();
-        if (currentUser) {
-            const displayName = currentUser.split('@')[0];
-            userNameDisplay.textContent = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
-            updateAllAvatars();
-        }
-    }
-
-    function showProfile() {
-        mainSection.style.display = 'none';
-        profilePage.style.display = 'block';
-        if (currentUser) {
-            const displayName = currentUser.split('@')[0];
-            profileName.textContent = displayName;
-            profileEmail.textContent = currentUser;
-            applyAvatar(currentUser, profileAvatar, avatarEmoji, avatarImage);
-
-            const users = JSON.parse(localStorage.getItem('users') || '{}');
-            let userData = users[currentUser];
-
-            if (userData && typeof userData === 'object') {
-                if (!userData._uid) {
-                    const emailPrefix = currentUser.split('@')[0].substring(0, 4).toUpperCase();
-                    const randomNum = String(Math.floor(Math.random() * 100)).padStart(2, '0');
-                    userData._uid = 'U' + emailPrefix + randomNum;
-                    users[currentUser] = userData;
-                    localStorage.setItem('users', JSON.stringify(users));
-                }
-                profileUid.textContent = userData._uid || 'U----';
-            } else {
-                profileUid.textContent = 'U----';
-            }
-
-            if (userData && typeof userData === 'object' && userData._time) {
-                profileRegTime.textContent = new Date(userData._time).toLocaleString();
-            } else {
-                profileRegTime.textContent = '今天';
-            }
-        }
-    }
-
-    profileAvatar.addEventListener('click', function(e) {
-        e.stopPropagation();
-        openPicker();
-    });
-
-    document.querySelector('.big-avatar .camera-icon')?.addEventListener('click', function(e) {
-        e.stopPropagation();
-        openPicker();
-    });
-
-    profileBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (!currentUser) {
-            showToast('请先登录');
-            return;
-        }
-        showProfile();
-    });
-
-    profileBackBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        showMain();
-    });
-
-    homeBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (currentUser) {
-            showMain();
-        }
-    });
-
-    pickerClose.addEventListener('click', closePicker);
-    avatarPicker.addEventListener('click', function(e) {
-        if (e.target === this) closePicker();
-    });
-
-    pickerUpload.addEventListener('click', function() {
-        fileInput.click();
-    });
-    fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            const dataUrl = ev.target.result;
-            setAvatarData(currentUser, { type: 'image', data: dataUrl });
+function renderAvatarPicker() {
+    avatarGrid.innerHTML = DEFAULT_AVATARS.map((a, i) =>
+        `<div class="opt" data-index="${i}" style="background:${a.bg}">${a.emoji}</div>`
+    ).join('');
+    avatarGrid.querySelectorAll('.opt').forEach(el => {
+        el.addEventListener('click', function() {
+            const idx = parseInt(this.dataset.index);
+            const avatar = DEFAULT_AVATARS[idx];
+            setAvatarData(currentUser, { type: 'emoji', data: avatar.emoji, bg: avatar.bg });
             updateAllAvatars();
             closePicker();
-            showToast('✅ 头像已上传');
-            fileInput.value = '';
-        };
-        reader.readAsDataURL(file);
+            showToast('✅ 头像已更换');
+        });
     });
+}
 
-    function handleAuth() {
-        const email = authEmail.value.trim();
-        const password = authPassword.value.trim();
+function openPicker() {
+    if (!currentUser) {
+        showToast('请先登录');
+        return;
+    }
+    renderAvatarPicker();
+    avatarPicker.classList.add('show');
+}
 
-        if (!isValidEmail(email)) {
-            showError('❌ 请输入正确的邮箱（如 123@qq.com）');
-            return;
-        }
-        if (!isValidPassword(password)) {
-            showError('❌ 密码至少 6 位');
-            return;
-        }
+function closePicker() {
+    avatarPicker.classList.remove('show');
+}
 
-        let users = {};
-        try { users = JSON.parse(localStorage.getItem('users') || '{}'); } catch (e) { users = {}; }
+function updateAllAvatars() {
+    if (!currentUser) return;
+    applyAvatar(currentUser, profileAvatar, avatarEmoji, avatarImage);
+    const avatarData = getAvatarData(currentUser);
+    if (avatarData && avatarData.type === 'emoji') {
+        headerAvatar.innerHTML = '';
+        headerAvatar.textContent = avatarData.data;
+        headerAvatar.style.background = avatarData.bg || 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+    } else if (avatarData && avatarData.type === 'image') {
+        headerAvatar.innerHTML = `<img src="${avatarData.data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+        headerAvatar.style.background = 'transparent';
+    } else {
+        headerAvatar.innerHTML = '';
+        headerAvatar.textContent = getInitials(currentUser);
+        headerAvatar.style.background = 'linear-gradient(135deg,#4A6CF7,#8b5cf6)';
+    }
+}
 
-        if (isLoginMode) {
-            if (users[email] === undefined || (typeof users[email] === 'object' && !users[email].password)) {
-                showError('❌ 账号不存在，请先注册');
-                return;
+function showMain() {
+    authSection.style.display = 'none';
+    mainSection.style.display = 'block';
+    profilePage.style.display = 'none';
+    renderScripts();
+    if (currentUser) {
+        const displayName = currentUser.split('@')[0];
+        userNameDisplay.textContent = displayName.length > 8 ? displayName.substring(0, 8) + '...' : displayName;
+        updateAllAvatars();
+    }
+}
+
+function showProfile() {
+    mainSection.style.display = 'none';
+    profilePage.style.display = 'block';
+    if (currentUser) {
+        const displayName = currentUser.split('@')[0];
+        profileName.textContent = displayName;
+        profileEmail.textContent = currentUser;
+        applyAvatar(currentUser, profileAvatar, avatarEmoji, avatarImage);
+
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+        let userData = users[currentUser];
+
+        if (userData && typeof userData === 'object') {
+            if (!userData._uid) {
+                const emailPrefix = currentUser.split('@')[0].substring(0, 4).toUpperCase();
+                const randomNum = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+                userData._uid = 'U' + emailPrefix + randomNum;
+                users[currentUser] = userData;
+                localStorage.setItem('users', JSON.stringify(users));
             }
-            const storedPw = typeof users[email] === 'string' ? users[email] : users[email].password;
-            if (storedPw !== password) {
-                showError('❌ 密码错误，请重试');
-                return;
-            }
-            currentUser = email;
-            showMain();
-            showToast('✅ 登录成功！');
+            profileUid.textContent = userData._uid || 'U----';
         } else {
-            if (users[email] !== undefined) {
-                showError('❌ 该邮箱已注册，请直接登录');
-                return;
-            }
-            const emailPrefix = email.split('@')[0].substring(0, 4).toUpperCase();
-            const randomNum = String(Math.floor(Math.random() * 100)).padStart(2, '0');
-            const uid = 'U' + emailPrefix + randomNum;
+            profileUid.textContent = 'U----';
+        }
 
-            users[email] = {
-                password: password,
-                _time: new Date().toISOString(),
-                _avatar: null,
-                _uid: uid
-            };
-            localStorage.setItem('users', JSON.stringify(users));
-            showSuccess('✅ 注册成功！即将切换到登录...');
-            setTimeout(() => {
-                switchMode();
-                authEmail.value = email;
-                authPassword.value = '';
-                showToast('✅ 请登录');
-            }, 1500);
+        if (userData && typeof userData === 'object' && userData._time) {
+            profileRegTime.textContent = new Date(userData._time).toLocaleString();
+        } else {
+            profileRegTime.textContent = '今天';
         }
     }
+}
 
-    function switchMode() {
-        isLoginMode = !isLoginMode;
-        authBtn.textContent = isLoginMode ? '登录' : '注册';
-        switchText.textContent = isLoginMode ? '还没有账号？' : '已有账号？';
-        switchLink.textContent = isLoginMode ? '注册' : '登录';
-        modeText.textContent = isLoginMode ? '登录后查看脚本' : '注册后登录查看脚本';
-        authError.style.display = 'none';
-        authSuccess.style.display = 'none';
-        authEmail.value = '';
-        authPassword.value = '';
+profileAvatar.addEventListener('click', function(e) {
+    e.stopPropagation();
+    openPicker();
+});
+
+profileBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (!currentUser) {
+        showToast('请先登录');
+        return;
+    }
+    showProfile();
+});
+
+profileBackBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    showMain();
+});
+
+homeBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (currentUser) {
+        showMain();
+    }
+});
+
+pickerClose.addEventListener('click', closePicker);
+avatarPicker.addEventListener('click', function(e) {
+    if (e.target === this) closePicker();
+});
+
+pickerUpload.addEventListener('click', function() {
+    fileInput.click();
+});
+fileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        const dataUrl = ev.target.result;
+        setAvatarData(currentUser, { type: 'image', data: dataUrl });
+        updateAllAvatars();
+        closePicker();
+        showToast('✅ 头像已上传');
+        fileInput.value = '';
+    };
+    reader.readAsDataURL(file);
+});
+
+function handleAuth() {
+    const email = authEmail.value.trim();
+    const password = authPassword.value.trim();
+
+    if (!isValidEmail(email)) {
+        showError('❌ 请输入正确的邮箱（如 123@qq.com）');
+        return;
+    }
+    if (!isValidPassword(password)) {
+        showError('❌ 密码至少 6 位');
+        return;
     }
 
-    function logout() {
-        currentUser = null;
-        authSection.style.display = 'block';
-        mainSection.style.display = 'none';
-        profilePage.style.display = 'none';
-        showToast('已退出');
+    let users = {};
+    try { users = JSON.parse(localStorage.getItem('users') || '{}'); } catch (e) { users = {}; }
+
+    if (isLoginMode) {
+        if (users[email] === undefined || (typeof users[email] === 'object' && !users[email].password)) {
+            showError('❌ 账号不存在，请先注册');
+            return;
+        }
+        const storedPw = typeof users[email] === 'string' ? users[email] : users[email].password;
+        if (storedPw !== password) {
+            showError('❌ 密码错误，请重试');
+            return;
+        }
+        currentUser = email;
+        showMain();
+        showToast('✅ 登录成功！');
+    } else {
+        if (users[email] !== undefined) {
+            showError('❌ 该邮箱已注册，请直接登录');
+            return;
+        }
+        const emailPrefix = email.split('@')[0].substring(0, 4).toUpperCase();
+        const randomNum = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+        const uid = 'U' + emailPrefix + randomNum;
+
+        users[email] = {
+            password: password,
+            _time: new Date().toISOString(),
+            _avatar: null,
+            _uid: uid
+        };
+        localStorage.setItem('users', JSON.stringify(users));
+        showSuccess('✅ 注册成功！即将切换到登录...');
+        setTimeout(() => {
+            switchMode();
+            authEmail.value = email;
+            authPassword.value = '';
+            showToast('✅ 请登录');
+        }, 1500);
     }
+}
 
-    function checkSession() {
-        authSection.style.display = 'block';
-        mainSection.style.display = 'none';
-        profilePage.style.display = 'none';
-    }
+function switchMode() {
+    isLoginMode = !isLoginMode;
+    authBtn.textContent = isLoginMode ? '登录' : '注册';
+    switchText.textContent = isLoginMode ? '还没有账号？' : '已有账号？';
+    switchLink.textContent = isLoginMode ? '注册' : '登录';
+    modeText.textContent = isLoginMode ? '登录后查看脚本' : '注册后登录查看脚本';
+    authError.style.display = 'none';
+    authSuccess.style.display = 'none';
+    authEmail.value = '';
+    authPassword.value = '';
+}
 
-    authBtn.addEventListener('click', handleAuth);
-    switchLink.addEventListener('click', (e) => { e.preventDefault();
-        switchMode(); });
-    logoutBtn.addEventListener('click', logout);
-    profileLogoutBtn.addEventListener('click', logout);
-    authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
-    authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
+function logout() {
+    currentUser = null;
+    authSection.style.display = 'block';
+    mainSection.style.display = 'none';
+    profilePage.style.display = 'none';
+    showToast('已退出');
+}
 
-    checkSession();
+function checkSession() {
+    authSection.style.display = 'block';
+    mainSection.style.display = 'none';
+    profilePage.style.display = 'none';
+}
+
+authBtn.addEventListener('click', handleAuth);
+switchLink.addEventListener('click', (e) => { e.preventDefault();
+    switchMode(); });
+logoutBtn.addEventListener('click', logout);
+profileLogoutBtn.addEventListener('click', logout);
+authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
+authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
+
+checkSession();
 </script>
 </body>
 </html>
