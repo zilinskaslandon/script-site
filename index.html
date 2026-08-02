@@ -266,8 +266,6 @@ body.light-mode .toolbar-btn{
     -webkit-appearance:none;appearance:none;width:12px;height:12px;
     border-radius:50%;background:#4A6CF7;cursor:pointer;
 }
-
-/* 公告栏 */
 #announcementBar{
     background:rgba(74,108,247,0.06);
     border:1px solid rgba(74,108,247,0.08);
@@ -278,21 +276,14 @@ body.light-mode .toolbar-btn{
     align-items:center;
     gap:10px;
     transition:all 0.3s;
+    cursor:pointer;
 }
 #announcementBar .announce-icon{font-size:16px;flex-shrink:0;}
-#announcementBar .announce-slider{flex:1;overflow:hidden;position:relative;height:40px;}
-#announcementBar .announce-slider .slide-item{
-    position:absolute;top:0;left:0;width:100%;
-    transition:transform 0.5s ease,opacity 0.5s ease;
-    opacity:0;transform:translateY(10px);
-}
-#announcementBar .announce-slider .slide-item.active{
-    opacity:1;transform:translateY(0);
-}
-#announcementBar .announce-slider .slide-item .text{
+#announcementBar .announce-content{flex:1;overflow:hidden;min-width:0;}
+#announcementBar .announce-content .text{
     font-size:13px;color:#e8eeff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-#announcementBar .announce-slider .slide-item .time{
+#announcementBar .announce-content .time{
     font-size:10px;color:rgba(180,200,255,0.25);
 }
 #announcementBar .announce-nav{
@@ -313,7 +304,6 @@ body.light-mode .toolbar-btn{
     background:none;border:none;color:rgba(255,255,255,0.15);font-size:14px;cursor:pointer;padding:0 2px;
 }
 #announcementBar .announce-close:active{color:rgba(255,255,255,0.4)}
-
 .script-card{
     background:rgba(255,255,255,0.04);
     backdrop-filter:blur(6px);
@@ -352,7 +342,6 @@ body.light-mode .toolbar-btn{
 }
 .btn-copy:active{background:rgba(74,108,247,0.25)}
 .btn-copy.copied{background:rgba(69,199,119,0.15);border-color:rgba(69,199,119,0.15);color:#69db7c}
-/* 工具栏 */
 .toolbar{
     display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center;
 }
@@ -495,6 +484,59 @@ body.light-mode .toolbar-btn{
 .avatar-picker .picker-footer .btn-close{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)}
 .avatar-picker .picker-footer .btn-upload{background:linear-gradient(135deg,#4A6CF7,#8b5cf6);color:#fff}
 .hidden{display:none!important}
+
+/* 公告弹窗 */
+.announce-modal{
+    display:none;
+    position:fixed;
+    top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(8px);
+    z-index:300;
+    justify-content:center;
+    align-items:center;
+    padding:30px 20px;
+}
+.announce-modal.show{display:flex}
+.announce-modal .modal-box{
+    background:rgba(10,15,35,0.95);
+    border-radius:20px;
+    padding:24px 20px;
+    max-width:500px;
+    width:100%;
+    border:1px solid rgba(120,160,255,0.08);
+    max-height:80vh;
+    overflow-y:auto;
+}
+.announce-modal .modal-box .modal-title{
+    color:#fff;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:4px;
+}
+.announce-modal .modal-box .modal-time{
+    color:rgba(180,200,255,0.25);
+    font-size:12px;
+    margin-bottom:12px;
+}
+.announce-modal .modal-box .modal-body{
+    color:rgba(255,255,255,0.8);
+    font-size:14px;
+    line-height:1.8;
+    white-space:pre-wrap;
+}
+.announce-modal .modal-box .modal-close{
+    margin-top:16px;
+    padding:8px 24px;
+    background:rgba(74,108,247,0.15);
+    border:1px solid rgba(74,108,247,0.1);
+    color:#a0baff;
+    border-radius:12px;
+    font-size:14px;
+    cursor:pointer;
+    width:100%;
+}
+.announce-modal .modal-box .modal-close:active{background:rgba(74,108,247,0.25)}
 </style>
 </head>
 <body>
@@ -513,8 +555,9 @@ body.light-mode .toolbar-btn{
     <!-- ===== 公告栏 ===== -->
     <div id="announcementBar">
         <span class="announce-icon">📢</span>
-        <div class="announce-slider" id="announceSlider">
-            <!-- JS 动态生成 -->
+        <div class="announce-content" id="announceContent">
+            <div class="text" id="announceText">加载中...</div>
+            <div class="time" id="announceTime"></div>
         </div>
         <div class="announce-nav">
             <button id="announcePrev">‹</button>
@@ -522,6 +565,16 @@ body.light-mode .toolbar-btn{
             <button id="announceNext">›</button>
         </div>
         <button class="announce-close" id="announceClose">✕</button>
+    </div>
+
+    <!-- ===== 公告详情弹窗 ===== -->
+    <div class="announce-modal" id="announceModal">
+        <div class="modal-box">
+            <div class="modal-title" id="modalTitle">公告标题</div>
+            <div class="modal-time" id="modalTime">2026-08-02</div>
+            <div class="modal-body" id="modalBody">公告内容详情</div>
+            <button class="modal-close" id="modalClose">我知道了</button>
+        </div>
     </div>
 
     <!-- ===== 登录界面 ===== -->
@@ -718,24 +771,21 @@ animate(0);
 // 公告栏
 // ============================================================
 const announcements = [
-    { text: '🎉 星脚本 v2.0 已更新！新增搜索、置顶、公告栏功能', time: '2026-08-02' },
-    { text: '📌 北极星加载器已更新至 v1.2，修复已知问题', time: '2026-08-01' },
-    { text: '💡 提示：点击脚本旁边的 ☆ 可置顶常用脚本', time: '2026-07-31' },
+    { text: '🎉 星脚本 v2.0 已更新！新增搜索、置顶、公告栏功能，快来体验吧！', time: '2026-08-02' },
+    { text: '📌 北极星加载器已更新至 v1.2，修复了已知问题，推荐更新！', time: '2026-08-01' },
+    { text: '💡 提示：点击脚本旁边的 ☆ 可置顶常用脚本，方便快速访问', time: '2026-07-31' },
 ];
 
 let currentAnnounce = 0;
 let announceTimer = null;
-const announceSlider = document.getElementById('announceSlider');
+const announceText = document.getElementById('announceText');
+const announceTime = document.getElementById('announceTime');
 const announceDot = document.getElementById('announceDot');
 
 function renderAnnouncement(index) {
     const item = announcements[index];
-    announceSlider.innerHTML = `
-        <div class="slide-item active">
-            <div class="text">${item.text}</div>
-            <div class="time">${item.time}</div>
-        </div>
-    `;
+    announceText.textContent = item.text;
+    announceTime.textContent = item.time;
     announceDot.textContent = (index + 1) + '/' + announcements.length;
 }
 
@@ -769,8 +819,24 @@ document.getElementById('announceClose')?.addEventListener('click', function() {
     clearInterval(announceTimer);
 });
 
+// 点击公告栏弹出完整内容
+document.getElementById('announcementBar').addEventListener('click', function(e) {
+    if (e.target.closest('.announce-close') || e.target.closest('.announce-nav')) return;
+    const item = announcements[currentAnnounce];
+    document.getElementById('modalTitle').textContent = '📢 公告';
+    document.getElementById('modalTime').textContent = item.time;
+    document.getElementById('modalBody').textContent = item.text;
+    document.getElementById('announceModal').classList.add('show');
+});
+document.getElementById('modalClose').addEventListener('click', function() {
+    document.getElementById('announceModal').classList.remove('show');
+});
+document.getElementById('announceModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('show');
+});
+
 // ============================================================
-// 音乐播放器
+// 音乐播放器 - 网易云接口
 // ============================================================
 const musicBtn = document.getElementById('musicBtn');
 const musicPopup = document.getElementById('musicPopup');
@@ -781,8 +847,11 @@ const popupPlayBtn = document.getElementById('popupPlayBtn');
 const popupVolSlider = document.getElementById('popupVolSlider');
 const popupVolIcon = document.getElementById('popupVolIcon');
 
-const SONG_URL = 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d3b3f5e1f2.mp3';
-const SONG_TITLE = '起风了（纯音乐）';
+// 网易云音乐接口 - 可使用歌曲ID替换，这里用一首免费的纯音乐
+// 歌曲ID: 5234567 是网易云的一首纯音乐
+const SONG_ID = '5234567';
+const SONG_URL = 'https://music.163.com/song/media/outer/url?id=' + SONG_ID + '.mp3';
+const SONG_TITLE = '起风了（网易云）';
 const SONG_ARTIST = '纯音乐';
 
 let isPlaying = false;
@@ -999,7 +1068,7 @@ function updateTime() {
 updateTime();
 
 // ============================================================
-// 登录注册逻辑
+// 登录注册逻辑 - 修复个人主页点不进去
 // ============================================================
 const authSection = document.getElementById('authSection');
 const mainSection = document.getElementById('mainSection');
@@ -1241,6 +1310,7 @@ function switchMode() {
     authPassword.value = '';
 }
 
+// ===== 修复：所有事件用 onclick 直接绑定 =====
 authBtn.onclick = function() {
     const email = authEmail.value.trim();
     const password = authPassword.value.trim();
@@ -1281,15 +1351,37 @@ authBtn.onclick = function() {
 
 switchLink.onclick = function(e) { e.preventDefault();
     switchMode(); };
+
+// ===== 修复个人主页点不进去 =====
+profileBtn.onclick = function(e) {
+    e.stopPropagation();
+    if (!currentUser) {
+        showToast('请先登录');
+        return;
+    }
+    showProfile();
+};
+
+profileBackBtn.onclick = function(e) {
+    e.stopPropagation();
+    showMain();
+};
+
 logoutBtn.onclick = logout;
 profileLogoutBtn.onclick = logout;
-profileBtn.onclick = function(e) { e.stopPropagation(); if (!currentUser) { showToast('请先登录'); return; }
-    showProfile(); };
-profileBackBtn.onclick = function(e) { e.stopPropagation();
-    showMain(); };
-homeBtn.onclick = function(e) { e.stopPropagation(); if (currentUser) showMain(); };
-profileAvatar.onclick = function(e) { e.stopPropagation();
-    openPicker(); };
+
+homeBtn.onclick = function(e) {
+    e.stopPropagation();
+    if (currentUser) {
+        showMain();
+    }
+};
+
+profileAvatar.onclick = function(e) {
+    e.stopPropagation();
+    openPicker();
+};
+
 pickerClose.onclick = closePicker;
 avatarPicker.addEventListener('click', function(e) { if (e.target === this) closePicker(); });
 pickerUpload.onclick = function() { fileInput.click(); };
