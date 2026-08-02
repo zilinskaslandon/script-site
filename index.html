@@ -6,201 +6,177 @@
 <title>星脚本</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;background:#060b18;padding:20px;position:relative;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;background:#060b18;padding:12px 16px 20px;position:relative;overflow-x:hidden}
 #particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.container{max-width:600px;width:100%;position:relative;z-index:1}
-.auth-box{background:rgba(10,15,35,0.6);backdrop-filter:blur(16px);border-radius:20px;padding:30px 25px;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid rgba(120,160,255,0.12)}
-.auth-box h2{text-align:center;font-size:24px;color:#fff;font-weight:600}
-.auth-box .sub{text-align:center;color:rgba(180,200,255,0.5);font-size:14px;margin-bottom:20px}
-.auth-box input{width:100%;padding:13px 16px;border:1px solid rgba(120,160,255,0.15);border-radius:12px;font-size:15px;margin-bottom:12px;background:rgba(255,255,255,0.04);color:#e8eeff;outline:none}
+.container{max-width:600px;width:100%;position:relative;z-index:1;padding-top:0}
+.auth-box{background:rgba(10,15,35,0.6);backdrop-filter:blur(16px);border-radius:20px;padding:28px 22px;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid rgba(120,160,255,0.12)}
+.auth-box h2{text-align:center;font-size:22px;color:#fff;font-weight:600}
+.auth-box .sub{text-align:center;color:rgba(180,200,255,0.5);font-size:13px;margin-bottom:18px}
+.auth-box input{width:100%;padding:12px 14px;border:1px solid rgba(120,160,255,0.15);border-radius:12px;font-size:14px;margin-bottom:10px;background:rgba(255,255,255,0.04);color:#e8eeff;outline:none}
 .auth-box input::placeholder{color:rgba(180,200,255,0.25)}
-.auth-box .btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,#4A6CF7,#8b5cf6);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer}
-.auth-box .switch{text-align:center;margin-top:16px;font-size:14px;color:rgba(180,200,255,0.4)}
+.auth-box .btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,#4A6CF7,#8b5cf6);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+.auth-box .switch{text-align:center;margin-top:14px;font-size:13px;color:rgba(180,200,255,0.4)}
 .auth-box .switch a{color:#7b9cff;text-decoration:none}
-.auth-box .error{color:#ff6b8a;font-size:13px;text-align:center;margin-bottom:10px;display:none}
-.auth-box .success{color:#69db7c;font-size:13px;text-align:center;margin-bottom:10px;display:none}
+.auth-box .error{color:#ff6b8a;font-size:13px;text-align:center;margin-bottom:8px;display:none}
+.auth-box .success{color:#69db7c;font-size:13px;text-align:center;margin-bottom:8px;display:none}
 .main-content{display:none}
-.header{background:rgba(10,15,35,0.5);backdrop-filter:blur(14px);border:1px solid rgba(120,160,255,0.08);color:#fff;padding:12px 18px;border-radius:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.header .menu-btn{background:0 0;border:none;color:rgba(255,255,255,0.5);font-size:24px;cursor:pointer;padding:0 8px}
+.header{background:rgba(10,15,35,0.5);backdrop-filter:blur(14px);border:1px solid rgba(120,160,255,0.08);color:#fff;padding:10px 14px;border-radius:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.header .menu-btn{background:0 0;border:none;color:rgba(255,255,255,0.5);font-size:22px;cursor:pointer;padding:0 6px}
 .header .menu-btn:active{color:#fff}
-.header h1{font-size:18px;font-weight:600;background:linear-gradient(135deg,#a0baff,#7b9cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;flex:1;text-align:center}
-.header .user-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);padding:4px 14px 4px 10px;border-radius:20px;font-size:13px;cursor:pointer}
-
-/* ===== 脚本卡片 - 毛玻璃背景 ===== */
-.script-card{
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,0.06);
-    border-radius:14px;
-    padding:12px 14px;
-    margin-bottom:10px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    transition:all 0.3s ease;
-    box-shadow:0 4px 15px rgba(0,0,0,0.1);
-}
-.script-card:active{
-    transform:scale(0.98);
-    background:rgba(255,255,255,0.08);
-}
-.script-card .script-img{
-    width:50px;height:50px;border-radius:10px;overflow:hidden;flex-shrink:0;
-    background:rgba(74,108,247,0.15);
-    display:flex;align-items:center;justify-content:center;font-size:24px;
-    cursor:pointer;transition:transform 0.2s;
-    border:1px solid rgba(255,255,255,0.04);
-}
+.header h1{font-size:17px;font-weight:600;background:linear-gradient(135deg,#a0baff,#7b9cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;flex:1;text-align:center}
+.header .user-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);padding:3px 12px 3px 8px;border-radius:18px;font-size:12px;cursor:pointer}
+.script-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+.script-card:active{transform:scale(0.98);background:rgba(255,255,255,0.08)}
+.script-card .script-img{width:44px;height:44px;border-radius:10px;overflow:hidden;flex-shrink:0;background:rgba(74,108,247,0.15);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:transform 0.2s;border:1px solid rgba(255,255,255,0.04)}
 .script-card .script-img:active{transform:scale(0.92)}
 .script-card .script-img img{width:100%;height:100%;object-fit:cover}
 .script-card .info{flex:1;min-width:0}
-.script-card .info .name{font-size:14px;font-weight:500;color:#e8eeff}
+.script-card .info .name{font-size:13px;font-weight:500;color:#e8eeff}
 .script-card .info .version{font-size:10px;color:rgba(180,200,255,0.3);margin-left:4px}
-.script-card .info .desc{font-size:11px;color:rgba(180,200,255,0.4);margin-top:2px}
-.script-card .btn-copy{
-    background:rgba(74,108,247,0.2);
-    border:1px solid rgba(74,108,247,0.15);
-    color:#a0baff;
-    padding:4px 14px;border-radius:20px;font-size:11px;cursor:pointer;flex-shrink:0;
-    transition:all 0.2s;
-}
-.script-card .btn-copy:active{
-    background:rgba(74,108,247,0.35);
-    transform:scale(0.95);
-}
-.script-card .btn-copy.copied{
-    background:rgba(69,199,119,0.2);
-    border-color:rgba(69,199,119,0.2);
-    color:#69db7c;
-}
-
+.script-card .info .desc{font-size:11px;color:rgba(180,200,255,0.4);margin-top:1px}
+.script-card .btn-copy{background:rgba(74,108,247,0.2);border:1px solid rgba(74,108,247,0.15);color:#a0baff;padding:4px 12px;border-radius:18px;font-size:11px;cursor:pointer;flex-shrink:0;transition:all 0.2s}
+.script-card .btn-copy:active{background:rgba(74,108,247,0.35);transform:scale(0.95)}
+.script-card .btn-copy.copied{background:rgba(69,199,119,0.2);border-color:rgba(69,199,119,0.2);color:#69db7c}
 .profile-page{display:none}
-.profile-page .profile-card{background:rgba(10,15,35,0.6);backdrop-filter:blur(16px);border-radius:20px;padding:30px 25px;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid rgba(120,160,255,0.12);text-align:center}
-.profile-page .profile-card .p-avatar{width:80px;height:80px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,#4A6CF7,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff;cursor:pointer;transition:transform 0.2s;box-shadow:0 4px 24px rgba(74,108,247,0.3)}
+.profile-page .profile-card{background:rgba(10,15,35,0.6);backdrop-filter:blur(16px);border-radius:20px;padding:28px 22px;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid rgba(120,160,255,0.12);text-align:center}
+.profile-page .profile-card .p-avatar{width:72px;height:72px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,#4A6CF7,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;cursor:pointer;transition:transform 0.2s;box-shadow:0 4px 24px rgba(74,108,247,0.3)}
 .profile-page .profile-card .p-avatar:active{transform:scale(0.95)}
-.profile-page .profile-card .p-name{font-size:20px;font-weight:600;color:#fff}
-.profile-page .profile-card .p-email{font-size:14px;color:rgba(180,200,255,0.5);margin-bottom:20px}
-.profile-page .profile-card .p-info{text-align:left;background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;margin-bottom:16px}
-.profile-page .profile-card .p-info .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:14px}
+.profile-page .profile-card .p-name{font-size:19px;font-weight:600;color:#fff}
+.profile-page .profile-card .p-email{font-size:13px;color:rgba(180,200,255,0.5);margin-bottom:16px}
+.profile-page .profile-card .p-info{text-align:left;background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;margin-bottom:14px}
+.profile-page .profile-card .p-info .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
 .profile-page .profile-card .p-info .row:last-child{border-bottom:none}
 .profile-page .profile-card .p-info .label{color:rgba(180,200,255,0.4)}
 .profile-page .profile-card .p-info .value{color:rgba(255,255,255,0.8)}
-.profile-page .profile-card .p-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.profile-page .profile-card .p-btns button{padding:10px 20px;border:none;border-radius:12px;font-size:14px;cursor:pointer}
+.profile-page .profile-card .p-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.profile-page .profile-card .p-btns button{padding:8px 18px;border:none;border-radius:10px;font-size:13px;cursor:pointer}
 .profile-page .profile-card .p-btns .btn-back{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
 .profile-page .profile-card .p-btns .btn-logout{background:#e74c5e;color:#fff}
 .profile-page .profile-card .p-btns .btn-logs{background:rgba(74,108,247,0.2);color:#a0baff}
 
+/* 用户操作日志 */
 .logs-page{display:none}
-.logs-page .logs-card{background:rgba(10,15,35,0.6);backdrop-filter:blur(16px);border-radius:20px;padding:30px 25px;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid rgba(120,160,255,0.12)}
-.logs-page .logs-card h2{color:#fff;font-size:20px;margin-bottom:4px}
-.logs-page .logs-card .sub{color:rgba(180,200,255,0.3);font-size:12px;margin-bottom:16px}
-.logs-page .logs-card .log-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;color:rgba(255,255,255,0.7)}
-.logs-page .logs-card .log-item .log-time{color:rgba(180,200,255,0.3);font-size:11px}
+.logs-page .logs-card{background:rgba(10,15,35,0.6);backdrop-filter:blur(16px);border-radius:20px;padding:28px 22px;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid rgba(120,160,255,0.12)}
+.logs-page .logs-card h2{color:#fff;font-size:19px;margin-bottom:2px}
+.logs-page .logs-card .sub{color:rgba(180,200,255,0.3);font-size:12px;margin-bottom:14px}
+.logs-page .logs-card .log-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;color:rgba(255,255,255,0.7)}
+.logs-page .logs-card .log-item .log-time{color:rgba(180,200,255,0.3);font-size:10px}
 .logs-page .logs-card .log-item .log-action{color:#e8eeff}
-.logs-page .logs-card .log-empty{text-align:center;color:rgba(180,200,255,0.2);padding:40px 0}
-.logs-page .logs-card .log-actions{display:flex;gap:12px;margin-top:16px}
-.logs-page .logs-card .log-actions button{padding:8px 20px;border:none;border-radius:12px;font-size:13px;cursor:pointer}
+.logs-page .logs-card .log-empty{text-align:center;color:rgba(180,200,255,0.2);padding:30px 0}
+.logs-page .logs-card .log-actions{display:flex;gap:10px;margin-top:14px}
+.logs-page .logs-card .log-actions button{padding:8px 18px;border:none;border-radius:10px;font-size:12px;cursor:pointer}
 .logs-page .logs-card .log-actions .btn-back-logs{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
 .logs-page .logs-card .log-actions .btn-clear-logs{background:rgba(231,76,94,0.15);color:#e74c5e}
 
+/* ===== 更新日志 ===== */
+.changelog-page{display:none}
+.changelog-page .changelog-card{background:rgba(10,15,35,0.6);backdrop-filter:blur(16px);border-radius:20px;padding:28px 22px;box-shadow:0 8px 40px rgba(0,0,0,0.6);border:1px solid rgba(120,160,255,0.12)}
+.changelog-page .changelog-card h2{color:#fff;font-size:19px;margin-bottom:2px}
+.changelog-page .changelog-card .sub{color:rgba(180,200,255,0.3);font-size:12px;margin-bottom:14px}
+.changelog-page .changelog-card .cl-item{border-left:2px solid rgba(74,108,247,0.3);padding:10px 14px;margin-bottom:10px}
+.changelog-page .changelog-card .cl-item .cl-version{color:#4A6CF7;font-size:14px;font-weight:600}
+.changelog-page .changelog-card .cl-item .cl-date{color:rgba(180,200,255,0.25);font-size:11px;margin-left:8px}
+.changelog-page .changelog-card .cl-item .cl-list{list-style:none;padding:6px 0 0 0}
+.changelog-page .changelog-card .cl-item .cl-list li{color:rgba(255,255,255,0.6);font-size:13px;padding:3px 0;padding-left:18px;position:relative}
+.changelog-page .changelog-card .cl-item .cl-list li::before{content:"✦";position:absolute;left:0;color:rgba(74,108,247,0.4);font-size:10px}
+.changelog-page .changelog-card .cl-item .cl-list li.add{color:#69db7c}
+.changelog-page .changelog-card .cl-item .cl-list li.fix{color:#ffd93d}
+.changelog-page .changelog-card .cl-item .cl-list li.del{color:#ff6b8a}
+.changelog-page .changelog-card .cl-actions{margin-top:14px}
+.changelog-page .changelog-card .cl-actions button{padding:8px 18px;border:none;border-radius:10px;font-size:12px;cursor:pointer;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7)}
+
 .avatar-picker{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:1000;justify-content:center;align-items:center;padding:20px}
 .avatar-picker.show{display:flex}
-.avatar-picker .picker-box{background:rgba(10,15,35,0.92);border-radius:20px;padding:24px 20px;max-width:400px;width:100%;border:1px solid rgba(120,160,255,0.1)}
-.avatar-picker .picker-box h3{color:#fff;text-align:center;margin-bottom:16px;font-size:18px}
-.avatar-picker .picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-.avatar-picker .picker-grid .opt{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px}
+.avatar-picker .picker-box{background:rgba(10,15,35,0.92);border-radius:20px;padding:22px 18px;max-width:380px;width:100%;border:1px solid rgba(120,160,255,0.1)}
+.avatar-picker .picker-box h3{color:#fff;text-align:center;margin-bottom:14px;font-size:17px}
+.avatar-picker .picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.avatar-picker .picker-grid .opt{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px}
 .avatar-picker .picker-grid .opt.active{border-color:#4A6CF7;box-shadow:0 0 20px rgba(74,108,247,0.3)}
-.avatar-picker .picker-footer{display:flex;gap:12px}
-.avatar-picker .picker-footer button{flex:1;padding:10px;border:none;border-radius:12px;font-size:14px;cursor:pointer}
+.avatar-picker .picker-footer{display:flex;gap:10px}
+.avatar-picker .picker-footer button{flex:1;padding:8px;border:none;border-radius:10px;font-size:13px;cursor:pointer}
 .avatar-picker .picker-footer .btn-close{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6)}
 .avatar-picker .picker-footer .btn-upload{background:linear-gradient(135deg,#4A6CF7,#8b5cf6);color:#fff}
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(10,15,35,0.85);backdrop-filter:blur(12px);border:1px solid rgba(120,160,255,0.08);color:#e8eeff;padding:10px 24px;border-radius:30px;font-size:13px;display:none;z-index:999;white-space:nowrap}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(10,15,35,0.85);backdrop-filter:blur(12px);border:1px solid rgba(120,160,255,0.08);color:#e8eeff;padding:8px 22px;border-radius:28px;font-size:12px;display:none;z-index:999;white-space:nowrap}
 .toast.show{display:block;animation:fadeUp .35s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.footer{text-align:center;color:rgba(180,200,255,0.08);font-size:11px;margin-top:24px}
+.footer{text-align:center;color:rgba(180,200,255,0.08);font-size:10px;margin-top:16px}
 .announce-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:300;justify-content:center;align-items:center;padding:30px 20px}
 .announce-modal.show{display:flex}
-.announce-modal .modal-box{background:rgba(10,15,35,0.95);border-radius:20px;padding:24px 20px;max-width:500px;width:100%;border:1px solid rgba(120,160,255,0.08);max-height:80vh;overflow-y:auto}
-.announce-modal .modal-box .modal-title{color:#fff;font-size:18px;font-weight:600}
-.announce-modal .modal-box .modal-time{color:rgba(180,200,255,0.25);font-size:12px;margin-bottom:12px}
-.announce-modal .modal-box .modal-body{color:rgba(255,255,255,0.8);font-size:14px;line-height:1.8}
-.announce-modal .modal-box .modal-close{margin-top:16px;padding:8px 24px;background:rgba(74,108,247,0.15);border:1px solid rgba(74,108,247,0.1);color:#a0baff;border-radius:12px;font-size:14px;cursor:pointer;width:100%}
+.announce-modal .modal-box{background:rgba(10,15,35,0.95);border-radius:20px;padding:22px 18px;max-width:500px;width:100%;border:1px solid rgba(120,160,255,0.08);max-height:80vh;overflow-y:auto}
+.announce-modal .modal-box .modal-title{color:#fff;font-size:17px;font-weight:600}
+.announce-modal .modal-box .modal-time{color:rgba(180,200,255,0.25);font-size:11px;margin-bottom:10px}
+.announce-modal .modal-box .modal-body{color:rgba(255,255,255,0.8);font-size:13px;line-height:1.8}
+.announce-modal .modal-box .modal-close{margin-top:14px;padding:8px 20px;background:rgba(74,108,247,0.15);border:1px solid rgba(74,108,247,0.1);color:#a0baff;border-radius:10px;font-size:13px;cursor:pointer;width:100%}
 .img-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:500;justify-content:center;align-items:center;padding:30px;cursor:pointer}
 .img-modal.show{display:flex}
 .img-modal .img-box{max-width:90%;max-height:80vh;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
 .img-modal .img-box img{width:100%;height:100%;object-fit:contain;max-height:80vh}
-.img-modal .close-img{position:absolute;top:20px;right:20px;font-size:30px;color:rgba(255,255,255,0.4);cursor:pointer;background:0 0;border:none}
-
-/* ===== 侧滑菜单 ===== */
-.side-menu{position:fixed;top:0;left:-280px;width:280px;height:100%;background:rgba(8,12,28,0.95);backdrop-filter:blur(24px);z-index:2000;transition:left 0.35s cubic-bezier(0.4,0,0.2,1);padding:20px 0;overflow-y:auto;border-right:1px solid rgba(120,160,255,0.06)}
+.img-modal .close-img{position:absolute;top:20px;right:20px;font-size:28px;color:rgba(255,255,255,0.4);cursor:pointer;background:0 0;border:none}
+.side-menu{position:fixed;top:0;left:-270px;width:270px;height:100%;background:rgba(8,12,28,0.95);backdrop-filter:blur(24px);z-index:2000;transition:left 0.35s cubic-bezier(0.4,0,0.2,1);padding:20px 0;overflow-y:auto;border-right:1px solid rgba(120,160,255,0.06)}
 .side-menu.open{left:0}
-.side-menu .menu-header{padding:0 20px 16px;border-bottom:1px solid rgba(255,255,255,0.04);margin-bottom:12px}
-.side-menu .menu-header .app-name{font-size:20px;font-weight:600;color:#fff}
-.side-menu .menu-header .app-sub{font-size:12px;color:rgba(180,200,255,0.3)}
-.side-menu .menu-item{display:flex;align-items:center;gap:14px;padding:12px 20px;color:rgba(255,255,255,0.5);font-size:15px;cursor:pointer;transition:all 0.2s;border-left:3px solid transparent}
+.side-menu .menu-header{padding:0 18px 14px;border-bottom:1px solid rgba(255,255,255,0.04);margin-bottom:10px}
+.side-menu .menu-header .app-name{font-size:19px;font-weight:600;color:#fff}
+.side-menu .menu-header .app-sub{font-size:11px;color:rgba(180,200,255,0.3)}
+.side-menu .menu-item{display:flex;align-items:center;gap:12px;padding:10px 18px;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;transition:all 0.2s;border-left:3px solid transparent}
 .side-menu .menu-item:active{background:rgba(255,255,255,0.04);color:#fff}
 .side-menu .menu-item.active{color:#fff;border-left-color:#4A6CF7;background:rgba(74,108,247,0.06)}
-.side-menu .menu-item .icon{font-size:20px;width:28px;text-align:center}
-.side-menu .menu-item .badge{background:#4A6CF7;color:#fff;font-size:10px;border-radius:10px;padding:1px 10px;margin-left:auto}
+.side-menu .menu-item .icon{font-size:18px;width:26px;text-align:center}
+.side-menu .menu-item .badge{background:#4A6CF7;color:#fff;font-size:9px;border-radius:10px;padding:1px 8px;margin-left:auto}
 .side-menu .menu-item .badge.hot{background:#f7c948;color:#1a1a2e}
-.side-menu .menu-divider{height:1px;background:rgba(255,255,255,0.04);margin:8px 20px}
-.side-menu .menu-footer{position:absolute;bottom:20px;left:0;right:0;padding:0 20px;color:rgba(180,200,255,0.12);font-size:11px;text-align:center}
+.side-menu .menu-divider{height:1px;background:rgba(255,255,255,0.04);margin:6px 18px}
+.side-menu .menu-footer{position:absolute;bottom:16px;left:0;right:0;padding:0 18px;color:rgba(180,200,255,0.12);font-size:10px;text-align:center}
 .menu-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:1999}
 .menu-overlay.show{display:block}
+.author-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:600;justify-content:center;align-items:center;padding:30px 20px}
+.author-modal.show{display:flex}
+.author-modal .modal-box{background:rgba(10,15,35,0.95);border-radius:20px;padding:28px 24px;max-width:360px;width:100%;border:1px solid rgba(120,160,255,0.08);text-align:center}
+.author-modal .modal-box .author-icon{font-size:56px;margin-bottom:10px}
+.author-modal .modal-box .author-name{color:#fff;font-size:20px;font-weight:600;margin-bottom:4px}
+.author-modal .modal-box .author-title{color:rgba(180,200,255,0.3);font-size:13px;margin-bottom:14px}
+.author-modal .modal-box .author-qq{color:#a0baff;font-size:18px;font-weight:500;margin-bottom:6px;background:rgba(74,108,247,0.08);padding:10px;border-radius:12px;border:1px solid rgba(74,108,247,0.08);display:flex;align-items:center;justify-content:center;gap:10px}
+.author-modal .modal-box .author-qq .copy-btn{background:rgba(74,108,247,0.2);border:none;color:#a0baff;padding:4px 12px;border-radius:6px;font-size:12px;cursor:pointer}
+.author-modal .modal-box .author-qq .copy-btn:active{background:rgba(74,108,247,0.35)}
+.author-modal .modal-box .author-desc{color:rgba(180,200,255,0.25);font-size:12px;margin-top:10px;line-height:1.6}
+.author-modal .modal-box .modal-close-author{margin-top:16px;padding:8px 24px;background:rgba(74,108,247,0.15);border:1px solid rgba(74,108,247,0.1);color:#a0baff;border-radius:10px;font-size:14px;cursor:pointer;width:100%}
 </style>
 </head>
 <body>
 
 <canvas id="particleCanvas"></canvas>
 
-<!-- ===== 侧滑菜单 ===== -->
+<!-- 侧滑菜单 -->
 <div class="menu-overlay" id="menuOverlay"></div>
 <div class="side-menu" id="sideMenu">
     <div class="menu-header">
         <div class="app-name">✦ 星脚本</div>
         <div class="app-sub">脚本管理工具</div>
     </div>
-    <div class="menu-item active" onclick="menuGoTo('home')">
-        <span class="icon">🏠</span> 主页
-    </div>
-    <div class="menu-item" onclick="menuGoTo('scripts')">
-        <span class="icon">📦</span> 脚本列表
-        <span class="badge" id="menuScriptCount">2</span>
-    </div>
-    <div class="menu-item" onclick="menuGoTo('qq')">
-        <span class="icon">💬</span> 加入QQ群
-        <span class="badge hot">热门</span>
-    </div>
+    <div class="menu-item active" onclick="menuGoTo('home')"><span class="icon">🏠</span> 主页</div>
+    <div class="menu-item" onclick="menuGoTo('scripts')"><span class="icon">📦</span> 脚本列表 <span class="badge" id="menuScriptCount">2</span></div>
+    <div class="menu-item" onclick="menuGoTo('qq')"><span class="icon">💬</span> 加入QQ群 <span class="badge hot">热门</span></div>
     <div class="menu-divider"></div>
-    <div class="menu-item" onclick="menuGoTo('profile')">
-        <span class="icon">👤</span> 个人中心
-    </div>
-    <div class="menu-item" onclick="menuGoTo('logs')">
-        <span class="icon">📋</span> 操作日志
-    </div>
+    <div class="menu-item" onclick="menuGoTo('profile')"><span class="icon">👤</span> 个人中心</div>
+    <div class="menu-item" onclick="menuGoTo('changelog')"><span class="icon">📋</span> 更新日志</div>
     <div class="menu-divider"></div>
-    <div class="menu-item" onclick="menuGoTo('logout')" style="color:rgba(231,76,94,0.5);">
-        <span class="icon">🚪</span> 退出登录
-    </div>
+    <div class="menu-item" onclick="menuGoTo('author')"><span class="icon">✍️</span> 作者</div>
+    <div class="menu-item" onclick="menuGoTo('logout')" style="color:rgba(231,76,94,0.5);"><span class="icon">🚪</span> 退出登录</div>
     <div class="menu-footer">v2.0 · 仅供学习交流</div>
 </div>
 
 <div class="container">
     <!-- 公告栏 -->
-    <div id="announcementBar" style="background:rgba(74,108,247,0.06);border:1px solid rgba(74,108,247,0.08);border-radius:12px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px;cursor:pointer;">
-        <span style="font-size:16px;">📢</span>
+    <div id="announcementBar" style="background:rgba(74,108,247,0.06);border:1px solid rgba(74,108,247,0.08);border-radius:10px;padding:6px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <span style="font-size:14px;">📢</span>
         <div style="flex:1;overflow:hidden;">
-            <div style="font-size:13px;color:#e8eeff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="announceText">加载中...</div>
-            <div style="font-size:10px;color:rgba(180,200,255,0.25);" id="announceTime"></div>
+            <div style="font-size:12px;color:#e8eeff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="announceText">加载中...</div>
+            <div style="font-size:9px;color:rgba(180,200,255,0.25);" id="announceTime"></div>
         </div>
-        <div style="display:flex;gap:4px;">
-            <button id="announcePrev" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.3);border-radius:4px;padding:2px 8px;font-size:14px;cursor:pointer;">‹</button>
-            <span style="font-size:11px;color:rgba(180,200,255,0.2);align-self:center;min-width:28px;text-align:center;" id="announceDot">1/3</span>
-            <button id="announceNext" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.3);border-radius:4px;padding:2px 8px;font-size:14px;cursor:pointer;">›</button>
+        <div style="display:flex;gap:3px;">
+            <button id="announcePrev" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.3);border-radius:4px;padding:1px 6px;font-size:13px;cursor:pointer;">‹</button>
+            <span style="font-size:10px;color:rgba(180,200,255,0.2);align-self:center;min-width:24px;text-align:center;" id="announceDot">1/3</span>
+            <button id="announceNext" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.3);border-radius:4px;padding:1px 6px;font-size:13px;cursor:pointer;">›</button>
         </div>
-        <button id="announceClose" style="background:0 0;border:none;color:rgba(255,255,255,0.15);font-size:14px;cursor:pointer;padding:0 2px;">✕</button>
+        <button id="announceClose" style="background:0 0;border:none;color:rgba(255,255,255,0.12);font-size:13px;cursor:pointer;padding:0 2px;">✕</button>
     </div>
 
     <!-- 公告弹窗 -->
@@ -210,6 +186,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;m
             <div class="modal-time" id="modalTime"></div>
             <div class="modal-body" id="modalBody"></div>
             <button class="modal-close" id="modalClose">我知道了</button>
+        </div>
+    </div>
+
+    <!-- 作者弹窗 -->
+    <div class="author-modal" id="authorModal">
+        <div class="modal-box">
+            <div class="author-icon">✍️</div>
+            <div class="author-name">星脚本 · 作者</div>
+            <div class="author-title">脚本管理工具开发者</div>
+            <div class="author-qq">
+                <span>💬 QQ：2332507600</span>
+                <button class="copy-btn" onclick="copyQQ()">复制</button>
+            </div>
+            <div class="author-desc">如有问题或建议，欢迎联系我！</div>
+            <button class="modal-close-author" id="closeAuthorModal">我知道了</button>
         </div>
     </div>
 
@@ -255,7 +246,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;m
         </div>
     </div>
 
-    <!-- 日志页面 -->
+    <!-- 更新日志 -->
+    <div id="changelogPage" class="changelog-page">
+        <div class="changelog-card">
+            <h2>📋 更新日志</h2>
+            <div class="sub">记录每次更新的内容</div>
+            <div id="changelogList">
+                <!-- 由 JS 动态生成 -->
+            </div>
+            <div class="cl-actions">
+                <button id="backFromChangelog">← 返回</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作日志 -->
     <div id="logsPage" class="logs-page">
         <div class="logs-card">
             <h2>📋 操作日志</h2>
@@ -298,9 +303,9 @@ const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 let w, h;
 let particles = [];
-const PARTICLE_COUNT = 50;
-const MAX_DIST = 140;
-const FLOW_SPEED = 0.15;
+const PARTICLE_COUNT = 45;
+const MAX_DIST = 130;
+const FLOW_SPEED = 0.12;
 
 function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
 window.addEventListener('resize',resize);resize();
@@ -308,12 +313,12 @@ window.addEventListener('resize',resize);resize();
 class Particle{
     constructor(){this.x=Math.random()*w;this.y=Math.random()*h;this.r=Math.random()*2+1;this.dx=(Math.random()-0.5)*FLOW_SPEED*0.6;this.dy=(Math.random()-0.5)*FLOW_SPEED*0.6;this.phaseX=Math.random()*100;this.phaseY=Math.random()*100;this.speed=0.2+Math.random()*0.3}
     update(t){const wx=Math.sin(t*0.0004+this.phaseX)*0.12,wy=Math.cos(t*0.0005+this.phaseY)*0.12;this.x+=this.dx+wx*this.speed;this.y+=this.dy+wy*this.speed;if(this.x<-20)this.x=w+20;if(this.x>w+20)this.x=-20;if(this.y<-20)this.y=h+20;if(this.y>h+20)this.y=-20}
-    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle='rgba(160,200,255,0.4)';ctx.fill()}
+    draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle='rgba(160,200,255,0.35)';ctx.fill()}
 }
 for(let i=0;i<PARTICLE_COUNT;i++)particles.push(new Particle());
 
-function drawLines(t){for(let i=0;i<particles.length;i++){for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<MAX_DIST){const a=(1-dist/MAX_DIST)*0.25;ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(120,160,255,${a})`;ctx.lineWidth=0.5;ctx.stroke()}}}}
-function animate(t){ctx.clearRect(0,0,w,h);const g=ctx.createRadialGradient(w/2,h/2,0,w/2,h/2,w*0.6);g.addColorStop(0,'rgba(30,60,120,0.06)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);for(const p of particles)p.update(t);drawLines(t);for(const p of particles)p.draw();requestAnimationFrame(animate)}
+function drawLines(t){for(let i=0;i<particles.length;i++){for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<MAX_DIST){const a=(1-dist/MAX_DIST)*0.2;ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(120,160,255,${a})`;ctx.lineWidth=0.5;ctx.stroke()}}}}
+function animate(t){ctx.clearRect(0,0,w,h);const g=ctx.createRadialGradient(w/2,h/2,0,w/2,h/2,w*0.6);g.addColorStop(0,'rgba(30,60,120,0.05)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);for(const p of particles)p.update(t);drawLines(t);for(const p of particles)p.draw();requestAnimationFrame(animate)}
 animate(0);
 
 // ============================================================
@@ -321,12 +326,7 @@ animate(0);
 // ============================================================
 function addLog(action, detail){
     const logs=JSON.parse(localStorage.getItem('userLogs')||'[]');
-    logs.push({
-        time:new Date().toLocaleString(),
-        action:action,
-        detail:detail||'',
-        user:currentUser||'未登录'
-    });
+    logs.push({time:new Date().toLocaleString(),action:action,detail:detail||'',user:currentUser||'未登录'});
     if(logs.length>500)logs.splice(0,logs.length-500);
     localStorage.setItem('userLogs',JSON.stringify(logs));
 }
@@ -334,32 +334,79 @@ function addLog(action, detail){
 function renderLogs(){
     const logs=JSON.parse(localStorage.getItem('userLogs')||'[]');
     const container=document.getElementById('logList');
-    if(logs.length===0){
-        container.innerHTML='<div class="log-empty">暂无操作记录</div>';
-        return;
-    }
+    if(logs.length===0){container.innerHTML='<div class="log-empty">暂无操作记录</div>';return}
     container.innerHTML=logs.slice().reverse().map(log=>
-        `<div class="log-item">
-            <span class="log-action">${log.action} ${log.detail?'- '+log.detail:''}</span>
-            <span class="log-time">${log.time}</span>
-        </div>`
+        `<div class="log-item"><span class="log-action">${log.action} ${log.detail?'- '+log.detail:''}</span><span class="log-time">${log.time}</span></div>`
     ).join('');
 }
 
 function clearLogs(){
-    if(confirm('确定清空所有日志吗？')){
-        localStorage.setItem('userLogs','[]');
-        renderLogs();
-        showToast('🗑️ 日志已清空');
+    if(confirm('确定清空所有日志吗？')){localStorage.setItem('userLogs','[]');renderLogs();showToast('🗑️ 日志已清空')}
+}
+
+// ============================================================
+// 更新日志数据
+// ============================================================
+const changelogs = [
+    {
+        version: 'v2.0',
+        date: '2026-08-02',
+        changes: [
+            { type: 'add', text: '新增 更新日志页面' },
+            { type: 'add', text: '新增 作者页面，显示QQ号' },
+            { type: 'add', text: '新增 侧滑菜单栏' },
+            { type: 'add', text: '新增 脚本图片展示功能' },
+            { type: 'fix', text: '修复 个人主页点不进去的问题' },
+            { type: 'fix', text: '修复 退出登录失效的问题' }
+        ]
+    },
+    {
+        version: 'v1.5',
+        date: '2026-07-28',
+        changes: [
+            { type: 'add', text: '新增 操作日志功能' },
+            { type: 'add', text: '新增 头像更换功能' },
+            { type: 'add', text: '新增 公告栏功能' },
+            { type: 'fix', text: '优化 页面加载速度' }
+        ]
+    },
+    {
+        version: 'v1.0',
+        date: '2026-07-20',
+        changes: [
+            { type: 'add', text: '初始版本发布' },
+            { type: 'add', text: '登录/注册功能' },
+            { type: 'add', text: '脚本列表展示' },
+            { type: 'add', text: '脚本复制功能' }
+        ]
     }
+];
+
+function renderChangelog(){
+    const container = document.getElementById('changelogList');
+    let html = '';
+    changelogs.forEach(item => {
+        html += `<div class="cl-item">
+            <div class="cl-version">${item.version} <span class="cl-date">${item.date}</span></div>
+            <ul class="cl-list">`;
+        item.changes.forEach(change => {
+            let emoji = '✦';
+            if(change.type === 'add') emoji = '➕';
+            else if(change.type === 'fix') emoji = '🔧';
+            else if(change.type === 'del') emoji = '➖';
+            html += `<li class="${change.type}">${emoji} ${change.text}</li>`;
+        });
+        html += `</ul></div>`;
+    });
+    container.innerHTML = html;
 }
 
 // ============================================================
 // 公告栏
 // ============================================================
 const announcements=[
-    {text:'🎉 星脚本 v2.0 已更新！个人菜单、卡片背景升级',time:'2026-08-02'},
-    {text:'📌 点击 ☰ 打开侧滑菜单，快速加入QQ群',time:'2026-08-01'},
+    {text:'🎉 星脚本 v2.0 已更新！新增更新日志、作者页面',time:'2026-08-02'},
+    {text:'📌 点击 ☰ 打开侧滑菜单，查看「更新日志」',time:'2026-08-01'},
     {text:'💡 点击脚本图片可放大查看',time:'2026-07-31'}
 ];
 let curAnn=0,timer=null;
@@ -385,62 +432,68 @@ document.getElementById('modalClose').onclick=function(){document.getElementById
 document.getElementById('announceModal').onclick=function(e){if(e.target===this)this.classList.remove('show')}
 
 // ============================================================
+// 作者弹窗
+// ============================================================
+function copyQQ(){
+    const qq = '2332507600';
+    navigator.clipboard.writeText(qq).then(()=>{
+        showToast('✅ QQ号已复制！');
+    }).catch(()=>{
+        const ta=document.createElement('textarea');
+        ta.value=qq;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast('✅ QQ号已复制！');
+    });
+}
+
+// ============================================================
 // 侧滑菜单
 // ============================================================
 function toggleMenu(){
     document.getElementById('sideMenu').classList.toggle('open');
     document.getElementById('menuOverlay').classList.toggle('show');
 }
-
 function closeMenu(){
     document.getElementById('sideMenu').classList.remove('open');
     document.getElementById('menuOverlay').classList.remove('show');
 }
-
 function menuGoTo(target){
     closeMenu();
     switch(target){
         case 'home': if(currentUser)showMain(); else showToast('请先登录'); break;
         case 'scripts': if(currentUser){showMain();showToast('📦 滚动查看脚本列表')} else showToast('请先登录'); break;
         case 'qq':
-            window.open('https://qun.qq.com/universal-share/share?ac=1&authKey=IYX%2BbSiDczqS1f3mPWijJYF%2F%2FXum5t18VmIIRgVlSgIk%2BSdOl8FcRdwWjnlXnb4f&busi_data=eyJncm91cENvZGUiOiI5ODUyMjg0OTgiLCJ0b2tlbiI6IjVkRjhBWm42WUFuZFZTU2tRZnBXcjVHWUozbFB6Ky9IUDRjQWZNVW53MjZmcjNEUXoyYlNINW5VYkpuejlxbHIiLCJ1aW4iOiIyMzMyNTA3NjAwIn0%3D&data=5Q95NAWo6Z79VL9tiF0CbDDOgSK6GTk1IqtoczUZXTCmb0ChlkoU2wdzgRLv_MnO314I73mWNf_9v8RLu88XTA&svctype=4&tempid=h5_group_info', '_blank');
-            addLog('💬 点击加入QQ群','');
-            showToast('📱 正在打开QQ群...');
-            break;
+            window.open('https://qun.qq.com/universal-share/share?ac=1&authKey=IYX%2BbSiDczqS1f3mPWijJYF%2F%2FXum5t18VmIIRgVlSgIk%2BSdOl8FcRdwWjnlXnb4f&busi_data=eyJncm91cENvZGUiOiI5ODUyMjg0OTgiLCJ0b2tlbiI6IjVkRjhBWm42WUFuZFZTU2tRZnBXcjVHWUozbFB6Ky9IUDRjQWZNVW53MjZmcjNEUXoyYlNINW5VYkpuejlxbHIiLCJ1aW4iOiIyMzMyNTA3NjAwIn0%3D&data=5Q95NAWo6Z79VL9tiF0CbDDOgSK6GTk1IqtoczUZXTCmb0ChlkoU2wdzgRLv_MnO314I73mWNf_9v8RLu88XTA&svctype=4&tempid=h5_group_info','_blank');
+            addLog('💬 点击加入QQ群','');showToast('📱 正在打开QQ群...');break;
         case 'profile': if(currentUser)showProfile(); else showToast('请先登录'); break;
-        case 'logs': if(currentUser)showLogs(); else showToast('请先登录'); break;
+        case 'changelog': showChangelog(); break;
+        case 'author':
+            document.getElementById('authorModal').classList.add('show');
+            addLog('✍️ 查看作者','');
+            break;
         case 'logout': logout(); break;
         default: break;
     }
 }
-
 document.getElementById('menuBtn').onclick=function(e){e.stopPropagation();toggleMenu()};
 document.getElementById('menuOverlay').onclick=closeMenu;
-
-function updateMenuBadge(){
-    document.getElementById('menuScriptCount').textContent=SCRIPTS.length;
-}
+document.getElementById('closeAuthorModal').onclick=function(){
+    document.getElementById('authorModal').classList.remove('show');
+};
+document.getElementById('authorModal').onclick=function(e){
+    if(e.target===this)this.classList.remove('show');
+};
+function updateMenuBadge(){document.getElementById('menuScriptCount').textContent=SCRIPTS.length}
 
 // ============================================================
-// 脚本管理（带图片）
+// 脚本管理
 // ============================================================
 const SCRIPTS=[
-    {
-        name:"北极星加载器",
-        version:"1.0",
-        desc:"稳定的北极星脚本加载器",
-        loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()',
-        icon:'❄️',
-        img:'https://picsum.photos/200/200?random=1'
-    },
-    {
-        name:"星脚本",
-        version:"1.0",
-        desc:"星脚本加载器",
-        loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()',
-        icon:'⭐',
-        img:'https://picsum.photos/200/200?random=2'
-    }
+    {name:"北极星加载器",version:"1.0",desc:"稳定的北极星脚本加载器",loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()',icon:'❄️',img:'https://picsum.photos/200/200?random=1'},
+    {name:"星脚本",version:"1.0",desc:"星脚本加载器",loader:'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()',icon:'⭐',img:'https://picsum.photos/200/200?random=2'}
 ];
 
 function renderScripts(){
@@ -454,7 +507,7 @@ function renderScripts(){
                 <div class="name">${s.name} <span class="version">v${s.version}</span></div>
                 <div class="desc">${s.desc||''}</div>
             </div>
-            <button class="btn-copy" onclick="copyScript(${i})">📋 复制</button>
+            <button class="btn-copy" onclick="copyScript(${i},this)">📋 复制</button>
         </div>`;
     });
     document.getElementById('scriptList').innerHTML=html;
@@ -466,40 +519,26 @@ function openImgModal(imgUrl, name){
     document.getElementById('imgModalContent').src=imgUrl;
     document.getElementById('imgModal').classList.add('show');
 }
+document.getElementById('closeImgModal').onclick=function(){document.getElementById('imgModal').classList.remove('show')};
+document.getElementById('imgModal').onclick=function(e){if(e.target===this)this.classList.remove('show')};
 
-document.getElementById('closeImgModal').onclick=function(){
-    document.getElementById('imgModal').classList.remove('show');
-};
-document.getElementById('imgModal').onclick=function(e){
-    if(e.target===this)this.classList.remove('show');
-};
-
-function copyScript(i){
+function copyScript(i,btn){
     const s=SCRIPTS[i];
     const loader=s.loader;
-    const btn=event.target;
     navigator.clipboard.writeText(loader).then(()=>{
-        btn.textContent='✅ 已复制';
-        btn.classList.add('copied');
+        btn.textContent='✅ 已复制';btn.classList.add('copied');
         setTimeout(()=>{btn.textContent='📋 复制';btn.classList.remove('copied')},2000);
-        showToast('✅ 已复制 '+s.name);
-        addLog('📋 复制脚本',s.name);
+        showToast('✅ 已复制 '+s.name);addLog('📋 复制脚本',s.name);
     }).catch(()=>{
         const ta=document.createElement('textarea');
-        ta.value=loader;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        ta.remove();
-        btn.textContent='✅ 已复制';
-        btn.classList.add('copied');
+        ta.value=loader;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+        btn.textContent='✅ 已复制';btn.classList.add('copied');
         setTimeout(()=>{btn.textContent='📋 复制';btn.classList.remove('copied')},2000);
-        showToast('✅ 已复制 '+s.name);
-        addLog('📋 复制脚本',s.name);
+        showToast('✅ 已复制 '+s.name);addLog('📋 复制脚本',s.name);
     });
 }
 
-function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(()=>el.classList.remove('show'),2500)}
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(()=>el.classList.remove('show'),2000)}
 
 // ============================================================
 // 登录注册
@@ -528,10 +567,7 @@ function loginRegister(){
     if(isLogin){
         if(!users[email]){showError('账号不存在，请先注册');return}
         if(users[email]!==password){showError('密码错误');return}
-        currentUser=email;
-        addLog('✅ 登录成功',email);
-        showMain();
-        showToast('✅ 登录成功')
+        currentUser=email;addLog('✅ 登录成功',email);showMain();showToast('✅ 登录成功')
     }else{
         if(users[email]){showError('邮箱已注册');return}
         users[email]=password;localStorage.setItem('users',JSON.stringify(users));
@@ -546,6 +582,7 @@ function showMain(){
     document.getElementById('mainSection').style.display='block';
     document.getElementById('profilePage').style.display='none';
     document.getElementById('logsPage').style.display='none';
+    document.getElementById('changelogPage').style.display='none';
     renderScripts();
     if(currentUser){
         const name=currentUser.split('@')[0];
@@ -557,6 +594,7 @@ function showProfile(){
     document.getElementById('mainSection').style.display='none';
     document.getElementById('profilePage').style.display='block';
     document.getElementById('logsPage').style.display='none';
+    document.getElementById('changelogPage').style.display='none';
     if(currentUser){
         const name=currentUser.split('@')[0];
         document.getElementById('profileName').textContent=name;
@@ -564,7 +602,6 @@ function showProfile(){
         const uid='U'+currentUser.split('@')[0].substring(0,4).toUpperCase()+'01';
         document.getElementById('profileUid').textContent=uid;
         document.getElementById('profileRegTime').textContent=new Date().toLocaleString();
-        // 头像
         const avatar=localStorage.getItem('avatar_'+currentUser)||'👤';
         document.getElementById('profileAvatar').textContent=avatar;
     }
@@ -573,7 +610,16 @@ function showProfile(){
 function showLogs(){
     document.getElementById('profilePage').style.display='none';
     document.getElementById('logsPage').style.display='block';
+    document.getElementById('changelogPage').style.display='none';
     renderLogs();
+}
+
+function showChangelog(){
+    document.getElementById('mainSection').style.display='none';
+    document.getElementById('profilePage').style.display='none';
+    document.getElementById('logsPage').style.display='none';
+    document.getElementById('changelogPage').style.display='block';
+    renderChangelog();
 }
 
 function logout(){
@@ -583,6 +629,7 @@ function logout(){
     document.getElementById('mainSection').style.display='none';
     document.getElementById('profilePage').style.display='none';
     document.getElementById('logsPage').style.display='none';
+    document.getElementById('changelogPage').style.display='none';
     closeMenu();
     showToast('✅ 已退出');
 }
@@ -592,31 +639,28 @@ function checkSession(){
     document.getElementById('mainSection').style.display='none';
     document.getElementById('profilePage').style.display='none';
     document.getElementById('logsPage').style.display='none';
+    document.getElementById('changelogPage').style.display='none';
 }
 
 // ============================================================
-// 所有事件绑定
+// 事件绑定
 // ============================================================
 document.getElementById('authBtn').onclick=loginRegister;
 document.getElementById('switchLink').onclick=function(e){e.preventDefault();switchMode()};
-document.getElementById('profileBtn').onclick=function(){
-    if(!currentUser){showToast('请先登录');return}
-    showProfile()
-};
+document.getElementById('profileBtn').onclick=function(){if(!currentUser){showToast('请先登录');return}showProfile()};
 document.getElementById('profileBackBtn').onclick=function(){showMain()};
 document.getElementById('profileLogoutBtn').onclick=function(){logout()};
 document.getElementById('showLogsBtn').onclick=function(){showLogs()};
 document.getElementById('backFromLogs').onclick=function(){showProfile()};
 document.getElementById('clearLogsBtn').onclick=clearLogs;
+document.getElementById('backFromChangelog').onclick=function(){showMain()};
 document.getElementById('homeBtn').onclick=function(){if(currentUser)showMain()};
 
-// 点击头像打开选择器
 document.getElementById('profileAvatar').onclick=function(){
     if(!currentUser){showToast('请先登录');return}
     document.getElementById('avatarPicker').classList.add('show')
 };
 
-// 头像选择器
 const avatarGrid=document.getElementById('avatarGrid');
 const defaultAvatars=['🌟','🚀','🎯','💎','🔥','⭐','🌊','🌙'];
 avatarGrid.innerHTML=defaultAvatars.map(e=>
@@ -632,12 +676,8 @@ avatarGrid.querySelectorAll('.opt').forEach((el,idx)=>{
         showToast('✅ 头像已更换');
     }
 });
-document.getElementById('pickerClose').onclick=function(){
-    document.getElementById('avatarPicker').classList.remove('show')
-};
-document.getElementById('pickerUpload').onclick=function(){
-    document.getElementById('fileInput').click()
-};
+document.getElementById('pickerClose').onclick=function(){document.getElementById('avatarPicker').classList.remove('show')};
+document.getElementById('pickerUpload').onclick=function(){document.getElementById('fileInput').click()};
 document.getElementById('fileInput').onchange=function(e){
     const file=e.target.files[0];if(!file)return;
     const reader=new FileReader();
@@ -652,10 +692,7 @@ document.getElementById('fileInput').onchange=function(e){
     reader.readAsDataURL(file)
 };
 
-window.onload=function(){
-    addLog('👁️ 访问网站','');
-};
-
+window.onload=function(){addLog('👁️ 访问网站','')};
 checkSession();
 </script>
 </body>
