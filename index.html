@@ -69,6 +69,24 @@ body.light-mode .music-btn{
     color:rgba(0,0,0,0.4);
 }
 body.light-mode .music-btn.playing{color:#4A6CF7}
+body.light-mode #announcementBar{
+    background:rgba(74,108,247,0.06);
+    border-color:rgba(74,108,247,0.08);
+}
+body.light-mode #announcementBar .announce-text{color:#1a1a2e}
+body.light-mode #announcementBar .announce-time{color:rgba(0,0,0,0.3)}
+body.light-mode #announcementBar .announce-close{color:rgba(0,0,0,0.2)}
+body.light-mode .search-input{
+    background:rgba(255,255,255,0.5);
+    color:#1a1a2e;
+    border-color:rgba(0,0,0,0.06);
+}
+body.light-mode .search-input::placeholder{color:rgba(0,0,0,0.3)}
+body.light-mode .toolbar-btn{
+    background:rgba(0,0,0,0.04);
+    border-color:rgba(0,0,0,0.06);
+    color:rgba(0,0,0,0.6);
+}
 #particleCanvas{
     position:fixed;
     top:0;
@@ -248,39 +266,114 @@ body.light-mode .music-btn.playing{color:#4A6CF7}
     -webkit-appearance:none;appearance:none;width:12px;height:12px;
     border-radius:50%;background:#4A6CF7;cursor:pointer;
 }
+
+/* 公告栏 */
+#announcementBar{
+    background:rgba(74,108,247,0.06);
+    border:1px solid rgba(74,108,247,0.08);
+    border-radius:12px;
+    padding:8px 12px;
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:all 0.3s;
+}
+#announcementBar .announce-icon{font-size:16px;flex-shrink:0;}
+#announcementBar .announce-slider{flex:1;overflow:hidden;position:relative;height:40px;}
+#announcementBar .announce-slider .slide-item{
+    position:absolute;top:0;left:0;width:100%;
+    transition:transform 0.5s ease,opacity 0.5s ease;
+    opacity:0;transform:translateY(10px);
+}
+#announcementBar .announce-slider .slide-item.active{
+    opacity:1;transform:translateY(0);
+}
+#announcementBar .announce-slider .slide-item .text{
+    font-size:13px;color:#e8eeff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#announcementBar .announce-slider .slide-item .time{
+    font-size:10px;color:rgba(180,200,255,0.25);
+}
+#announcementBar .announce-nav{
+    display:flex;gap:4px;flex-shrink:0;
+}
+#announcementBar .announce-nav button{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.04);
+    color:rgba(255,255,255,0.3);
+    border-radius:4px;
+    padding:2px 8px;font-size:14px;cursor:pointer;
+}
+#announcementBar .announce-nav button:active{background:rgba(255,255,255,0.08)}
+#announcementBar .announce-dot{
+    font-size:11px;color:rgba(180,200,255,0.2);align-self:center;min-width:28px;text-align:center;
+}
+#announcementBar .announce-close{
+    background:none;border:none;color:rgba(255,255,255,0.15);font-size:14px;cursor:pointer;padding:0 2px;
+}
+#announcementBar .announce-close:active{color:rgba(255,255,255,0.4)}
+
 .script-card{
     background:rgba(255,255,255,0.04);
     backdrop-filter:blur(6px);
     -webkit-backdrop-filter:blur(6px);
     border:1px solid rgba(120,160,255,0.06);
     border-radius:14px;
-    padding:16px 18px;
-    margin-bottom:12px;
+    padding:14px 16px;
+    margin-bottom:10px;
     display:flex;
     justify-content:space-between;
     align-items:center;
     transition:background 0.2s,border-color 0.2s;
 }
 .script-card:active{background:rgba(255,255,255,0.07)}
-.script-card .info .name{font-size:16px;font-weight:500;color:#e8eeff}
-.script-card .info .version{font-size:12px;color:rgba(180,200,255,0.3);margin-left:6px}
-.script-card .info .desc{font-size:13px;color:rgba(180,200,255,0.45);margin-top:3px}
+.script-card .info{flex:1;min-width:0}
+.script-card .info .name{font-size:15px;font-weight:500;color:#e8eeff}
+.script-card .info .version{font-size:11px;color:rgba(180,200,255,0.3);margin-left:6px}
+.script-card .info .desc{font-size:12px;color:rgba(180,200,255,0.4);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.script-card .info .pin-btn{
+    cursor:pointer;margin-left:6px;font-size:14px;background:none;border:none;color:rgba(180,200,255,0.2);
+}
+.script-card .info .pin-btn.pinned{color:#f7c948}
+.script-card .info .pin-btn:active{transform:scale(0.8)}
 .btn-copy{
     background:rgba(74,108,247,0.15);
-    border:1px solid rgba(74,108,247,0.15);
+    border:1px solid rgba(74,108,247,0.12);
     color:#a0baff;
-    padding:6px 18px;
+    padding:5px 16px;
     border-radius:20px;
-    font-size:13px;
+    font-size:12px;
     font-weight:500;
     cursor:pointer;
     transition:background 0.2s,border-color 0.2s;
     flex-shrink:0;
-    margin-left:12px;
+    margin-left:10px;
 }
 .btn-copy:active{background:rgba(74,108,247,0.25)}
-.btn-copy.copied{background:rgba(69,199,119,0.2);border-color:rgba(69,199,119,0.2);color:#69db7c}
-.footer{text-align:center;color:rgba(180,200,255,0.12);font-size:12px;margin-top:28px;letter-spacing:0.5px}
+.btn-copy.copied{background:rgba(69,199,119,0.15);border-color:rgba(69,199,119,0.15);color:#69db7c}
+/* 工具栏 */
+.toolbar{
+    display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center;
+}
+.toolbar .search-input{
+    flex:1;min-width:120px;padding:7px 12px;border-radius:10px;
+    border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);
+    color:#e8eeff;font-size:13px;outline:none;transition:border-color 0.2s;
+}
+.toolbar .search-input:focus{border-color:rgba(74,108,247,0.3)}
+.toolbar .search-input::placeholder{color:rgba(180,200,255,0.2)}
+.toolbar .toolbar-btn{
+    padding:6px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+    background:rgba(255,255,255,0.03);color:rgba(180,200,255,0.4);font-size:12px;
+    cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.toolbar .toolbar-btn:active{background:rgba(255,255,255,0.06)}
+.stats-bar{
+    display:flex;justify-content:space-between;font-size:11px;color:rgba(180,200,255,0.2);
+    margin-bottom:10px;padding:0 2px;
+}
+.footer{text-align:center;color:rgba(180,200,255,0.08);font-size:11px;margin-top:24px;letter-spacing:0.5px}
 .toast{
     position:fixed;
     bottom:30px;
@@ -291,9 +384,9 @@ body.light-mode .music-btn.playing{color:#4A6CF7}
     -webkit-backdrop-filter:blur(12px);
     border:1px solid rgba(120,160,255,0.08);
     color:#e8eeff;
-    padding:12px 28px;
+    padding:10px 24px;
     border-radius:30px;
-    font-size:14px;
+    font-size:13px;
     display:none;
     z-index:999;
     white-space:nowrap;
@@ -409,12 +502,26 @@ body.light-mode .music-btn.playing{color:#4A6CF7}
 <canvas id="particleCanvas"></canvas>
 
 <div class="container">
-    <!-- ===== 顶部状态栏（高级功能） ===== -->
-    <div id="statusBar" style="display:flex;justify-content:space-between;align-items:center;padding:6px 12px;margin-bottom:12px;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.04);font-size:12px;color:rgba(180,200,255,0.4);flex-wrap:wrap;gap:6px;">
+    <!-- ===== 顶部状态栏 ===== -->
+    <div id="statusBar" style="display:flex;justify-content:space-between;align-items:center;padding:5px 10px;margin-bottom:10px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid rgba(255,255,255,0.03);font-size:11px;color:rgba(180,200,255,0.3);flex-wrap:wrap;gap:4px;">
         <span id="greetingText">🌅 早上好</span>
         <span id="statusText">🟢 在线</span>
         <span id="visitCount">👁️ 0次</span>
-        <button id="themeToggle" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.06);color:rgba(180,200,255,0.4);border-radius:14px;padding:2px 12px;font-size:12px;cursor:pointer;">🌓 切换</button>
+        <button id="themeToggle" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);color:rgba(180,200,255,0.3);border-radius:12px;padding:1px 10px;font-size:11px;cursor:pointer;">🌓 切换</button>
+    </div>
+
+    <!-- ===== 公告栏 ===== -->
+    <div id="announcementBar">
+        <span class="announce-icon">📢</span>
+        <div class="announce-slider" id="announceSlider">
+            <!-- JS 动态生成 -->
+        </div>
+        <div class="announce-nav">
+            <button id="announcePrev">‹</button>
+            <span class="announce-dot" id="announceDot">1/3</span>
+            <button id="announceNext">›</button>
+        </div>
+        <button class="announce-close" id="announceClose">✕</button>
     </div>
 
     <!-- ===== 登录界面 ===== -->
@@ -441,6 +548,18 @@ body.light-mode .music-btn.playing{color:#4A6CF7}
                 </button>
             </div>
         </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <input class="search-input" id="searchInput" placeholder="🔍 搜索脚本..." autocomplete="off">
+            <button class="toolbar-btn" id="copyAllBtn">📋 全部复制</button>
+            <button class="toolbar-btn" id="refreshBtn">🔄 刷新</button>
+        </div>
+        <div class="stats-bar">
+            <span id="statsText">📊 共 0 个脚本</span>
+            <span id="updateTimeText">🕒 刚刚更新</span>
+        </div>
+
         <div id="scriptList"></div>
         <div class="footer">© 2026 星脚本 · 仅供学习交流</div>
     </div>
@@ -503,7 +622,9 @@ body.light-mode .music-btn.playing{color:#4A6CF7}
     </div>
 </div>
 
-<div id="toast" class="toast"></div><script>
+<div id="toast" class="toast"></div>
+
+<script>
 // ============================================================
 // 流动粒子动画
 // ============================================================
@@ -511,9 +632,9 @@ const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
 let w, h;
 let particles = [];
-const PARTICLE_COUNT = 60;
-const MAX_DIST = 150;
-const FLOW_SPEED = 0.2;
+const PARTICLE_COUNT = 50;
+const MAX_DIST = 140;
+const FLOW_SPEED = 0.15;
 
 function resize() {
     w = canvas.width = window.innerWidth;
@@ -526,7 +647,7 @@ class Particle {
     constructor() {
         this.x = Math.random() * w;
         this.y = Math.random() * h;
-        this.r = Math.random() * 2 + 1.2;
+        this.r = Math.random() * 2 + 1;
         this.dx = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
         this.dy = (Math.random() - 0.5) * FLOW_SPEED * 0.6;
         this.phaseX = Math.random() * 100;
@@ -534,8 +655,8 @@ class Particle {
         this.speed = 0.2 + Math.random() * 0.3;
     }
     update(time) {
-        const waveX = Math.sin(time * 0.0004 + this.phaseX) * 0.15;
-        const waveY = Math.cos(time * 0.0005 + this.phaseY) * 0.15;
+        const waveX = Math.sin(time * 0.0004 + this.phaseX) * 0.12;
+        const waveY = Math.cos(time * 0.0005 + this.phaseY) * 0.12;
         this.x += this.dx + waveX * this.speed;
         this.y += this.dy + waveY * this.speed;
         if (this.x < -20) this.x = w + 20;
@@ -546,7 +667,7 @@ class Particle {
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(160, 200, 255, 0.5)';
+        ctx.fillStyle = 'rgba(160, 200, 255, 0.4)';
         ctx.fill();
     }
 }
@@ -562,12 +683,12 @@ function drawLines(time) {
             const dy = particles[i].y - particles[j].y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < MAX_DIST) {
-                const alpha = (1 - dist / MAX_DIST) * 0.3;
+                const alpha = (1 - dist / MAX_DIST) * 0.25;
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
                 ctx.lineTo(particles[j].x, particles[j].y);
                 ctx.strokeStyle = `rgba(120, 160, 255, ${alpha})`;
-                ctx.lineWidth = 0.6;
+                ctx.lineWidth = 0.5;
                 ctx.stroke();
             }
         }
@@ -576,8 +697,8 @@ function drawLines(time) {
 
 function animate(time) {
     ctx.clearRect(0, 0, w, h);
-    const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w*0.7);
-    grad.addColorStop(0, 'rgba(30, 60, 120, 0.08)');
+    const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w*0.6);
+    grad.addColorStop(0, 'rgba(30, 60, 120, 0.06)');
     grad.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
@@ -591,11 +712,65 @@ function animate(time) {
     }
     requestAnimationFrame(animate);
 }
-
 animate(0);
 
 // ============================================================
-// 固定音乐播放器 - 起风了（可播放MP3源）
+// 公告栏
+// ============================================================
+const announcements = [
+    { text: '🎉 星脚本 v2.0 已更新！新增搜索、置顶、公告栏功能', time: '2026-08-02' },
+    { text: '📌 北极星加载器已更新至 v1.2，修复已知问题', time: '2026-08-01' },
+    { text: '💡 提示：点击脚本旁边的 ☆ 可置顶常用脚本', time: '2026-07-31' },
+];
+
+let currentAnnounce = 0;
+let announceTimer = null;
+const announceSlider = document.getElementById('announceSlider');
+const announceDot = document.getElementById('announceDot');
+
+function renderAnnouncement(index) {
+    const item = announcements[index];
+    announceSlider.innerHTML = `
+        <div class="slide-item active">
+            <div class="text">${item.text}</div>
+            <div class="time">${item.time}</div>
+        </div>
+    `;
+    announceDot.textContent = (index + 1) + '/' + announcements.length;
+}
+
+function nextAnnounce() {
+    currentAnnounce = (currentAnnounce + 1) % announcements.length;
+    renderAnnouncement(currentAnnounce);
+}
+
+function prevAnnounce() {
+    currentAnnounce = (currentAnnounce - 1 + announcements.length) % announcements.length;
+    renderAnnouncement(currentAnnounce);
+}
+
+if (announcements.length > 0) {
+    renderAnnouncement(0);
+    announceTimer = setInterval(nextAnnounce, 5000);
+}
+
+document.getElementById('announceNext')?.addEventListener('click', function() {
+    clearInterval(announceTimer);
+    nextAnnounce();
+    announceTimer = setInterval(nextAnnounce, 5000);
+});
+document.getElementById('announcePrev')?.addEventListener('click', function() {
+    clearInterval(announceTimer);
+    prevAnnounce();
+    announceTimer = setInterval(nextAnnounce, 5000);
+});
+document.getElementById('announceClose')?.addEventListener('click', function() {
+    document.getElementById('announcementBar').style.display = 'none';
+    clearInterval(announceTimer);
+});
+
+// ============================================================
+// 音乐播放器
 // ============================================================
 const musicBtn = document.getElementById('musicBtn');
 const musicPopup = document.getElementById('musicPopup');
@@ -603,12 +778,10 @@ const closeMusicPopup = document.getElementById('closeMusicPopup');
 const popupSongTitle = document.getElementById('popupSongTitle');
 const popupSongArtist = document.getElementById('popupSongArtist');
 const popupPlayBtn = document.getElementById('popupPlayBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
 const popupVolSlider = document.getElementById('popupVolSlider');
 const popupVolIcon = document.getElementById('popupVolIcon');
 
-const SONG_URL = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+const SONG_URL = 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d3b3f5e1f2.mp3';
 const SONG_TITLE = '起风了（纯音乐）';
 const SONG_ARTIST = '纯音乐';
 
@@ -637,7 +810,6 @@ function togglePlay() {
         audio.play().catch(() => {});
         isPlaying = true;
         popupPlayBtn.textContent = '⏸';
-        musicBtn.textContent = '🎵';
         musicBtn.classList.add('playing');
         return;
     }
@@ -654,64 +826,25 @@ function togglePlay() {
     }
 }
 
-// 音量控制
 popupVolSlider.addEventListener('input', function() {
     audio.volume = this.value / 100;
     popupVolIcon.textContent = this.value == 0 ? '🔇' : '🔊';
 });
 
-popupVolIcon.addEventListener('click', function() {
-    if (audio.volume > 0) {
-        audio.volume = 0;
-        popupVolSlider.value = 0;
-        popupVolIcon.textContent = '🔇';
-    } else {
-        audio.volume = 0.7;
-        popupVolSlider.value = 70;
-        popupVolIcon.textContent = '🔊';
-    }
-});
-
-// 播放控制
 popupPlayBtn.addEventListener('click', togglePlay);
-
-prevBtn.addEventListener('click', function() {
-    audio.currentTime = 0;
-    if (!isPlaying) {
-        audio.play().catch(() => {});
-        isPlaying = true;
-        popupPlayBtn.textContent = '⏸';
-        musicBtn.classList.add('playing');
-    }
-});
-
-nextBtn.addEventListener('click', function() {
-    audio.currentTime = 0;
-    if (!isPlaying) {
-        audio.play().catch(() => {});
-        isPlaying = true;
-        popupPlayBtn.textContent = '⏸';
-        musicBtn.classList.add('playing');
-    }
-});
-
-// 打开/关闭弹窗
 musicBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     musicPopup.classList.toggle('show');
 });
-
 closeMusicPopup.addEventListener('click', function() {
     musicPopup.classList.remove('show');
 });
-
 document.addEventListener('click', function(e) {
     if (!musicPopup.contains(e.target) && e.target !== musicBtn) {
         musicPopup.classList.remove('show');
     }
 });
 
-// 初始化
 audio.volume = 0.7;
 popupVolSlider.value = 70;
 popupSongTitle.textContent = SONG_TITLE;
@@ -733,7 +866,7 @@ function updateGreeting() {
 }
 updateGreeting();
 
-// 2. 在线状态检测
+// 2. 在线状态
 function updateStatus() {
     const status = document.getElementById('statusText');
     if (navigator.onLine) {
@@ -753,22 +886,117 @@ let visitCount = parseInt(localStorage.getItem('visitCount') || '0') + 1;
 localStorage.setItem('visitCount', visitCount);
 document.getElementById('visitCount').textContent = '👁️ ' + visitCount + '次';
 
-// 4. 深色/浅色模式切换
+// 4. 深色/浅色模式
 let darkMode = localStorage.getItem('darkMode') !== 'false';
 function applyTheme() {
-    if (darkMode) {
-        document.body.classList.remove('light-mode');
-    } else {
-        document.body.classList.add('light-mode');
-    }
+    if (darkMode) document.body.classList.remove('light-mode');
+    else document.body.classList.add('light-mode');
 }
 applyTheme();
-
 document.getElementById('themeToggle').addEventListener('click', function() {
     darkMode = !darkMode;
     localStorage.setItem('darkMode', darkMode);
     applyTheme();
 });
+
+// ============================================================
+// 脚本管理
+// ============================================================
+const SCRIPTS = [
+    { name: "北极星加载器", version: "1.0", desc: "稳定的北极星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' },
+    { name: "星脚本", version: "1.0", desc: "星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' }
+];
+
+const scriptList = document.getElementById('scriptList');
+const searchInput = document.getElementById('searchInput');
+const statsText = document.getElementById('statsText');
+const updateTimeText = document.getElementById('updateTimeText');
+
+function getPinned() {
+    try { return JSON.parse(localStorage.getItem('pinnedScripts') || '{}'); } catch(e) { return {}; }
+}
+function setPinned(id, val) {
+    const p = getPinned();
+    p[id] = val;
+    localStorage.setItem('pinnedScripts', JSON.stringify(p));
+}
+function togglePin(id) {
+    const p = getPinned();
+    p[id] = !p[id];
+    localStorage.setItem('pinnedScripts', JSON.stringify(p));
+    renderScripts();
+}
+
+function renderScripts() {
+    const pinned = getPinned();
+    const keyword = searchInput.value.toLowerCase().trim();
+    const sorted = [...SCRIPTS].sort((a, b) => {
+        const aId = a.name + a.version;
+        const bId = b.name + b.version;
+        return (pinned[bId] || 0) - (pinned[aId] || 0);
+    });
+    let html = '';
+    let visible = 0;
+    sorted.forEach(s => {
+        const id = s.name + s.version;
+        const match = s.name.toLowerCase().includes(keyword) || s.desc.toLowerCase().includes(keyword);
+        if (!match) return;
+        visible++;
+        html += `<div class="script-card" data-id="${id}">
+            <div class="info">
+                <div class="name">${s.name} <span class="version">v${s.version}</span>
+                    <button class="pin-btn ${pinned[id] ? 'pinned' : ''}" onclick="togglePin('${id}')">${pinned[id] ? '⭐' : '☆'}</button>
+                </div>
+                <div class="desc">${s.desc || ''}</div>
+            </div>
+            <button class="btn-copy" onclick="copyScript('${id}')">📋 复制</button>
+        </div>`;
+    });
+    scriptList.innerHTML = html || '<div style="text-align:center;padding:40px 0;color:rgba(180,200,255,0.2);font-size:14px;">🔍 没有找到匹配的脚本</div>';
+    statsText.textContent = `📊 共 ${SCRIPTS.length} 个脚本，显示 ${visible} 个`;
+}
+
+function copyScript(id) {
+    const s = SCRIPTS.find(item => item.name + item.version === id);
+    if (!s) return;
+    navigator.clipboard.writeText(s.loader).then(() => {
+        showToast('✅ 已复制！');
+    }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = s.loader;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast('✅ 已复制！');
+    });
+}
+
+searchInput.addEventListener('input', renderScripts);
+document.getElementById('copyAllBtn')?.addEventListener('click', function() {
+    const all = SCRIPTS.map(s => s.loader).join('\n\n');
+    navigator.clipboard.writeText(all).then(() => {
+        showToast('✅ 已复制全部 ' + SCRIPTS.length + ' 个脚本！');
+    }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = all;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast('✅ 已复制全部 ' + SCRIPTS.length + ' 个脚本！');
+    });
+});
+document.getElementById('refreshBtn')?.addEventListener('click', function() {
+    updateTimeText.textContent = '🕒 ' + new Date().toLocaleTimeString();
+    renderScripts();
+    showToast('🔄 已刷新');
+});
+
+function updateTime() {
+    updateTimeText.textContent = '🕒 ' + new Date().toLocaleTimeString();
+}
+updateTime();
 
 // ============================================================
 // 登录注册逻辑
@@ -789,7 +1017,6 @@ const profileBtn = document.getElementById('profileBtn');
 const profileBackBtn = document.getElementById('profileBackBtn');
 const profileLogoutBtn = document.getElementById('profileLogoutBtn');
 const homeBtn = document.getElementById('homeBtn');
-const scriptList = document.getElementById('scriptList');
 const userNameDisplay = document.getElementById('userNameDisplay');
 const headerAvatar = document.getElementById('headerAvatar');
 const profileName = document.getElementById('profileName');
@@ -819,45 +1046,6 @@ const DEFAULT_AVATARS = [
     { emoji: '🌊', bg: 'linear-gradient(135deg,#a18cd1,#fbc2eb)' },
     { emoji: '🌙', bg: 'linear-gradient(135deg,#89f7fe,#66a6ff)' },
 ];
-
-const SCRIPTS = [
-    { name: "北极星加载器", version: "1.0", desc: "稳定的北极星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' },
-    { name: "星脚本", version: "1.0", desc: "星脚本加载器", loader: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/zilinskaslandon/-/refs/heads/main/%E5%8C%97%E6%9E%81%E6%98%9F%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%B7%B2%E5%8A%A0.lua"))()' }
-];
-
-function renderScripts() {
-    scriptList.innerHTML = SCRIPTS.map((s, i) =>
-        '<div class="script-card" id="scriptCard' + i + '">' +
-        '<div class="info"><div class="name">' + s.name + ' <span class="version">v' + s.version + '</span></div>' +
-        '<div class="desc">' + (s.desc || '') + '</div></div>' +
-        '<button class="btn-copy" id="copyBtn' + i + '" onclick="copyScript(' + i + ')">📋 复制</button>' +
-        '</div>'
-    ).join('');
-}
-
-async function copyScript(index) {
-    const loader = SCRIPTS[index].loader;
-    try {
-        await navigator.clipboard.writeText(loader);
-        showToast('✅ 已复制！');
-        // 复制成功动画
-        const btn = document.getElementById('copyBtn' + index);
-        btn.textContent = '✅ 已复制';
-        btn.classList.add('copied');
-        setTimeout(() => {
-            btn.textContent = '📋 复制';
-            btn.classList.remove('copied');
-        }, 2000);
-    } catch (e) {
-        const ta = document.createElement('textarea');
-        ta.value = loader;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        ta.remove();
-        showToast('✅ 已复制！');
-    }
-}
 
 function showToast(msg) {
     const el = document.getElementById('toast');
@@ -906,9 +1094,7 @@ function getInitials(email) {
 
 function getAvatarData(email) {
     const users = JSON.parse(localStorage.getItem('users') || '{}');
-    if (users[email] && users[email]._avatar) {
-        return users[email]._avatar;
-    }
+    if (users[email] && users[email]._avatar) return users[email]._avatar;
     return null;
 }
 
@@ -963,10 +1149,7 @@ function renderAvatarPicker() {
 }
 
 function openPicker() {
-    if (!currentUser) {
-        showToast('请先登录');
-        return;
-    }
+    if (!currentUser) { showToast('请先登录'); return; }
     renderAvatarPicker();
     avatarPicker.classList.add('show');
 }
@@ -1038,40 +1221,78 @@ function showProfile() {
     }
 }
 
-profileAvatar.addEventListener('click', function(e) {
-    e.stopPropagation();
-    openPicker();
-});
+function logout() {
+    currentUser = null;
+    authSection.style.display = 'block';
+    mainSection.style.display = 'none';
+    profilePage.style.display = 'none';
+    showToast('✅ 已退出');
+}
 
-profileBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    if (!currentUser) {
-        showToast('请先登录');
-        return;
-    }
-    showProfile();
-});
+function switchMode() {
+    isLoginMode = !isLoginMode;
+    authBtn.textContent = isLoginMode ? '登录' : '注册';
+    switchText.textContent = isLoginMode ? '还没有账号？' : '已有账号？';
+    switchLink.textContent = isLoginMode ? '注册' : '登录';
+    modeText.textContent = isLoginMode ? '登录后查看脚本' : '注册后登录查看脚本';
+    authError.style.display = 'none';
+    authSuccess.style.display = 'none';
+    authEmail.value = '';
+    authPassword.value = '';
+}
 
-profileBackBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    showMain();
-});
+authBtn.onclick = function() {
+    const email = authEmail.value.trim();
+    const password = authPassword.value.trim();
 
-homeBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    if (currentUser) {
+    if (!isValidEmail(email)) { showError('❌ 请输入正确的邮箱（如 123@qq.com）'); return; }
+    if (!isValidPassword(password)) { showError('❌ 密码至少 6 位'); return; }
+
+    let users = {};
+    try { users = JSON.parse(localStorage.getItem('users') || '{}'); } catch(e) { users = {}; }
+
+    if (isLoginMode) {
+        if (users[email] === undefined || (typeof users[email] === 'object' && !users[email].password)) {
+            showError('❌ 账号不存在，请先注册');
+            return;
+        }
+        const storedPw = typeof users[email] === 'string' ? users[email] : users[email].password;
+        if (storedPw !== password) { showError('❌ 密码错误，请重试'); return; }
+        currentUser = email;
         showMain();
+        showToast('✅ 登录成功！');
+    } else {
+        if (users[email] !== undefined) { showError('❌ 该邮箱已注册，请直接登录'); return; }
+        const emailPrefix = email.split('@')[0].substring(0, 4).toUpperCase();
+        const randomNum = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+        const uid = 'U' + emailPrefix + randomNum;
+
+        users[email] = { password: password, _time: new Date().toISOString(), _avatar: null, _uid: uid };
+        localStorage.setItem('users', JSON.stringify(users));
+        showSuccess('✅ 注册成功！即将切换到登录...');
+        setTimeout(() => {
+            switchMode();
+            authEmail.value = email;
+            authPassword.value = '';
+            showToast('✅ 请登录');
+        }, 1500);
     }
-});
+};
 
-pickerClose.addEventListener('click', closePicker);
-avatarPicker.addEventListener('click', function(e) {
-    if (e.target === this) closePicker();
-});
-
-pickerUpload.addEventListener('click', function() {
-    fileInput.click();
-});
+switchLink.onclick = function(e) { e.preventDefault();
+    switchMode(); };
+logoutBtn.onclick = logout;
+profileLogoutBtn.onclick = logout;
+profileBtn.onclick = function(e) { e.stopPropagation(); if (!currentUser) { showToast('请先登录'); return; }
+    showProfile(); };
+profileBackBtn.onclick = function(e) { e.stopPropagation();
+    showMain(); };
+homeBtn.onclick = function(e) { e.stopPropagation(); if (currentUser) showMain(); };
+profileAvatar.onclick = function(e) { e.stopPropagation();
+    openPicker(); };
+pickerClose.onclick = closePicker;
+avatarPicker.addEventListener('click', function(e) { if (e.target === this) closePicker(); });
+pickerUpload.onclick = function() { fileInput.click(); };
 fileInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -1087,95 +1308,14 @@ fileInput.addEventListener('change', function(e) {
     reader.readAsDataURL(file);
 });
 
-function handleAuth() {
-    const email = authEmail.value.trim();
-    const password = authPassword.value.trim();
-
-    if (!isValidEmail(email)) {
-        showError('❌ 请输入正确的邮箱（如 123@qq.com）');
-        return;
-    }
-    if (!isValidPassword(password)) {
-        showError('❌ 密码至少 6 位');
-        return;
-    }
-
-    let users = {};
-    try { users = JSON.parse(localStorage.getItem('users') || '{}'); } catch (e) { users = {}; }
-
-    if (isLoginMode) {
-        if (users[email] === undefined || (typeof users[email] === 'object' && !users[email].password)) {
-            showError('❌ 账号不存在，请先注册');
-            return;
-        }
-        const storedPw = typeof users[email] === 'string' ? users[email] : users[email].password;
-        if (storedPw !== password) {
-            showError('❌ 密码错误，请重试');
-            return;
-        }
-        currentUser = email;
-        showMain();
-        showToast('✅ 登录成功！');
-    } else {
-        if (users[email] !== undefined) {
-            showError('❌ 该邮箱已注册，请直接登录');
-            return;
-        }
-        const emailPrefix = email.split('@')[0].substring(0, 4).toUpperCase();
-        const randomNum = String(Math.floor(Math.random() * 100)).padStart(2, '0');
-        const uid = 'U' + emailPrefix + randomNum;
-
-        users[email] = {
-            password: password,
-            _time: new Date().toISOString(),
-            _avatar: null,
-            _uid: uid
-        };
-        localStorage.setItem('users', JSON.stringify(users));
-        showSuccess('✅ 注册成功！即将切换到登录...');
-        setTimeout(() => {
-            switchMode();
-            authEmail.value = email;
-            authPassword.value = '';
-            showToast('✅ 请登录');
-        }, 1500);
-    }
-}
-
-function switchMode() {
-    isLoginMode = !isLoginMode;
-    authBtn.textContent = isLoginMode ? '登录' : '注册';
-    switchText.textContent = isLoginMode ? '还没有账号？' : '已有账号？';
-    switchLink.textContent = isLoginMode ? '注册' : '登录';
-    modeText.textContent = isLoginMode ? '登录后查看脚本' : '注册后登录查看脚本';
-    authError.style.display = 'none';
-    authSuccess.style.display = 'none';
-    authEmail.value = '';
-    authPassword.value = '';
-}
-
-function logout() {
-    currentUser = null;
-    authSection.style.display = 'block';
-    mainSection.style.display = 'none';
-    profilePage.style.display = 'none';
-    showToast('已退出');
-}
+authEmail.addEventListener('keydown', function(e) { if (e.key === 'Enter') authBtn.click(); });
+authPassword.addEventListener('keydown', function(e) { if (e.key === 'Enter') authBtn.click(); });
 
 function checkSession() {
     authSection.style.display = 'block';
     mainSection.style.display = 'none';
     profilePage.style.display = 'none';
 }
-
-authBtn.addEventListener('click', handleAuth);
-switchLink.addEventListener('click', (e) => { e.preventDefault();
-    switchMode(); });
-logoutBtn.addEventListener('click', logout);
-profileLogoutBtn.addEventListener('click', logout);
-authEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
-authPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') authBtn.click(); });
-
 checkSession();
 </script>
 </body>
